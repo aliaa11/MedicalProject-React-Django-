@@ -1,0 +1,134 @@
+/* تنسيقات عامة */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    text-align: right;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* تنسيق زر الإضافة */
+  .custom-button {
+    background: #509CDB;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+  }
+  
+  .custom-button:hover {
+    background: #3a7bb5;
+  }
+  
+  /* تنسيق صندوق البحث */
+  .search-box {
+    width: 70%;
+    background-color: #E0E0E0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+ 
+  /* تنسيق الجدول */
+  .table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    text-align: center;
+  }
+  
+  .table th, .table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  .table th {
+    background-color: #509CDB;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* تنسيق الأزرار داخل الجدول */
+  .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-warning:hover {
+    background-color: #e0a800;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+ 
+
+  /* جعل الصورة دائرية */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* جعل الصورة دائرية */
+    object-fit: cover; /* تجنب تشويه الصورة */
+  }
+  
+  /* أيقونة افتراضية */
+  .default-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc; /* لون خلفية الأيقونة */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 20px;
+    background-image: url('https://cdn-icons-png.flaticon.com/128/149/149071.png');
+  }
+  .no-teachers-container {
+    width: 952px;
+    height: 419px;
+    margin: auto;
+    background-color: #FCFAFA;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* توسيط عمودي */
+    align-items: center; /* توسيط أفقي */
+    text-align: center; /* توسيط النص داخل العناصر */
+    position: relative;
+  }
+  
+  .no-teachers-container h3 {
+    margin: 0; /* إزالة الهوامش الافتراضية */
+  }
+  
+  .no-teachers-container h6 {
+    margin: 0; /* إزالة الهوامش الافتراضية */
+    color: #666; /* لون نص ثانوي */
+  }

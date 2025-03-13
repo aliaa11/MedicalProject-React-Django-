@@ -1,0 +1,132 @@
+/* الخلفية الشفافة للنافذة المنبثقة */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* خلفية شبه شفافة */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* التأكد من ظهور النافذة فوق كل العناصر */
+  }
+  
+  /* محتوى النافذة المنبثقة */
+  .custom-modal-content {
+    background-color: white;
+    border-radius: 10px;
+    width: 800px; /* عرض النافذة */
+    max-width: 90%; /* أقصى عرض لتجنب تجاوز الشاشة على الأجهزة الصغيرة */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* ظل للنافذة */
+    animation: none !important; /* إلغاء أي حركة افتراضية */
+  }
+  
+  /* رأس النافذة المنبثقة */
+  .custom-modal-header {
+    padding: 15px;
+    background-color: #509CDB; /* لون خلفية الرأس */
+    color: white; /* لون النص */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .custom-modal-header h5 {
+    margin: 0; /* إزالة الهوامش الافتراضية */
+    font-size: 20px; /* حجم الخط */
+    font-weight: bold; /* سمك الخط */
+  }
+  
+  .custom-modal-header .btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* جسم النافذة المنبثقة */
+  .custom-modal-body {
+    padding: 20px;
+    max-height: 70vh; /* أقصى ارتفاع للجسم */
+    overflow-y: auto; /* إضافة شريط تمرير إذا تجاوز المحتوى الارتفاع */
+  }
+  
+  /* تنسيقات النموذج (الفورم) */
+  .custom-modal-body .form-label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  
+  .custom-modal-body .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .custom-modal-body .form-control:focus {
+    border-color: #509CDB;
+    box-shadow: 0 0 5px rgba(80, 156, 219, 0.5);
+  }
+  
+  .custom-modal-body .text-danger {
+    font-size: 14px;
+    color: red;
+    margin-top: 5px;
+  }
+  
+  /* تذييل النافذة المنبثقة */
+  .custom-modal-footer {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* مسافة بين الأزرار */
+  }
+  
+  .custom-modal-footer .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .custom-modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+  }
+  
+  .custom-modal-footer .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+  
+  .custom-modal-footer .btn-primary {
+    background-color: #509CDB;
+    border-color: #509CDB;
+    color: white;
+  }
+  
+  .custom-modal-footer .btn-primary:hover {
+    background-color: #3a7bb5;
+  }
+  .custom-modal-header .btn-close {
+    
+    
+    color: white; /* لون الأيقونة */
+    font-size: 3-px; /* حجم الأيقونة */
+    cursor: pointer;
+    margin-right: auto; 
+    margin-left: 0; 
+  }

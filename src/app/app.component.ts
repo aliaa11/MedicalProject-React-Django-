@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { BaseUserComponent } from './base-user/base-user.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./base-user.component.css'],
+  imports: [BaseUserComponent] // إزالة RouterOutlet لأنه غير مستخدم
 })
 export class AppComponent {
-  title = 'shcool-system';
+  title = 'school-system';
 }
