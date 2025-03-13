@@ -1,0 +1,64 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn custom-button" (click)="openModal()">إضافة طالب</button>
+  </div>
+
+  <div class="mb-3">
+    <input type="text" class="form-control search-box" placeholder="بحث بالاسم أو الفصل..." [(ngModel)]="searchQuery" (input)="searchStudents()">
+  </div>
+
+  @if (filteredStudents.length === 0) {
+    <div class="no-students-container">
+      <h3>لا يوجد طلاب مسجلين بعد</h3>
+      <h6>أضف طلاب لعرضهم هنا</h6>
+    </div>
+  }
+
+  @if (filteredStudents.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>الصورة</th>
+            <th>الاسم</th>
+            <th>العمر</th>
+            <th>الفصل</th>
+            <th>رقم ولي الأمر</th>
+            <th>واتساب</th>
+            <th>تعديل</th>
+            <th>حذف</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (student of filteredStudents; track student.id) {
+            <tr>
+              <td class="text-center">
+                @if (student.image) {
+                  <img [src]="student.image" alt="صورة الطالب" class="avatar">
+                } @else {
+                  <div class="default-avatar"></div>
+                }
+              </td>
+              <td>{{ student.name }}</td>
+              <td>{{ student.age }}</td>
+              <td>{{ student.class }}</td>
+              <td>{{ student.guardianPhone }}</td>
+              <td>{{ student.whatsapp }}</td>
+              <td class="text-center">
+                <button class="btn btn-warning btn-sm" (click)="editStudent(student)">
+                  <i class="bi bi-pencil-square"></i> تعديل
+                </button>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-danger btn-sm" (click)="deleteStudent(student.id)">
+                  <i class="bi bi-trash"></i> حذف
+                </button>
+              </td>
+              
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

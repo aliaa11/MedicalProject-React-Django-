@@ -1,4 +1,4 @@
-/* تنسيقات عامة */
+
 .container {
     max-width: 1200px;
     margin: auto;
@@ -6,7 +6,7 @@
     font-family: 'Arial', sans-serif;
   }
   
-  /* تنسيق زر الإضافة */
+ 
   .custom-button {
     background: #509CDB;
     color: white;
@@ -15,14 +15,14 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.3s ease;
+    
   }
   
   .custom-button:hover {
     background: #3a7bb5;
   }
   
-  /* تنسيق صندوق البحث */
+  
   .search-box {
     width: 70%;
     background-color: #E0E0E0;

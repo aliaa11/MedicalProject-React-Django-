@@ -1,0 +1,70 @@
+<div class="custom-modal">
+    <div class="custom-modal-content">
+      <div class="custom-modal-header">
+        <h5>إضافة معلم جديد</h5>
+        <button class="btn-close" (click)="closeModal()">×</button>
+      </div>
+      
+      <div class="custom-modal-body">
+        <form [formGroup]="teacherForm" (ngSubmit)="onSubmit()">
+          <div>
+            <label class="form-label">الاسم</label>
+            <input type="text" class="form-control" formControlName="name">
+            <div *ngIf="teacherForm.controls['name'].invalid && teacherForm.controls['name'].touched" class="text-danger">
+              الاسم مطلوب
+            </div>
+          </div>
+  
+          <div>
+            <label class="form-label">البريد الإلكتروني</label>
+            <input type="email" class="form-control" formControlName="email">
+            <div *ngIf="teacherForm.controls['email'].invalid && teacherForm.controls['email'].touched" class="text-danger">
+              بريد إلكتروني غير صحيح
+            </div>
+          </div>
+  
+          <div>
+            <label class="form-label">الهاتف</label>
+            <input type="text" class="form-control" formControlName="phone">
+            <div *ngIf="teacherForm.controls['phone'].invalid && teacherForm.controls['phone'].touched" class="text-danger">
+              يجب أن يكون رقم الهاتف 11 رقماً
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">العمر</label>
+            <input type="number" class="form-control" formControlName="age">
+            <div *ngIf="teacherForm.controls['age'].invalid && teacherForm.controls['age'].touched" class="text-danger">
+              العمر يجب أن يكون 18 سنة أو أكثر
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">التخصص</label>
+            <input type="text" class="form-control" formControlName="degree">
+            <div *ngIf="teacherForm.controls['degree'].invalid && teacherForm.controls['degree'].touched" class="text-danger">
+              هذا الحقل مطلوب
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">المادة</label>
+            <input type="text" class="form-control" formControlName="subject">
+            <div *ngIf="teacherForm.controls['subject'].invalid && teacherForm.controls['subject'].touched" class="text-danger">
+              هذا الحقل مطلوب
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">تحميل صورة (اختياري)</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)">
+          </div>
+  
+          <div class="custom-modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">إلغاء</button>
+            <button type="submit" class="btn btn-primary" [disabled]="teacherForm.invalid">حفظ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>

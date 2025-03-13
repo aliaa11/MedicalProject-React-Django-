@@ -1,151 +1,95 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TeacherModalComponent } from '../teacher-modal/teacher-modal.component';
-import { ConfirmDeleteModalComponent } from '../confirm-delete-modal/confirm-delete-modal.component';
+import { TEACHERS, STUDENTS } from '../../../public/assets/mock-data'; // استيراد البيانات الوهمية
 
 @Component({
   selector: 'app-base-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule], // ✅ إضافة FormsModule و ReactiveFormsModule
   templateUrl: './base-user.component.html',
   styleUrls: ['./base-user.component.css']
 })
-export class BaseUserComponent implements OnInit {
-  teacherForm: FormGroup;
-  teachers: any[] = [];
-  filteredTeachers: any[] = []; // قائمة المعلمين بعد التصفية
-  editMode: boolean = false;
-  editedTeacherId: number | null = null;
+export abstract class BaseUserComponent implements OnInit {
+  
+  userForm!: FormGroup;
   searchQuery: string = '';
+  filteredUsers: any[] = [];
+  users: any[] = []; // سيتم تحميلها من `mock-data.ts`
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal) {
-    this.teacherForm = this.fb.group({
+  constructor(protected fb: FormBuilder) {}
+
+  abstract getUserType(): string; // لتحديد إذا كان المستخدم "معلم" أو "طالب"
+
+  ngOnInit(): void {
+    this.initForm();
+    this.fetchUsers(); // تحميل البيانات الوهمية عند التشغيل
+  }
+
+  initForm(): void {
+    this.userForm = this.fb.group({
+      id: [null],
       name: ['', Validators.required],
-      age: ['', [Validators.required, Validators.min(18)]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]], // تحقق من صحة رقم التليفون
+      age: [null, [Validators.required, Validators.min(18)]],
+      phone: ['', [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)]], // ✅ تعديل نمط رقم الهاتف
       email: ['', [Validators.required, Validators.email]],
-      image: [null],
       degree: ['', Validators.required],
       class: ['', Validators.required],
+      image: [null]
     });
   }
 
-  ngOnInit() {
-    this.loadTeachers(); // تحميل البيانات عند بدء التشغيل
-    this.filteredTeachers = this.teachers; // تعيين القائمة المصفاة بالبيانات الأصلية
-  }
-
-  loadTeachers() {
-    const savedTeachers = localStorage.getItem('teachers');
-    if (savedTeachers) {
-      this.teachers = JSON.parse(savedTeachers);
-      this.filteredTeachers = this.teachers; // تحديث القائمة المصفاة
-    }
-  }
-
-  saveTeachers() {
-    localStorage.setItem('teachers', JSON.stringify(this.teachers));
-    this.filteredTeachers = this.teachers; // تحديث القائمة المصفاة
-  }
-
-  openModal() {
-    const modalRef = this.modalService.open(TeacherModalComponent);
-    modalRef.componentInstance.teacherForm = this.teacherForm;
-  
-    modalRef.result.then((result) => {
-      if (result) {
-        this.addTeacher(result); // استقبال البيانات من الـ Modal
-      }
-      this.resetEditMode(); // إعادة تعيين حالة التعديل بعد الإغلاق
-    }).catch(() => {
-      this.teacherForm.reset(); // إعادة تعيين النموذج عند الإغلاق بدون حفظ
-      this.resetEditMode(); // إعادة تعيين حالة التعديل بعد الإغلاق
-    });
-  }
-  
-  // دالة لإعادة تعيين حالة التعديل
-  resetEditMode() {
-    this.editMode = false;
-    this.editedTeacherId = null;
-  }
-  addTeacher(data: any) {
-    if (this.editMode && this.editedTeacherId !== null) {
-      // تعديل المعلم الموجود
-      const index = this.teachers.findIndex(teacher => teacher.id === this.editedTeacherId);
-      this.teachers[index] = {
-        id: this.editedTeacherId,
-        ...data,
-        image: data.image || 'https://cdn-icons-png.flaticon.com/128/149/149071.png'
-      };
-      this.editMode = false;
-      this.editedTeacherId = null;
+  fetchUsers(): void {
+    const userType = this.getUserType();
+    if (userType === 'معلم') {
+      this.users = TEACHERS; // تحميل بيانات المعلمين
+    } else if (userType === 'طالب') {
+      this.users = STUDENTS; // تحميل بيانات الطلاب
     } else {
-      // إضافة معلم جديد
-      this.teachers.push({
-        id: this.teachers.length + 1,
-        ...data,
-        image: data.image || 'https://cdn-icons-png.flaticon.com/128/149/149071.png'
-      });
+      this.users = [];
     }
-    this.teacherForm.reset();
-    this.saveTeachers(); // حفظ البيانات في localStorage
-    this.searchTeachers(); // تحديث البحث بعد الإضافة
+    this.filteredUsers = [...this.users]; // تحديث قائمة البحث
   }
 
-  editTeacher(teacher: any) {
-    this.editMode = true;
-    this.editedTeacherId = teacher.id;
-    this.teacherForm.patchValue({
-      name: teacher.name,
-      age: teacher.age,
-      phone: teacher.phone,
-      email: teacher.email,
-      image: teacher.image,
-      degree: teacher.degree,
-      class: teacher.class
-    });
-    this.openModal(); // فتح الـ Modal عند التعديل
+  searchUsers(): void {
+    this.filteredUsers = this.users.filter(user =>
+      user.name.includes(this.searchQuery) || user.email.includes(this.searchQuery)
+    );
   }
 
-  deleteTeacher(teacherId: number) {
-    const modalRef = this.modalService.open(ConfirmDeleteModalComponent);
-    modalRef.result.then((result) => {
-      if (result) {
-        // إذا تم التأكيد، قم بالحذف
-        this.teachers = this.teachers.filter(teacher => teacher.id !== teacherId);
-        this.saveTeachers(); // حفظ البيانات في localStorage
-        this.searchTeachers(); // تحديث البحث بعد الحذف
+  editUser(user: any): void {
+    this.userForm.patchValue(user);
+  }
+
+  deleteUser(id: number): void {
+    this.users = this.users.filter(user => user.id !== id);
+    this.filteredUsers = [...this.users]; // تحديث العرض
+  }
+
+  save(): void {
+    if (this.userForm.valid) {
+      const formData = this.userForm.value;
+
+      if (formData.id) {
+        // تعديل مستخدم موجود
+        const index = this.users.findIndex(user => user.id === formData.id);
+        if (index !== -1) this.users[index] = formData;
+      } else {
+        // إضافة مستخدم جديد
+        formData.id = this.users.length + 1; // تعيين ID جديد
+        this.users.push(formData);
       }
-    }).catch(() => {
-      // تم إلغاء الحذف
-    });
-  }
 
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.teacherForm.patchValue({
-          image: reader.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+      this.filteredUsers = [...this.users]; // تحديث العرض
+      this.close();
     }
   }
 
-  // دالة البحث
-  searchTeachers() {
-    if (this.searchQuery) {
-      this.filteredTeachers = this.teachers.filter(teacher =>
-        teacher.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || // البحث بالاسم
-        teacher.email.toLowerCase().includes(this.searchQuery.toLowerCase()) // البحث بالبريد الإلكتروني
-      );
-    } else {
-      this.filteredTeachers = this.teachers; // إذا كان حقل البحث فارغًا، عرض جميع البيانات
-    }
+  onFileChange(event: any): void {
+    // تحميل الصورة (إضافة معالجة الملفات لاحقًا)
+  }
+
+  close(): void {
+    this.userForm.reset();
   }
 }

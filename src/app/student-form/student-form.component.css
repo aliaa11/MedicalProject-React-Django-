@@ -1,0 +1,117 @@
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.custom-modal-content {
+    background-color: white;
+    border-radius: 10px;
+    width: 800px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: none !important;
+}
+
+.custom-modal-header {
+    padding: 15px;
+    background-color: #509CDB;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-header h5 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.custom-modal-header .btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.custom-modal-body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.form-control:focus {
+    border-color: #509CDB;
+    box-shadow: 0 0 5px rgba(80, 156, 219, 0.5);
+}
+
+.text-danger {
+    font-size: 14px;
+    color: red;
+    margin-top: 5px;
+}
+
+.custom-modal-footer {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-primary {
+    background-color: #509CDB;
+    border-color: #509CDB;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3a7bb5;
+}
