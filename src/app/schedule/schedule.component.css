@@ -1,0 +1,88 @@
+.schedule-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    overflow-x: auto;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #152259;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.schedule-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+}
+
+.class-card {
+    border-radius: 12px;
+    padding: 15px 10px;
+    color: #152259;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+.image
+{
+    flex: 1;
+}
+
+.subject
+{
+    flex: 7;
+}
+.class-header
+{
+    flex: 9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.days
+{
+    flex: 1;
+}
+.time
+{
+    flex:1
+}
+.teacher-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.subject-image {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.white .teatcher-name span
+{
+color: #7D8DA6;
+
+}
+.blue { background-color: #007bff; color: #ddd;}
+.red { background-color: #FE6470; color: #ddd;}
+.white { background-color: #f8f9fa; color: black; }
+.teatcher-name span 
+{
+color: #FFFFFF9E;
+}

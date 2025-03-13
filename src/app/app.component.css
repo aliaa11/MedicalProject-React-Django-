@@ -1,0 +1,20 @@
+.app {
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  width: 250px;
+}
+
+.content {
+  flex: 3;
+  margin-right: 20px;
+  padding: 20px;
+  overflow-y: auto;
+}
+@media (max-width: 768px) {
+  .app-container {
+    width: 40px;
+  }
+}

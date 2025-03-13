@@ -1,0 +1,46 @@
+.statistics-cards {
+    padding: 20px;
+    margin-top: 20%;
+}
+  
+  .card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px;
+  }
+  
+  .card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .card.green{
+    border-left: 10px solid green;
+    color: green;
+  }
+  
+  .card{
+    border-left: 10px solid #E10065;
+    color: #E10065;
+  }
+  
+
+  

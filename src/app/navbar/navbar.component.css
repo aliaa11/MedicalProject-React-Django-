@@ -1,0 +1,76 @@
+.navbar {
+    height: 60px;
+    width:100%;
+    background: white;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .notification-icon {
+    position: absolute;
+    left: 10%;
+    cursor: pointer;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: #2D88D4;
+    border-radius: 50%;
+  }
+  
+  .notification-dropdown {
+    position: absolute;
+    top: 60px;
+    left: 9%;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .notification-item {
+    padding: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+  
+  .notification-item:last-child {
+    border-bottom: none;
+  }
+  
+  .notification-item p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .notification-item small {
+    color: #888;
+    font-size: 12px;
+  }
+  
+  .navbar a {
+    color: #152259;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+
+  @media (max-width: 1163px) {
+    .notification-icon {
+      left: 30%;
+    }
+    .notification-dropdown {
+      left: 15%;
+    }
+  }

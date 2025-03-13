@@ -1,0 +1,56 @@
+<nav class="sidebar" [class.open]="isSidebarOpen">
+  <div class="profile">
+    <div class="avatar d-none d-md-blok"></div>
+    <h4>اسم المدرسة</h4>
+  </div>
+  <ul>
+    <li>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fa-solid fa-house"></i>
+        <span class="me-3">الصفحة الرئيسية</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/classes" routerLinkActive="active">
+        <i class="fa-solid fa-book"></i>
+        <span class="me-3">الفصول</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/teachers" routerLinkActive="active">
+        <i class="fa-solid fa-user-tie"></i>
+        <span class="me-3">المعلمون</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/students" routerLinkActive="active">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span class="me-3">الطلاب</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/attendance" routerLinkActive="active">
+        <i class="fa-regular fa-circle-check"></i>
+        <span class="me-3">الحضور</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/exam" routerLinkActive="active">
+        <i class="fa-regular fa-pen-to-square"></i>
+        <span class="me-3">الامتحانات</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/fees">
+        <i class="fa-solid fa-sack-dollar"></i>
+        <span class="me-3">الاشتراكات والأجور</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/complaints">
+        <i class="fa-solid fa-message"></i>
+        <span class="me-3">التعليمات والشكاوى</span>
+      </a>
+    </li>
+  </ul>
+</nav>

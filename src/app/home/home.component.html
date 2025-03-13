@@ -1,0 +1,20 @@
+<div class="layout">
+      <div class="container-fluid">
+        <app-banner [bannerData]="bannerData?.banner"></app-banner>
+      </div>
+      <app-marquee></app-marquee>
+      <div class="container-fluid">
+      <div class="dashboard row">
+        <div class="col-lg-3 col-md-2 col-md-12">
+          <app-statistics-cards></app-statistics-cards>
+       </div>
+        <div class="col-lg-5 col-md-4 col-md-12">
+        <app-schedule></app-schedule>
+        </div>
+        <div class="col-lg-4 col-md-4 col-md-12">
+          <app-teacher-list></app-teacher-list>
+        </div>
+      </div>
+    </div>
+  </div>
+  

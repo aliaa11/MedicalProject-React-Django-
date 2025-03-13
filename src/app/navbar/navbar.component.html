@@ -1,0 +1,19 @@
+<div class="navbar" dir="ltr">
+    <a href="#" class="text-start"> تسجيل خروج </a>
+    <div class="notification-icon " (click)="toggleNotifications()">
+      <i class="far fa-bell fs-5"></i> 
+      @if (hasNewNotifications) {
+        <span class="notification-badge"></span>
+      }
+    </div>
+    @if (showNotifications) {
+      <div class="notification-dropdown">
+        @for (notification of notifications; track notification) {
+          <div class="notification-item">
+            <p>{{ notification?.message }}</p>
+            <small>{{ notification?.date }}</small>
+          </div>
+        }
+      </div>
+    }
+  </div>

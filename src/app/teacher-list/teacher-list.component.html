@@ -1,0 +1,21 @@
+<div class="teacher-list mt-5">
+    <h2>المعلمين</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>الصورة</th>
+          <th>الاسم</th>
+          <th>الوقت</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (teacher of teachers; track teacher) {
+          <tr>
+            <td><img [src]="teacher.image" alt="{{ teacher.name }}" class="teacher-image"></td>
+            <td>{{ teacher.name }}</td>
+            <td>{{ teacher.time }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>

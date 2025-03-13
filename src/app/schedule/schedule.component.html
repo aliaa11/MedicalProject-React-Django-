@@ -1,0 +1,38 @@
+<div class="schedule-container mt-5">
+    <div class="schedule-header">
+        <div>سبت</div>
+        <div>احد</div>
+        <div>اثنين</div>
+        <div>ثلاث</div>
+        <div>اربع</div>
+        <div>خميس</div>
+    </div>
+    <div class="schedule-body">
+        @for (item of schedule; track item) {
+            <div class="class-card" [ngClass]="getSubjectClass(item.subject)">
+                <div class="image ms-5 d-none d-md-block">
+                    <img class="subject-image " [src]="item.image" alt="Subject" />
+                </div>
+                <div class="subject">
+                    <strong>{{ item.subject }}</strong>
+                    <div class="teacher-name">
+                        <span class="ms-2">{{ item.teacher.name || item.teacher }}</span>
+                    </div>
+                </div>
+                
+                <div class="class-header">
+                    <div class="days">
+                        <span>{{ item.days.join(' - ') }}</span> 
+                    </div>
+                    <div class="time">
+                        <span class="ms-2">{{ item.time }}</span>
+                    </div>
+                    <div class="t_img">
+                        <img class="teacher-image bg-light d-none d-md-block" [src]="item.teacher.image || 'path/to/default/image.png'" alt="Teacher" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+</div>

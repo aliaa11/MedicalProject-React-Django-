@@ -1,0 +1,125 @@
+  .banner {
+    position: relative;
+    width: 100%;
+    height: 40vh;
+    background: linear-gradient(to right, #509CDB ,#152259);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 20px;
+    text-align: right;
+    margin-top: 4rem;
+  }
+  .banner-content {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    height: 100%;
+}
+
+  .banner-text {
+    flex: 1;
+    color: white;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    height: 100%;
+    align-self: center;
+  }
+  .banner-img
+  {
+    flex:1;
+  }
+ 
+  .backpack {
+    position: absolute;
+    left: 2%;
+    width: 274px;
+    min-width: 200px;
+    max-width: 300px;
+    top: 74%;
+    transform: translateY(-50%);
+  }
+  
+  .student {
+    width: 274px;
+    position: absolute;
+    left: 19%;
+    z-index: 3;
+    top: 65%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .scholarcap {
+    left: 18%;
+    position: absolute;
+    width: 400px;
+    min-width: 300px;
+    max-width: 500px;
+    top: 64%;
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 1669px) and (min-width: 768px){
+    .student {
+      width: 250px;
+      max-width: 250px;
+      top:66%;
+      left: 25%;
+    }
+    .backpack
+    {
+      left: 7%;
+    }
+    .scholarcap {
+      left: 25%;
+      top: 65%;
+    }
+  }
+   @media (max-width: 1427px)  and (min-width: 768px){
+    .backpack
+    {
+      left: 5%;
+    }
+  }
+  @media (max-width: 1240px)  and (min-width: 768px){
+    
+    .backpack
+    {
+      left: 1%;
+    }
+  }
+  @media (max-width: 1030px)  and (min-width: 768px){
+    .student {
+      width: 200px;
+      max-width: 200px;
+      top:73%;
+      left: 23%;
+    }
+    .backpack
+    {
+      width: 200px;
+      max-width: 150px;
+      left: 0;
+      top:77%;
+
+    }
+    .scholarcap {
+      width: 200px;
+      max-width: 150px;
+      left: 23%;
+      top: 70%;
+    }
+  } 
+  .banner-text h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .banner-text p {
+    font-size: 1.2rem;
+    color: rgb(206, 206, 206);
+  }
+  
+
+  
