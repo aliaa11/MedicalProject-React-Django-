@@ -7,7 +7,18 @@
     overflow: hidden;
     padding: 20px;
     text-align: right;
-    margin-top: 4rem;
+  }
+  @media (max-width: 768px) {
+    .banner {
+      margin-top: 10%;
+
+    }
+  }
+  @media (max-width: 1589px)and (min-width: 768px) {
+    .banner {
+      margin-top:5%;
+
+    }
   }
   .banner-content {
     display: flex;
@@ -110,6 +121,7 @@
       left: 23%;
       top: 70%;
     }
+ 
   } 
   .banner-text h2 {
     font-size: 2rem;

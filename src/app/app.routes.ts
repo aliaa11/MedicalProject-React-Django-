@@ -3,7 +3,8 @@ import { HomeComponent } from './home/home.component';
 import { ExamsComponent } from './exams/exams.component';
 import { StudentComponent } from './student/student.component';
 import { TeacherComponent } from './teacher/teacher.component';
-import { ClassCardComponent } from './class-card/class-card.component';
+import { ClassesListComponent } from './classes-list/classes-list.component';
+import { StudentsListComponent } from './students-list/students-list.component';
 
 export const routes: Routes = [
     {
@@ -18,5 +19,6 @@ export const routes: Routes = [
     { path: 'students/:query', component: StudentComponent }, 
     { path: 'teachers', component: TeacherComponent },
     { path: 'teachers/:query', component: TeacherComponent }, 
-    {path: 'classes',component: ClassCardComponent}
+    {path: 'classes',component:ClassesListComponent},
+    {path: 'attendance',component:StudentsListComponent},
 ];
