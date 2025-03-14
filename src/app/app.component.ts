@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NavbarComponent } from "./navbar/navbar.component";
 import { RouterModule } from '@angular/router';
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, SidebarComponent, NavbarComponent,RouterModule],

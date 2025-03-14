@@ -1,0 +1,17 @@
+
+<div class="container  elemntscontainer">
+  <div class="row align-items-center mb-3">
+    <div class="col text-end">
+      <button class="top-right-btn">KG-1</button>
+    </div>
+  </div>
+  <div class=" row ">
+    @for(student of students; track $index){
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 ">
+        <!-- <app-student-card ></app-student-card> -->
+        <app-student-card [studentImage]="student.image" [studentName]="student.name" [studentID]="student.studentid"></app-student-card>
+      </div>
+    }
+
+  </div>
+</div>
