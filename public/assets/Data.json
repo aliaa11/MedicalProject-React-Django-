@@ -68,7 +68,8 @@
       "days": ["اربع", "إثنين"],
       "time": "15:00PM",
       "image": "assets/images/schedule/math.jpg"
-    },{
+    },
+    {
       "subject": "اللغة العربية",
       "teacher": { "name": "أ. أحمد محمد عبدالله",
       "image": "assets/images/Teachers/ahmed.png"
@@ -93,17 +94,17 @@
   },
   "notifcation": [
     {
-      "message": "إشعار جديد: تم تسجيل حضورك اليوم.",
+      "message":" تم تسجيل حضورك اليوم",
       "date": "2023-10-01",
       "read": false
     },
     {
-      "message": "إشعار جديد: لديك امتحان غدًا.",
+      "message": " لديك امتحان غدًا",
       "date": "2023-10-02",
       "read": false
     },
     {
-      "message": "إشعار جديد: تم دفع الرسوم الدراسية.",
+      "message": " تم دفع الرسوم الدراسية",
       "date": "2023-10-03",
       "read": true
     }

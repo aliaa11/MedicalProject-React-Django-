@@ -1,68 +1,73 @@
-<div class="exam ">
-    <div class="container">
-        @if (step() === 1) {
-            <div class="step-container">
-                <div class="search-container">
-                    <input type="text" [(ngModel)]="searchQuery" (input)="filterSubjects()" 
-                        placeholder=" ابحث عن المادة..." class="search-input">
-                </div>
-                <div class="subjects row">
-                    @for (subject of filteredSubjects(); track subject.name) {
-                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                            <button (click)="selectSubject(subject)" [ngClass]="getSubjectClass(subject.name)">
-                                <i class="fa-solid fa-folder ms-2"></i> {{ subject.name }}
-                            </button>  
-                        </div>
-                    }
-                </div>
-
-                @if (filteredSubjects().length === 0) {
-                    <p class="no-results">⚠ لا توجد مواد مطابقة للبحث.</p>
-                }
-
-            </div>   
+<div class="exam">
+  <div class="container">
+    @if (step() === 1) {
+    <div class="step-container">
+      <div class="search-container">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="filterSubjects()"
+          placeholder=" ابحث عن المادة..."
+          class="search-input"
+        />
+      </div>
+      <div class="subjects row">
+        @for (subject of filteredSubjects(); track subject.name) {
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+          <button
+            (click)="selectSubject(subject)"
+            [ngClass]="getSubjectClass(subject.name)"
+          >
+            <i class="fa-solid fa-folder ms-2"></i> {{ subject.name }}
+          </button>
+        </div>
         }
+      </div>
 
-        @if (step() === 2) {
-            <div class="step-container buttons">
-                <button (click)="selectExamType('weekly')">الاختبارات الأسبوعية</button>
-                <button (click)="selectExamType('monthly')">الاختبارات الشهرية</button>
-            </div>
-        }
-
-        @if (step() === 3) {
-            <div class="step-container">
-                <h3>جدول الامتحانات لـ {{ selectedSubject()?.name }} - 
-                    {{ selectedExamType() === 'weekly' ? 'الأسبوعية' : 'الشهرية' }}</h3>
-                    <div class="exam-table-container">
-                        <table class="exam-table">
-                            <thead>
-                                <tr>
-                                    <th>اليوم</th>
-                                    <th>الساعة</th>
-                                    <th>المادة</th>
-                                    <th>تحميل</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (exam of exams(); track exam.id) {
-                                    <tr>
-                                        <td>{{ exam.day }}</td>
-                                        <td>{{ exam.time }}</td>
-                                        <td>{{ exam.subject }}</td>
-                                        <td>
-                                            <button class="download-btn" (click)="downloadExam(exam)">
-                                               تحميل <i class="fa-solid fa-arrow-down"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                <button class="back-btn" (click)="reset()">العودة</button>
-            </div>
-        }
+      @if (filteredSubjects().length === 0) {
+      <p class="no-results">⚠ لا توجد مواد مطابقة للبحث.</p>
+      }
     </div>
+    } @if (step() === 2) {
+    <div class="step-container buttons">
+      <button (click)="selectExamType('weekly')">الاختبارات الأسبوعية</button>
+      <button (click)="selectExamType('monthly')">الاختبارات الشهرية</button>
+    </div>
+    } @if (step() === 3) {
+    <div class="step-container">
+      <h3>
+        جدول الامتحانات لـ {{ selectedSubject()?.name }} -
+        {{ selectedExamType() === "weekly" ? "الأسبوعية" : "الشهرية" }}
+      </h3>
+      <div class="exam-table-container">
+        <table class="exam-table">
+          <thead>
+            <tr>
+              <th>اليوم</th>
+              <th>الساعة</th>
+              <th>المادة</th>
+              <th>تحميل</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (exam of exams(); track exam.id) {
+            <tr>
+              <td>{{ exam.day }}</td>
+              <td>{{ exam.time }}</td>
+              <td>{{ exam.subject }}</td>
+              <td>
+                <button class="download-btn" (click)="downloadExam(exam)">
+                  تحميل <i class="fa-solid fa-arrow-down"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <button class="back-btn" (click)="reset()">العودة</button>
+    </div>
+    }
+  </div>
 </div>
