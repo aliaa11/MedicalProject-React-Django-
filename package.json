@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "@angular/common": "^19.2.2",
     "@angular/compiler": "^19.2.2",
     "@angular/core": "^19.2.2",
@@ -21,17 +20,6 @@
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "bootstrap": "^5.3.3",
     "bootstrap-rtl": "^3.3.4",
-=======
-    "@angular/common": "^19.2.0",
-    "@angular/compiler": "^19.2.0",
-    "@angular/core": "^19.2.0",
-    "@angular/forms": "^19.2.0",
-    "@angular/material": "^19.2.3",
-    "@angular/platform-browser": "^19.2.0",
-    "@angular/platform-browser-dynamic": "^19.2.0",
-    "@angular/router": "^19.2.0",
-    "bootstrap": "^5.3.3",
->>>>>>> origin/Salma-Hussein
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
