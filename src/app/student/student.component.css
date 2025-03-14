@@ -1,0 +1,144 @@
+/* تنسيقات عامة */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  text-align: right;
+  font-family: 'Arial', sans-serif;
+}
+
+/* زر الإضافة */
+.custom-button {
+  background: #509CDB;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.custom-button:hover {
+  background: #3a7bb5;
+}
+
+/* تنسيق البحث */
+.search-box {
+  width: 70%;
+  background-color: #E0E0E0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* الجدول */
+.table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.table th, .table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #509CDB;
+  color: white;
+  font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* تنسيق أزرار التعديل والحذف */
+.btn-warning {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800 !important;
+}
+
+.btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #c82333 !important;
+}
+
+/* تحسين عرض الصورة داخل الجدول */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: auto; /* ✅ يجعل الصورة في منتصف الخلية */
+}
+
+/* صورة افتراضية */
+.default-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://cdn-icons-png.flaticon.com/128/149/149071.png');
+  background-size: cover;
+  margin: auto;
+}
+
+/* تنسيق شاشة "لا يوجد طلاب" */
+.no-users-container {
+  width: 952px;
+  height: 419px;
+  margin: auto;
+  background-color: #FCFAFA;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.no-users-container h3 {
+  margin: 0;
+}
+
+
+
+.no-students-container{
+  width: 952px;
+  height: 419px;
+  margin: auto;
+  background-color: #FCFAFA;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* توسيط عمودي */
+  align-items: center; /* توسيط أفقي */
+  text-align: center; /* توسيط النص داخل العناصر */
+  position: relative;
+}

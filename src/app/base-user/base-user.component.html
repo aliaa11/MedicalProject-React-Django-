@@ -1,0 +1,66 @@
+<div class="container mt-5">
+    <!-- زر الإضافة -->
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn custom-button" (click)="openModal()">
+        {{ editMode ? 'تعديل معلم' : 'إضافة معلم' }}
+      </button>
+    </div>
+  
+    <!-- شريط البحث -->
+    <div class="mb-3">
+      <input type="text" class="form-control search-box" placeholder="بحث بالاسم أو البريد الإلكتروني..." [(ngModel)]="searchQuery" (input)="searchTeachers()" style="background-color:#E0E0E0; width: 100%;">
+    </div>
+  
+    <!-- رسالة عدم وجود مدرسين -->
+    @if (filteredTeachers.length === 0) {
+      <div class="no-teachers-container">
+        <h3>لا يوجد مدرسين في هذا الوقت</h3>
+        <h6>سيظهر المعلمون هنا بعد تسجيلهم في مدرستك</h6>
+      </div>
+    }
+  
+    <!-- جدول عرض البيانات -->
+    @if (filteredTeachers.length > 0) {
+      <table class="table table-bordered mt-3 mx-auto">
+        <thead>
+          <tr>
+            <th>الصورة</th>
+            <th>الاسم</th>
+            <th>العمر</th>
+            <th>رقم التليفون</th>
+            <th>البريد الإلكتروني</th>
+            <th>الدرجة العلمية</th>
+            <th>الفصل</th>
+            <th>تعديل</th>
+            <th>حذف</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (teacher of filteredTeachers; track teacher.id) {
+            <tr>
+              <!-- عرض الصورة أو الصورة الافتراضية -->
+              <td>
+                @if (teacher.image) {
+                  <img [src]="teacher.image" alt="صورة المعلم" class="avatar">
+                } @else {
+                  <div class="default-avatar"></div> <!-- عرض الصورة الثابتة -->
+                }
+              </td>
+              <td>{{ teacher.name }}</td>
+              <td>{{ teacher.age }}</td>
+              <td>{{ teacher.phone }}</td>
+              <td>{{ teacher.email }}</td>
+              <td>{{ teacher.degree }}</td>
+              <td>{{ teacher.class }}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" (click)="editTeacher(teacher)">تعديل</button>
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" (click)="deleteTeacher(teacher.id)">حذف</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>

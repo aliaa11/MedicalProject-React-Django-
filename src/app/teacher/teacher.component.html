@@ -1,0 +1,67 @@
+<div class="container mt-5">
+
+  
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn custom-button" (click)="openModal()">إضافة معلم</button>
+  </div>
+
+  <div class="mb-3">
+    <input type="text" class="form-control search-box" placeholder="بحث بالاسم أو البريد الإلكتروني..." [(ngModel)]="searchQuery" (input)="searchUsers()">
+  </div>
+
+  @if (filteredUsers.length === 0) {
+    <div class="no-teachers-container">
+      <h3>لا يوجد معلمين مسجلين بعد</h3>
+      <h6>أضف معلمين لعرضهم هنا</h6>
+    </div>
+  }
+
+  @if (filteredUsers.length > 0) {
+    <div class="table-responsive"> 
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>الصورة</th>
+            <th>الاسم</th>
+            <th>العمر</th>
+            <th>رقم التليفون</th>
+            <th>البريد الإلكتروني</th>
+            <th>التخصص</th>
+            <th>الفصل</th>
+            <th>تعديل</th>
+            <th>حذف</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers; track user.id) {
+            <tr>
+              <td class="text-center">
+                @if (user.image) {
+                  <img [src]="user.image" alt="صورة المعلم" class="avatar">
+                } @else {
+                  <div class="default-avatar"></div>
+                }
+              </td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.age }}</td>
+              <td>{{ user.phone }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.degree }}</td>
+              <td>{{ user.subject }}</td>
+              <td class="text-center">
+                <button class="btn btn-warning btn-sm" (click)="editUser(user)">
+                  <i class="bi bi-pencil-square"></i> تعديل
+                </button>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-danger btn-sm" (click)="deleteTeacher(user.id)">
+                  <i class="bi bi-trash"></i> حذف
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
