@@ -1,0 +1,143 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "hashed-password",
+      "role": "admin",
+      "profile_picture": null,
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Company A",
+      "email": "employer@example.com",
+      "password": "hashed-password",
+      "role": "employer",
+      "profile_picture": null,
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Candidate A",
+      "email": "candidate@example.com",
+      "password": "hashed-password",
+      "role": "candidate",
+      "profile_picture": null,
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    }
+  ],
+  "employers": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "company_name": "Company A",
+      "company_website": "https://companya.com",
+      "company_logo": null,
+      "bio": "We are a software company.",
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    }
+  ],
+  "candidates": [
+    {
+      "id": 1,
+      "user_id": 3,
+      "resume": "/resumes/candidate-a.pdf",
+      "linkedin_profile": "https://linkedin.com/in/candidate-a",
+      "phone_number": "01000000000",
+      "experience_level": "junior",
+      "location": "Cairo",
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 1,
+      "employer_id": 1,
+      "title": "Frontend Developer",
+      "description": "Build modern UI with Vue.",
+      "responsibilities": "Develop and maintain frontend.",
+      "skills": "Vue, JavaScript, CSS",
+      "category": "programming",
+      "location": "Remote",
+      "technologies": "Vue.js, Pinia, Tailwind",
+      "work_type": "remote",
+      "salary_range": "2000-4000",
+      "benefits": "Health insurance, Bonuses",
+      "deadline": "2025-06-01",
+      "status": "approved",
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-01T12:00:00Z"
+    }
+  ],
+  "applications": [
+    {
+      "id": 1,
+      "job_id": 1,
+      "candidate_id": 1,
+      "resume_snapshot": "/resumes/candidate-a.pdf",
+      "contact_email": "candidate@example.com",
+      "contact_phone": "01000000000",
+      "status": "pending",
+      "created_at": "2025-05-02T09:00:00Z",
+      "updated_at": "2025-05-02T09:00:00Z"
+    },
+    {
+      "id": 1,
+      "job_id": 1,
+      "candidate_id": 1,
+      "resume_snapshot": "/resumes/candidate-a.pdf",
+      "contact_email": "candidate@example.com",
+      "contact_phone": "01000000000",
+      "status": "pending",
+      "created_at": "2025-05-02T09:00:00Z",
+      "updated_at": "2025-05-02T09:00:00Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "job_id": 1,
+      "user_id": 3,
+      "comment_text": "Is this position still open?",
+      "created_at": "2025-05-02T10:00:00Z",
+      "updated_at": "2025-05-02T10:00:00Z"
+    }
+  ],
+  "job_analytics": [
+    {
+      "id": 1,
+      "job_id": 1,
+      "views_count": 150,
+      "applications_count": 12,
+      "created_at": "2025-05-01T12:00:00Z",
+      "updated_at": "2025-05-03T12:00:00Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "application_id": 1,
+      "employer_id": 1,
+      "amount": 50,
+      "payment_method": "paypal",
+      "status": "paid",
+      "created_at": "2025-05-03T12:00:00Z",
+      "updated_at": "2025-05-03T12:00:00Z"
+    }
+  ],
+  "job_filters": [
+    {
+      "id": 1,
+      "user_id": 3,
+      "filters_json": "{\"category\": \"programming\", \"location\": \"Remote\"}",
+      "created_at": "2025-05-02T10:00:00Z"
+    }
+  ]
+}
