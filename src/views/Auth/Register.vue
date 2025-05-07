@@ -44,6 +44,7 @@
 
 <script>
 import AuthForm from './AuthForm.vue';
+import bcrypt from 'bcryptjs';
 
 export default {
   components: { AuthForm },
@@ -54,19 +55,56 @@ export default {
   },
   methods: {
     async registerUser(formData) {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.some(u => u.email === formData.email)) {
-        this.alertMessage = 'Email is already registered.';
-        return;
+      try {
+        const res = await fetch(`http://localhost:3000/users?email=${encodeURIComponent(formData.email)}`);
+        const existingUsers = await res.json();
+
+        if (existingUsers.length > 0) {
+          this.alertMessage = 'Email is already registered.';
+          return;
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(formData.password, salt);
+
+        const { name, email, role, image } = formData;
+
+const newUser = {
+  name,
+  email,
+  password: hashedPassword,
+  role,
+  profile_picture: image,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+
+        const response = await fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newUser)
+        });
+
+        if (response.ok) {
+          this.alertMessage = 'Registration successful! Redirecting to login…';
+          setTimeout(() => this.$router.push('/login'), 1500);
+        } else {
+          this.alertMessage = 'Registration failed. Try again.';
+        }
+      } catch (err) {
+        console.error(err);
+        this.alertMessage = 'An error occurred. Please try again.';
       }
-      users.push(formData);
-      localStorage.setItem('users', JSON.stringify(users));
-      this.alertMessage = 'Registration successful! Redirecting to login…';
-      setTimeout(() => this.$router.push('/login'), 1500);
     }
   }
 };
+
+
 </script>
+
 
 <style scoped>
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';

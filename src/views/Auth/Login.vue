@@ -32,6 +32,8 @@
 
 
 <script>
+import axios from 'axios';
+import bcrypt from 'bcryptjs';
 import AuthForm from './AuthForm.vue';
 
 export default {
@@ -42,24 +44,42 @@ export default {
     };
   },
   methods: {
-    loginUser({ email, password }) {
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
+    async loginUser({ email, password }) {
+      try {
+        // Step 1: Get user by email only
+        const response = await axios.get('http://localhost:3000/users', {
+          params: { email }
+        });
 
-      if (!user) {
-        this.alertMessage = 'Invalid credentials. Please check your email and password.';
-        return;
+        const user = response.data[0];
+
+        if (!user) {
+          this.alertMessage = 'Invalid email or password.';
+          return;
+        }
+
+        // Step 2: Compare entered password with hashed password in db
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+          this.alertMessage = 'Invalid email or password.';
+          return;
+        }
+
+        // Login success
+        localStorage.setItem('token', 'fake-jwt-token');
+        localStorage.setItem('role', user.role);
+        this.$router.push(`/${user.role}/dashboard`);
+      } catch (error) {
+        this.alertMessage = 'Server error. Please try again later.';
+        console.error(error);
       }
-
-      localStorage.setItem('token', 'fake-jwt-token');
-      localStorage.setItem('role', user.role);
-      this.$router.push(`/${user.role}/dashboard`);
     }
   }
 };
+
 </script>
+
 
 <style scoped>
 @import 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';

@@ -67,6 +67,24 @@
       <div class="invalid-feedback">Please select a role.</div>
     </div>
 
+    <!-- Image Upload Input (For Registration) -->
+    <div v-if="!isLogin" class="mb-3">
+      <label for="image" class="form-label">Profile Image</label>
+      <input
+        type="file"
+        class="form-control"
+        id="image"
+        accept="image/*"
+        @change="handleImageUpload"
+        :class="{ 'is-invalid': imageRequired && !form.image }"
+        required
+      />
+      <div class="invalid-feedback">Profile image is required.</div>
+      <div v-if="previewImage" class="mt-2 text-center">
+        <img :src="previewImage" class="img-thumbnail" style="max-width: 120px;" />
+      </div>
+    </div>
+
     <!-- Submit Button -->
     <button type="submit" class="btn btn-primary w-100">
       {{ isLogin ? 'Login' : 'Register' }}
@@ -89,33 +107,52 @@ export default {
         password: '',
         password_confirmation: '',
         role: '',
+        image: null, // base64 string
       },
+      previewImage: null,
+      imageRequired: false,
     };
   },
   methods: {
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.form.image = e.target.result;
+          this.previewImage = e.target.result;
+          this.imageRequired = false; // reset if image is provided
+        };
+        reader.readAsDataURL(file);
+      }
+    },
     submitForm() {
       const formEl = this.$el;
-      if (formEl.checkValidity() === false) {
+
+      // Set flag to trigger image validation
+      if (!this.isLogin && !this.form.image) {
+        this.imageRequired = true;
+      }
+
+      if (formEl.checkValidity() === false || this.imageRequired) {
         formEl.classList.add('was-validated');
         return;
       }
 
-      // Check password confirmation match
       if (!this.isLogin && this.form.password !== this.form.password_confirmation) {
         alert('Passwords do not match!');
         return;
       }
 
-      // Prepare the data for submission
       const payload = { ...this.form };
       if (this.isLogin) {
         delete payload.name;
         delete payload.phone;
         delete payload.password_confirmation;
         delete payload.role;
+        delete payload.image;
       }
 
-      // Call the parent component's submit method
       this.onSubmit(payload);
     },
   },
@@ -123,7 +160,6 @@ export default {
 </script>
 
 <style scoped>
-/* Add styling for better UX */
 .auth-form {
   max-width: 450px;
   margin: auto;
@@ -138,7 +174,6 @@ export default {
   font-size: 0.875rem;
 }
 
-/* Add button styling */
 button {
   font-weight: 600;
   letter-spacing: 0.5px;
