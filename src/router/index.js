@@ -5,11 +5,21 @@ import Login from '../views/Auth/Login.vue'
 import EmployerDashboard from '@/views/Employer/EmployerDashboard.vue'
 import JobForm from '@/views/Employer/JobForm.vue'
 import EmployerHome from '@/views/Employer/EmployerHome.vue'
+import JobDetails from '../views/jobs/JopDetails.vue'
 
 const routes = [
   { path: '/', name: 'register', component: Register },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  {
+    path: '/',
+    component: Home
+  },
+  {
+    path: '/job-details',
+    name: 'job-details',
+    component: JobDetails
+  },
   {
     path: '/employer',
     name: 'EmployerDashboard',
@@ -38,7 +48,7 @@ const routes = [
             
     ]
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
