@@ -60,7 +60,7 @@
             </div>
   
             <div class="col-12  mt-3">
-              <button type="submit" class="btn btn-primary px-5">Post Job</button>
+              <button type="submit" class="btn px-5" style="background-color: #047fec; color: white;">Post Job</button>
             </div>
           </div>
         </form>

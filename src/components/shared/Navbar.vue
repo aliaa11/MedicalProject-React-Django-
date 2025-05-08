@@ -15,7 +15,7 @@
       <RouterLink to="/contact">Contact</RouterLink>
       <div class="auth-buttons">
         <RouterLink to="/login" class="login-btn">Log in</RouterLink>
-        <RouterLink to="/post-job" class="post-job-btn">Post A Job</RouterLink>
+        <RouterLink to="/employer/jobform" class="post-job-btn">Post A Job</RouterLink>
       </div>
     </div>
   </nav>

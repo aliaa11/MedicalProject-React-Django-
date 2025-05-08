@@ -8,9 +8,8 @@ import EmployerHome from '@/views/Employer/EmployerHome.vue'
 import JobDetails from '../views/jobs/JopDetails.vue'
 
 const routes = [
-  { path: '/', name: 'register', component: Register },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
+  { path: '/login', component: Login, name: 'login' },
+  { path: '/register', component: Register, name: 'register' },
   {
     path: '/',
     component: Home
