@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer">
+     <footer class="footer">
       <div class="footer-content">
         <div class="footer-section">
           <h3>Job Board</h3>
