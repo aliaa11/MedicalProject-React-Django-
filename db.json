@@ -214,6 +214,44 @@
         "status": "approved",
         "created_at": "2025-05-02T16:00:00Z",
         "updated_at": "2025-05-02T16:00:00Z"
+      },
+      {
+        "id": "6",
+        "employer_id": 5,
+        "title": "Financial Analyst",
+        "description": "Prepare reports and track KPIs.",
+        "responsibilities": "Analyze financial data.",
+        "skills": "Excel, SQL",
+        "category": "Finance",
+        "location": "California, USA",
+        "experience_level": "Mid",
+        "technologies": "Power BI",
+        "work_type": "onsite",
+        "salary_range": "4000-8000",
+        "benefits": "Medical, 401k",
+        "deadline": "2025-06-10",
+        "status": "approved",
+        "created_at": "2025-05-02T16:00:00Z",
+        "updated_at": "2025-05-02T16:00:00Z"
+      },
+      {
+        "id": "7",
+        "employer_id": 5,
+        "title": "Financial Analyst",
+        "description": "Prepare reports and track KPIs.",
+        "responsibilities": "Analyze financial data.",
+        "skills": "Excel, SQL",
+        "category": "Finance",
+        "location": "California, USA",
+        "experience_level": "Mid",
+        "technologies": "Power BI",
+        "work_type": "onsite",
+        "salary_range": "4000-8000",
+        "benefits": "Medical, 401k",
+        "deadline": "2025-06-10",
+        "status": "approved",
+        "created_at": "2025-05-02T16:00:00Z",
+        "updated_at": "2025-05-02T16:00:00Z"
       }
     ]
     
