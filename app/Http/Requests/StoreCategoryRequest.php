@@ -11,7 +11,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;    
     }
 
     /**
@@ -23,6 +23,14 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             //
+             'name' => 'required|string|max:255|unique:categories,name'
+        ];
+    }
+
+    public function messages(): array{
+        return [
+            "name.required" => "Category name is required",
+            "name.unique" => "Category name must be unique",
         ];
     }
 }

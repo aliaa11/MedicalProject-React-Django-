@@ -14,14 +14,20 @@ class JobController extends Controller
     public function index()
     {
         //
-    }
+        $jobs = Job::with('comments')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        if($jobs->count() == 0){
+            return response()->json(
+                [
+                    'message' => "No Jobs at the time!"
+                ]
+            );
+        }
+
+        return response()->json([
+            "success" => true,
+            "data" => $jobs
+        ]);
     }
 
     /**
@@ -30,37 +36,80 @@ class JobController extends Controller
     public function store(StoreJobRequest $request)
     {
         //
+        $job = Job::create($request->all());
+
+        return response()->json([
+            "success" => true,
+            'message' => 'Job created successfully',
+            'data' => $job,
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Job $job)
+    public function show(string $id)
     {
         //
-    }
+        $job = Job::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Job $job)
-    {
-        //
+        if(!$job) {
+            return response()->json([
+                "success" => false,
+                'message' => 'Job not found',
+            ], 404);
+        }
+
+        return response()->json([
+            "success" => true,
+            'data' => $job
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJobRequest $request, Job $job)
+    public function update(UpdateJobRequest $request, string $id)
     {
         //
+        $job = Job::find($id);
+
+        if(!$job) {
+            return response()->json([
+                "success" => false,
+                'message' => 'Job not found',
+            ], 404);
+        }
+
+        $job->update($request->all());
+
+        return response()->json([
+            "success" => true,
+            'message' => 'Job updated successfully',
+            'data' => $job,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Job $job)
+    public function destroy(string $id)
     {
         //
+        $job = Job::find($id);
+
+        if(!$job) {
+            return response()->json([
+                "success" => false,
+                'message' => 'Job not found',
+            ], 404);
+        }
+
+        $job->delete();
+
+        return response()->json([
+            "success" => true,
+            'message' => 'Job deleted successfully',
+        ]);
     }
 }
