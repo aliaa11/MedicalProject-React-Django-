@@ -1,0 +1,25 @@
+:root {
+    --color-nav-bg: #BDDBF2;   
+    --color-font: #274760;   
+    --color-hover: #317BC4;
+    --color-icon: #3072B2; 
+    --color-social-icon: #ACCAE7;
+    --color-nav-bg-dark: #355a75;
+    --color-hover-light: #4892d7;
+    --color-font-light: #a4c6db;
+    --color-icon-light: #93b5d1;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+    color: var(--color-font);
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
