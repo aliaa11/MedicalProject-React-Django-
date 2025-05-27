@@ -290,7 +290,6 @@ const DoctorProfile = () => {
             </div>
           </div>
 
-          {/* قسم النبذة */}
           <div>
             <h3 className="text-3xl font-semibold text-gray-800 mb-4">About</h3>
             <p className="text-gray-700 text-lg leading-relaxed">
@@ -298,7 +297,6 @@ const DoctorProfile = () => {
             </p>
           </div>
 
-          {/* جدول المواعيد */}
           <div className="overflow-x-auto">
             <h3 className="text-3xl font-semibold text-gray-800 mb-6">Appointments</h3>
             <table className="min-w-full text-left text-gray-700 text-base border border-gray-200 rounded-lg">
@@ -342,7 +340,6 @@ const DoctorProfile = () => {
         </div>
       </div>
 
-      {/* مودال التعديل */}
       {editOpen && (
         <div
           className="edit-modal-overlay"
