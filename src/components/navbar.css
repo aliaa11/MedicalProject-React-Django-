@@ -1,0 +1,200 @@
+/* navbar.css */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 250px; /* Account for sidebar width */
+  right: 0;
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 900;
+  transition: left 0.3s ease;
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 24px;
+  max-width: 100%;
+}
+
+/* Left side - Page title */
+.navbar-left {
+  flex: 1;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 2px 0 0 0;
+  font-weight: 400;
+}
+
+/* Center - Navigation Links */
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: #6b7280;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #374151;
+  background-color: #f3f4f6;
+}
+
+.nav-link.active {
+  color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+/* Right side - User info and actions */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.print-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.print-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.user-profile:hover {
+  background-color: #f9fafb;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .navbar {
+    left: 0;
+    top: 0;
+  }
+  
+  .navbar-content {
+    padding: 0 16px;
+  }
+  
+  .page-title {
+    font-size: 20px;
+  }
+  
+  .navbar-center {
+    display: none; /* Hide nav links on mobile, they'll be in sidebar */
+  }
+  
+  .user-info {
+    display: none; /* Hide user text on mobile to save space */
+  }
+  
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .print-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar {
+    left: 220px; /* Match tablet sidebar width */
+  }
+  
+  .navbar-center {
+    gap: 24px;
+  }
+  
+  .page-title {
+    font-size: 22px;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1025px) {
+  .navbar {
+    left: 250px; /* Match desktop sidebar width */
+  }
+}
