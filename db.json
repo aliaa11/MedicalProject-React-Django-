@@ -1,0 +1,116 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "dr_john",
+      "email": "john@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": true,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "username": "patient_ali",
+      "email": "ali@example.com",
+      "password": "hashed_password",
+      "role": "patient",
+      "is_approved": true,
+      "created_at": "2025-01-02T12:00:00Z",
+      "updated_at": "2025-01-02T12:00:00Z"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "1",
+      "user_id": 1,
+      "specialty_id": 1,
+      "gender": "male",
+      "phone": "01000000000",
+      "bio": "Expert in internal medicine.",
+      "profile_picture": "profile1.jpg",
+      "contact_email": "contact.john@example.com",
+      "years_of_experience": 10,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    }
+  ],
+  "patients": [
+    {
+      "id": "04f0",
+      "user_id": 2,
+      "gender": "female",
+      "date_of_birth": "2025-05-14",
+      "address": "xzzzzzzzzzjflklkfgfdnksj.kml.M;L/ALS/d",
+      "phone": "01069730955",
+      "medical_history": "cccccccccccccccczfcxzczxcwwsafafdffdddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "disease": "blod pressure",
+      "created_at": "2025-05-27T07:47:58.653Z",
+      "updated_at": "2025-05-27T13:49:34.537Z"
+    },
+    {
+      "id": "11db",
+      "user_id": 1,
+      "gender": "female",
+      "date_of_birth": "2025-05-14",
+      "address": "sdsdsd",
+      "phone": "01069730946",
+      "medical_history": "fdgfd",
+      "disease": "",
+      "created_at": "2025-05-27T08:29:00.734Z",
+      "updated_at": "2025-05-27T08:29:00.734Z"
+    },
+    {
+      "id": "3347",
+      "user_id": 1,
+      "gender": "male",
+      "date_of_birth": "2025-05-14",
+      "address": "Minya",
+      "phone": "01069730946",
+      "medical_history": "sdads",
+      "disease": "",
+      "created_at": "2025-05-27T08:37:13.114Z",
+      "updated_at": "2025-05-27T08:37:13.114Z"
+    }
+  ],
+  "specialties": [
+    {
+      "id": "1",
+      "name": "Internal Medicine"
+    },
+    {
+      "id": "2",
+      "name": "Pediatrics"
+    }
+  ],
+  "availabilitySlots": [
+    {
+      "id": "1",
+      "doctor_id": 1,
+      "day_of_week": 1,
+      "start_time": "09:00:00",
+      "end_time": "13:00:00"
+    },
+    {
+      "id": "2",
+      "doctor_id": 1,
+      "day_of_week": 3,
+      "start_time": "14:00:00",
+      "end_time": "18:00:00"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "1",
+      "doctor_id": 1,
+      "patient_id": "04f0",
+      "date": "2025-05-28",
+      "time": "09:30:00",
+      "status": "pending",
+      "notes": "",
+      "created_at": "2025-05-01T08:00:00Z",
+      "updated_at": "2025-05-01T08:00:00Z"
+    }
+  ]
+}

@@ -6,6 +6,12 @@ import Home from './features/auth/pages/Home'; // Make sure this import exists
 import DoctorDashboard from './features/auth/pages/DoctorDashboard';
 import PatientDashboard from './features/auth/pages/PatientDashboard';
 import { getCurrentUser } from './features/auth/services/AuthService';
+// App.jsx
+import PatientProfile from './features/patients/pages/PatientProfile'
+import PatientForm from './features/patients/pages/PatientForm'
+import Sidebar from './components/Sidebar'
+import './App.css'
+import Navbar from './components/Navbar'
 
 import './style/global.css'; 
 import ListDoctors from './features/doctors/pages/ListDoctors';
@@ -25,26 +31,34 @@ const PrivateRoute = ({ children, role }) => {
 function App() {
   return (
     
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/doctor-dashboard" element={
-          <PrivateRoute role="doctor">
-            <DoctorDashboard />
-          </PrivateRoute>
-        } />
-        <Route path='/doctors' element={<ListDoctors />}></Route>
-        
-        <Route path="/patient-dashboard" element={
-          <PrivateRoute role="patient">
-            <PatientDashboard />
-          </PrivateRoute>
-        } />
+    <div className='flex '>
+      <Sidebar />
+      <Navbar/>
 
-      </Routes>
+      <div className="bg-gray-50 content">
+        <Routes>
+          <Route path="/profile" element={<PatientProfile />} />
+          <Route path="/edit-profile/:id" element={<PatientForm />} />
+          <Route path="/create-profile" element={<PatientForm />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/doctor-dashboard" element={
+            <PrivateRoute role="doctor">
+              <DoctorDashboard />
+            </PrivateRoute>
+          } />
+          <Route path='/doctors' element={<ListDoctors />}></Route>
+          
+          <Route path="/patient-dashboard" element={
+            <PrivateRoute role="patient">
+              <PatientDashboard />
+            </PrivateRoute>
+          } />
+        </Routes>
+      </div>
+    </div>
    
   );
 }
-
 export default App;

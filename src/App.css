@@ -1,45 +1,69 @@
 
 @import "tailwindcss";
 
-#root {
-  /* max-width: 1280px; */
+/* #root {
+  max-width: 1280px; */
   /* margin: 0 auto; */
-  /* padding: 2rem; */
+  /* padding: 2rem;
   text-align: center;
+} */
+/* App.css */
+.flex {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.content {
+  flex: 1;
+  margin-left: 250px;
+  height: 100vh;
+  margin-top: 60px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f9fafb;
+  transition: margin-left 0.3s ease;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.patient-profile-container {
+  min-height: 100%;
+  padding-bottom: 20px;
+}
+
+.content {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    padding-top: 80px; /* Space for mobile menu button */
   }
-  to {
-    transform: rotate(360deg);
+  
+  .patient-profile-container {
+    padding: 20px 15px;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .content {
+    margin-left: 220px;
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Desktop styles remain the same */
+@media (min-width: 1025px) {
+  .content {
+    margin-left: 250px;
+  }
 }
