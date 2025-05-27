@@ -1,5 +1,5 @@
 @import url(../../../style/global.css);
-@import "tailwindcss";
+/* @import "tailwindcss"; */
 .patient-form-container {
     max-width: 600px;
     margin: 30px auto;

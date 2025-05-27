@@ -114,7 +114,6 @@ export default Sidebar;
 
 
 //code to make sidebar dynamic 
-
 // import React, { useState } from 'react';
 // import { NavLink } from 'react-router-dom';
 // import './sidebar.css';

@@ -1,4 +1,12 @@
-/* App.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  height: 100%;
+}
+
 .flex {
   display: flex;
   height: 100vh;
@@ -27,7 +35,6 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
 #root {
