@@ -72,7 +72,7 @@ const Login = () => {
 
         {/* Right Side - Form */}
         <div className="form-section">
-          <div className="form-content">
+          <div className="form-content" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <h2 className="form-title">Welcome Back</h2>
             <p className="form-description">Sign in to access your medical dashboard</p>
             

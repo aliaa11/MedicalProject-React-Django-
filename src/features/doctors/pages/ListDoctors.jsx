@@ -71,24 +71,24 @@ export default function ListDoctors() {
   // }
 
   return (
-    <div className=" !m-4">
-      <div className="rounded-md shadow-md !p-3.5 flex justify-between">
+    <div className=" m-4" style={{width:'100%'}}>
+      <div className="rounded-md shadow-md p-3.5 flex justify-between">
         <p className="title font-extrabold text-base">Our Doctors</p>
         <div className="flex align-baseline items-center">
-          <FontAwesomeIcon icon={faBell} className="text-black !w-6 !h-6 !me-4" />
+          <FontAwesomeIcon icon={faBell} className="text-black w-6 h-6 !me-4" />
           <span>|</span>
           <img 
             src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg" 
             
-            className="w-16 h-16 rounded-full object-cover !ms-3"
+            className="w-16 h-16 rounded-full object-cover ms-3"
           />  
-          <span className="!mx-4">
+          <span className="mx-4">
             <p className="font-bold">User</p>  
             <p className="">Role</p>  
           </span>      
         </div>
       </div>
-      <div className="flex justify-between items-center mb-4 !p-4 bg-slate-100 rounded-lg">
+      <div className="flex justify-between items-center mb-4 p-4 bg-slate-100 rounded-lg">
         {/* Pagination */}
         <div className="text-sm text-gray-600">
           Showing <span className="font-medium text-gray-800">1-10</span> of <span className="font-medium text-gray-800">30</span>
@@ -96,9 +96,9 @@ export default function ListDoctors() {
 
         {/* Improved Search Bar */}
         <div className="relative w-72">
-          <div className="absolute inset-y-0 left-0 flex items-center !pl-3 pointer-events-none">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg 
-              className="w-5 h-5 text-gray-500" 
+              className=" text-gray-500" 
               fill="none" 
               viewBox="0 0 20 20"
             >
@@ -113,7 +113,7 @@ export default function ListDoctors() {
           </div>
           <input
             type="text"
-            className="block w-full !py-3 !pl-10 !pr-4 text-base text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            className="block w-full py-3 pl-10 pr-4 text-base text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             placeholder="Search doctors..."
           />
         </div>
@@ -123,11 +123,11 @@ export default function ListDoctors() {
         {
           doctorsList.map(doctor=>{
             return (
-              <div className="!p-4 rounded-md shadow-lg flex justify-center">
+              <div className="p-4 rounded-md shadow-lg flex justify-center">
                 <img 
                   src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg" 
                   
-                  className="w-30 h-30 rounded-full object-cover !ms-3"
+                  className="w-30 rounded-full object-cover ms-3"
                 />  
                 <p>
                   {doctor.id}

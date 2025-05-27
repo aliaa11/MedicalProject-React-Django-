@@ -1,5 +1,5 @@
 /* styles/Login.css */
-@import "tailwindcss";
+/* @import "tailwindcss"; */
 
 /* Login.css */
 :root {
@@ -26,13 +26,15 @@
   background-color: #f5f7fa;
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-y: auto;
+
 }
 
 .login-card {
   display: flex;
   width: 100%;
   max-width: 1200px;
-  min-height: 700px;
+  min-height: auto;
   background: var(--white);
   border-radius: 16px;
   overflow: hidden;
@@ -126,6 +128,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  
 }
 
 .form-content {
