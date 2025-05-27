@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import './navbar.css';
-
+import patentPicture from '../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg'; // Adjust the path as necessary
 const Navbar = () => {
   const location = useLocation();
   
@@ -146,14 +146,10 @@ const Navbar = () => {
           
           <div className="user-profile">
             <img 
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format" 
+              src={patentPicture} 
               alt="User Avatar" 
               className="user-avatar"
             />
-            <div className="user-info">
-              <span className="user-name">ROBERT</span>
-              <span className="user-role">ADMIN</span>
-            </div>
           </div>
         </div>
       </div>

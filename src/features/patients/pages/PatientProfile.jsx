@@ -72,6 +72,7 @@ const PatientProfile = () => {
     }));
 
   return (
+    
     <div className="patient-profile-container">
       {/* Header Section */}
       <div className="profile-header" style={{ backgroundImage: `url(${headerBg})` }}>
