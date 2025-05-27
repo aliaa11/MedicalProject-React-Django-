@@ -32,9 +32,9 @@ function App() {
         <Route path="/doctor-dashboard" element={
           <PrivateRoute role="doctor">
             <DoctorDashboard />
-            <ListDoctors />
           </PrivateRoute>
         } />
+        <Route path='/doctors' element={<ListDoctors />}></Route>
         
         <Route path="/patient-dashboard" element={
           <PrivateRoute role="patient">

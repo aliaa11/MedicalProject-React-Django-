@@ -11,11 +11,14 @@
     "db": "json-server --watch src/data/db.json --port 3001"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.9.0",
-    "postcss-import": "^16.1.0",
     "json-server": "^1.0.0-beta.3",
+    "postcss-import": "^16.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
@@ -33,7 +36,7 @@
     "globals": "^16.0.0",
     "json-server": "^1.0.0-beta.3",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.7",
+    "tailwindcss": "^3.4.17",
     "vite": "^6.3.5"
   }
 }
