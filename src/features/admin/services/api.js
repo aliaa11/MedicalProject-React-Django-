@@ -72,3 +72,4 @@ export const fetchAvailabilitySlots = () => fetchData('availabilitySlots');
 export const deleteAvailabilitySlot = (id) => deleteData('availabilitySlots', id);
 // Add this to your existing api.js exports
 export const updateUser = (id, data) => updateData('users', id, data);
+export const updateAppointment = (id, data) => updateData('appointments', id, data);
