@@ -3,26 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
-  height: 100%;
-}
 
-.flex {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.content {
-  flex: 1;
-  margin-left: 250px;
-  height: 100vh;
-  margin-top: 60px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #f9fafb;
-  transition: margin-left 0.3s ease;
-}
 
 .patient-profile-container {
   min-height: 100%;

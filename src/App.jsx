@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AvailabilityPage from "./features/doctors/pages/AvailabilityPage";
 import AppointmentDetails from "./features/doctors/pages/AppointmentDetails";
 import UsersList from "./features/doctors/pages/UsersList";
@@ -15,36 +15,39 @@ import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
 import DoctorProfile from './features/patients/pages/DoctorAvailableProfile';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './style/global.css';
 
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (role && user.role !== role) {
     return <Navigate to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient/profile'} replace />;
   }
-  
+
   return children;
 };
 
 function App() {
   return (
-    <Router>
+    <>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/doctor/users" element={<UsersList />} />
-        <Route path="/doctor/availability" element={<AvailabilityPage />} />
-        <Route path="/doctor/appointments/:id" element={<AppointmentDetails />} />
+    
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+
+          <Route path="/doctor/users" element={<UsersList />} />
+        <Route path="/doctor/availability" element={<AvailabilityPage />} />
+        <Route path="/doctor/appointments/:id" element={<AppointmentDetails />} />
           <Route path="/patient/available-doctors" element={<ListDoctors />} />
           <Route path="/patient/profile" element={
             <PrivateRoute role="patient">
@@ -57,12 +60,15 @@ function App() {
           <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/doctor-dashboard" element={
             <PrivateRoute role="doctor">
+
+
               <DoctorDashboard />
             </PrivateRoute>
           } />
         </Route>
       </Routes>
-    </Router>
+      <ToastContainer />
+    </>
   );
 }
 
