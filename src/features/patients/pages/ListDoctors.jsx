@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faSearch, faTimes, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 export default function ListDoctors() {
   const [doctorsList, setDoctorsList] = useState([]);
@@ -198,7 +199,7 @@ export default function ListDoctors() {
                 onClick={() => goToPage(page)}
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
                   currentPage === page 
-                    ? 'bg-blue-600 text-white' 
+                    ? 'bg-[var(--color-icon)] text-white' 
                     : 'hover:bg-gray-200 text-gray-700'
                 }`}
               >
@@ -274,9 +275,11 @@ export default function ListDoctors() {
                 </p>
 
                 {/* Contact Button */}
-                <button className="w-full !py-2 !px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
-                  Book Appointment
-                </button>
+                <Link to={`/doctors/${doctor.id}`}>
+                  <button className="w-full !py-2 !px-4 bg-[var(--color-icon)] text-white text-sm font-medium rounded-lg hover:bg-blue-700">
+                    Book Appointment
+                  </button>
+                </Link>
               </div>
             );
           })}
