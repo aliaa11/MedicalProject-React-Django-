@@ -15,9 +15,12 @@ import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
 import DoctorProfile from './features/patients/pages/DoctorAvailableProfile';
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
+// import DoctorProfile from './features/doctors/components/DoctorProfile.jsx';
+
 import './style/global.css';
 
 const PrivateRoute = ({ children, role }) => {
@@ -44,6 +47,8 @@ function App() {
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+{/* 
+          <Route path="/doctor/profile" element={<DoctorProfile />} /> */}
 
           <Route path="/doctor/users" element={<UsersList />} />
         <Route path="/doctor/availability" element={<AvailabilityPage />} />
@@ -69,6 +74,7 @@ function App() {
       </Routes>
       <ToastContainer />
     </>
+
   );
 }
 
