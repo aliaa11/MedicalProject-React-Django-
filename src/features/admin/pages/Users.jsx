@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { FiEdit2, FiTrash2, FiCheck, FiX, FiSearch } from "react-icons/fi";
-import { fetchUsers, updateUserApproval, deleteUser } from "../services/api";
+import { FiEdit2, FiTrash2, FiCheck, FiX, FiSearch, FiUser } from "react-icons/fi";
+import { fetchUsers, updateUserApproval, deleteUser, updateUser } from "../services/api";
 import Table from "../components/Table";
 import "../styles/tables.css";
 
@@ -9,6 +9,12 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingUser, setEditingUser] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    username: '',
+    email: '',
+    role: ''
+  });
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -41,6 +47,39 @@ const Users = () => {
     try {
       await deleteUser(userId);
       setUsers(users.filter((user) => user.id !== userId));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleEditClick = (user) => {
+    setEditingUser(user.id);
+    setEditFormData({
+      username: user.username || '',
+      email: user.email || '',
+      role: user.role || ''
+    });
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value
+    });
+  };
+
+  const handleCancelClick = () => {
+    setEditingUser(null);
+  };
+
+  const handleSaveClick = async (userId) => {
+    try {
+      await updateUser(userId, editFormData);
+      setUsers(users.map(user => 
+        user.id === userId ? { ...user, ...editFormData } : user
+      ));
+      setEditingUser(null);
     } catch (err) {
       setError(err.message);
     }
@@ -98,25 +137,60 @@ const Users = () => {
                     {user.username.charAt(0).toUpperCase()}
                   </div>
                   <div className="cell-content">
-                    <div className="text-sm font-medium text-gray-900">
-                      {user.username}
-                    </div>
+                    {editingUser === user.id ? (
+                      <input
+                        type="text"
+                        name="username"
+                        value={editFormData.username}
+                        onChange={handleEditFormChange}
+                        className="edit-input"
+                      />
+                    ) : (
+                      <div className="text-sm font-medium text-gray-900">
+                        {user.username}
+                      </div>
+                    )}
                   </div>
                 </div>
               </td>
-              <td className="table-cell text-sm text-gray-500">{user.email}</td>
               <td className="table-cell">
-                <span
-                  className={`status-badge ${
-                    user.role === "doctor"
-                      ? "bg-purple-100 text-purple-800"
-                      : user.role === "admin"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-green-100 text-green-800"
-                  }`}
-                >
-                  {user.role}
-                </span>
+                {editingUser === user.id ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={editFormData.email}
+                    onChange={handleEditFormChange}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-500">{user.email}</span>
+                )}
+              </td>
+              <td className="table-cell">
+                {editingUser === user.id ? (
+                  <select
+                    name="role"
+                    value={editFormData.role}
+                    onChange={handleEditFormChange}
+                    className="edit-input"
+                  >
+                    <option value="user">User</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                ) : (
+                  <span
+                    className={`status-badge ${
+                      user.role === "doctor"
+                        ? "bg-purple-100 text-purple-800"
+                        : user.role === "admin"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                )}
               </td>
               <td className="table-cell">
                 <span
@@ -134,33 +208,58 @@ const Users = () => {
               </td>
               <td className="table-cell text-right">
                 <div className="actions-cell">
-                  {user.role !== "admin" && (
-                    <button
-                      onClick={() => handleApprove(user.id, !user.is_approved)}
-                      className={`action-btn ${
-                        user.is_approved
-                          ? "text-red-600 hover:text-red-900"
-                          : "text-green-600 hover:text-green-900"
-                      }`}
-                      title={user.is_approved ? "Disapprove" : "Approve"}
-                    >
-                      {user.is_approved ? (
-                        <FiX size={18} />
-                      ) : (
+                  {editingUser === user.id ? (
+                    <>
+                      <button
+                        onClick={() => handleSaveClick(user.id)}
+                        className="action-btn approve-btn"
+                        title="Save"
+                      >
                         <FiCheck size={18} />
+                      </button>
+                      <button
+                        onClick={handleCancelClick}
+                        className="action-btn delete-btn"
+                        title="Cancel"
+                      >
+                        <FiX size={18} />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {user.role !== "admin" && (
+                        <button
+                          onClick={() => handleApprove(user.id, !user.is_approved)}
+                          className={`action-btn ${
+                            user.is_approved
+                              ? "text-red-600 hover:text-red-900"
+                              : "text-green-600 hover:text-green-900"
+                          }`}
+                          title={user.is_approved ? "Disapprove" : "Approve"}
+                        >
+                          {user.is_approved ? (
+                            <FiX size={18} />
+                          ) : (
+                            <FiCheck size={18} />
+                          )}
+                        </button>
                       )}
-                    </button>
+                      <button 
+                        onClick={() => handleEditClick(user)}
+                        className="action-btn edit-btn" 
+                        title="Edit"
+                      >
+                        <FiEdit2 size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="action-btn delete-btn"
+                        title="Delete"
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </>
                   )}
-                  <button className="action-btn edit-btn" title="Edit">
-                    <FiEdit2 size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="action-btn delete-btn"
-                    title="Delete"
-                  >
-                    <FiTrash2 size={18} />
-                  </button>
                 </div>
               </td>
             </tr>

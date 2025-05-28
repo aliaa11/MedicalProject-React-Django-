@@ -33,7 +33,7 @@
       "username": "salma",
       "email": "salmahu@gmail.com",
       "password": "s12345",
-      "role": "doctor",
+      "role": "user",
       "is_approved": false
     }
   ],
@@ -61,10 +61,11 @@
       "gender": "female",
       "bio": "wf;km;w",
       "years_of_experience": "22",
-      "phone": "01029229478",
+      "phone": "01029229",
       "is_approved": {
-        "is_approved": false
-      }
+        "is_approved": true
+      },
+      "contact_email": "salmahu457@gmail.com"
     }
   ],
   "patients": [

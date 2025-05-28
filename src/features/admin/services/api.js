@@ -40,6 +40,7 @@ export const deleteUser = (id) => deleteData('users', id);
 
 // Doctors API
 export const fetchDoctors = () => fetchData('doctors');
+export const updateDoctor = (id, data) => updateData('doctors', id, data);
 export const updateDoctorApproval = (id, data) => updateData('doctors', id, data);
 export const deleteDoctor = (id) => deleteData('doctors', id);
 
@@ -69,3 +70,5 @@ export const deleteAppointment = (id) => deleteData('appointments', id);
 // Availability Slots API
 export const fetchAvailabilitySlots = () => fetchData('availabilitySlots');
 export const deleteAvailabilitySlot = (id) => deleteData('availabilitySlots', id);
+// Add this to your existing api.js exports
+export const updateUser = (id, data) => updateData('users', id, data);
