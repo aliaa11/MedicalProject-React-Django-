@@ -1,0 +1,65 @@
+@import "tailwindcss";
+.sidebar {
+  width: 16rem;
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-collapsed {
+  width: 5rem;
+}
+
+.sidebar-brand {
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav {
+  padding: 1rem 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-white);
+}
+
+.sidebar-item.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.sidebar-icon {
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.sidebar-text {
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .sidebar-text {
+  display: none;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
