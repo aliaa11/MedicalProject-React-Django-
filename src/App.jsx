@@ -17,7 +17,8 @@ import './style/global.css';
 import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
-import DoctorProfile from './features/patients/pages/DoctorAvailableProfile';
+import DoctorAvailableProfile from './features/patients/pages/DoctorAvailableProfile';
+import HomePage from './features/homePage/homePage';
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
   
@@ -38,14 +39,14 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/" element={<HomePage />} />
 
         <Route element={<MainLayout />}>
         
-          <Route path="/" element={<Home />} />
           <Route path="/patient/available-doctors" element={<ListDoctors />} />
           <Route path="/patient/profile" element={<PatientProfile />} />
           <Route path="/edit-profile/:id" element={<PatientForm />} />
-          <Route path="/doctors/:doctorId" element={<DoctorProfile />} />
+          <Route path="/doctors/:doctorId" element={<DoctorAvailableProfile />} />
           <Route path="/available-slots" element={<AvailableSlots />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/doctor-dashboard" element={<PrivateRoute role="doctor"> <DoctorDashboard /></PrivateRoute>}/>

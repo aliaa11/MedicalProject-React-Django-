@@ -3,6 +3,7 @@
 .patient-form-container {
     max-width: 600px;
     margin: 30px auto;
+    margin-bottom: 6% !important;
     padding: 24px;
     background-color: var(--card-bg);
     border-radius: 8px;

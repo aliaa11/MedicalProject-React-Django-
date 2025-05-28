@@ -1,8 +1,6 @@
-"use client"
-
-import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchDoctorProfile } from "../appointmentSlice"
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Calendar,
   User,
@@ -15,29 +13,54 @@ import {
   Star,
   MessageCircle,
   AlertCircle,
-} from "lucide-react"
-import { useNavigate, useParams } from "react-router-dom"
-import "../style/doctor-profile.css"
+} from "lucide-react";
+import { fetchDoctorProfile, fetchAvailabilitySlots } from "../appointmentSlice";
+import "../style/doctor-profile.css";
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
 
-const DoctorProfile = ({ doctorId: propDoctorId }) => {
-  const params = useParams()
-  const doctorId = propDoctorId || params?.doctorId || "1"
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { doctor, loading, error } = useSelector((state) => state.appointments)
+const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const doctorId = propDoctorId || params?.doctorId;
+
+  const { 
+    doctor, 
+    loading, 
+    error,
+    availabilitySlots,
+    slotsLoading,
+    slotsError
+  } = useSelector((state) => state.appointments);
 
   useEffect(() => {
-    dispatch(fetchDoctorProfile(doctorId))
-  }, [dispatch, doctorId])
+    if (doctorId) {
+      dispatch(fetchDoctorProfile(doctorId));
+      dispatch(fetchAvailabilitySlots(doctorId));
+    }
+  }, [dispatch, doctorId]);
 
   const handleBookAppointment = () => {
-    navigate(`/available-slots?doctorId=${doctorId}`)
-  }
+    navigate(`/available-slots?doctorId=${doctorId}`);
+  };
 
   const handleContactDoctor = () => {
-    console.log("Contact doctor functionality")
-  }
+    console.log("Contact doctor functionality");
+  };
+
+  const getDayName = (dayNumber) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[dayNumber] || 'Unknown';
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
 
   if (loading) {
     return (
@@ -47,7 +70,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
           <p className="loading-text">Loading doctor profile...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -62,7 +85,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   if (!doctor) {
@@ -77,7 +100,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -124,7 +147,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
             <div className="info-card">
               <h2 className="card-title">
                 <User className="w-5 h-5" />
-                <span>About Dr. {doctor.name}</span>
+                <span>About {doctor.name}</span>
               </h2>
               <div className="biography-text">
                 {doctor.bio ||
@@ -164,22 +187,44 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
                 <Calendar className="w-5 h-5" />
                 <span>Availability Schedule</span>
               </h2>
-              <div className="schedule-grid">
-                {[
-                  { day: "Monday", time: "9:00 AM - 5:00 PM", available: true },
-                  { day: "Tuesday", time: "9:00 AM - 5:00 PM", available: true },
-                  { day: "Wednesday", time: "9:00 AM - 5:00 PM", available: true },
-                  { day: "Thursday", time: "9:00 AM - 5:00 PM", available: true },
-                  { day: "Friday", time: "9:00 AM - 5:00 PM", available: true },
-                  { day: "Saturday", time: "10:00 AM - 2:00 PM", available: true },
-                  { day: "Sunday", time: "Closed", available: false },
-                ].map((schedule) => (
-                  <div key={schedule.day} className={`schedule-item ${!schedule.available ? "unavailable" : ""}`}>
-                    <span className="schedule-day">{schedule.day}</span>
-                    <span className="schedule-time">{schedule.time}</span>
-                  </div>
-                ))}
-              </div>
+              {slotsError ? (
+                <div className="error-message p-4 bg-red-50 text-red-600 rounded">
+                  <AlertCircle className="inline mr-2" />
+                  {slotsError}
+                  <button 
+                    onClick={() => dispatch(fetchAvailabilitySlots(doctorId))}
+                    className="ml-4 text-blue-600 hover:underline"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : slotsLoading ? (
+                <div className="loading-text p-4">Loading availability...</div>
+              ) : (
+                <div className="schedule-grid">
+                  {[1, 2, 3, 4, 5, 6, 7].map((dayNumber) => {
+                    const slot = availabilitySlots?.find(s => parseInt(s.day_of_week) === dayNumber);
+                    const isAvailable = !!slot;
+                    
+                    return (
+                      <div 
+                        key={dayNumber} 
+                        className={`schedule-item ${isAvailable ? 'available' : 'unavailable'}`}
+                      >
+                        <span className="schedule-day">{getDayName(dayNumber)}</span>
+                        <span className="schedule-time">
+                        {isAvailable ? (
+                            <span>{`${formatTime(slot.start_time)} - ${formatTime(slot.end_time)}`}</span>
+                        ) : (
+                          <span>Closed</span>
+                        )}
+                        </span>
+                       
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
@@ -198,7 +243,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
                   </div>
                   <div className="contact-details">
                     <p className="contact-label">Phone</p>
-                    <p className="contact-value">{doctor.phone}</p>
+                    <p className="contact-value">{doctor.phone || "Not available"}</p>
                   </div>
                 </div>
 
@@ -208,7 +253,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
                   </div>
                   <div className="contact-details">
                     <p className="contact-label">Email</p>
-                    <p className="contact-value">{doctor.contact_email || doctor.email}</p>
+                    <p className="contact-value">{doctor.contact_email || doctor.email || "Not available"}</p>
                   </div>
                 </div>
 
@@ -254,7 +299,7 @@ const DoctorProfile = ({ doctorId: propDoctorId }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DoctorProfile
+export default DoctorAvailableProfile;

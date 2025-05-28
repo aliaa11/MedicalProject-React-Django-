@@ -14,7 +14,7 @@ const PatientProfile = () => {
   const appointments = useSelector((state) => state.appointments?.items || []);
 
   useEffect(() => {
-    dispatch(loadPatient('38e7'));
+    dispatch(loadPatient());
     dispatch(loadAppointments('1'));
   }, [dispatch]);
 
@@ -101,19 +101,7 @@ const PatientProfile = () => {
                 <User className="gender-icon" size={20} />
               </div>
             </div>
-            
-            <h2 className="patient-id">
-              #{`P-${currentPatient.id ? currentPatient.id.toString().padStart(5, '0') : '00000'}`}
-            </h2>
-            
-            <p className="patient-email">
-              {user?.email || 'Not available'}
-            </p>
-            
-            <p className="join-date">
-              <Calendar size={14} className="join-icon" />
-              Joined {formatDate(currentPatient.created_at)}
-            </p>
+       
           </div>
         </div>
       </div>
@@ -144,6 +132,10 @@ const PatientProfile = () => {
               <p className="contact-item">
                 <strong>Phone:</strong> {currentPatient.phone || 'Not available'}
               </p>
+              <p className="contact-item">
+               <strong>Email:</strong> {user?.email || 'Not available'}
+              </p>
+          
               <p className="contact-item address-item">
                 <MapPin size={14} className="address-icon" />
                 <span>{currentPatient.address || 'Not available'}</span>

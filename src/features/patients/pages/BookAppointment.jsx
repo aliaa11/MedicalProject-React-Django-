@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { bookAppointment, clearSelection, resetBookingStatus } from "../appointmentSlice"
@@ -121,20 +119,21 @@ const BookAppointment = ({ doctorId = 1 }) => {
     <div className="book-appointment-container">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="max-w-4xl mx-auto">
-          <button onClick={handleCancel} className="back-button">
+        <button onClick={handleCancel} className="back-button">
             <ArrowLeft className="w-5 h-5" />
             Back to Available Slots
           </button>
+        <div className="max-w-4xl !m-auto">
+        
 
           <div className="booking-header">
             <h1 className="booking-title">Complete Your Booking</h1>
             <p className="booking-subtitle">Please fill in your details to confirm the appointment</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div>
             {/* Appointment Summary */}
-            <div className="lg:col-span-1">
+            <div className=" !mb-5">
               <div className="appointment-summary">
                 <h3 className="summary-header">Appointment Summary</h3>
 
@@ -187,7 +186,7 @@ const BookAppointment = ({ doctorId = 1 }) => {
             </div>
 
             {/* Booking Form */}
-            <div className="lg:col-span-2">
+            <div className="!mb-5">
               <div className="booking-form-card">
                 <form onSubmit={handleSubmit}>
                   {/* Personal Information */}

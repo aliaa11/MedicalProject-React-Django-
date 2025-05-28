@@ -1,4 +1,3 @@
-// Navbar.jsx - Enhanced Version
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import './navbar.css';
@@ -8,7 +7,7 @@ const Navbar = () => {
   
   const navItems = [
     {
-      path: '/home',
+      path: '/',
       label: 'Home',
       icon: 'fa-house'
     },

@@ -1,35 +1,41 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchAvailabilitySlots, selectSlot, fetchDoctorProfile } from "../appointmentSlice"
+import { fetchAvailabilitySlots, selectSlot, fetchDoctorProfile, fetchBookedAppointments } from "../appointmentSlice"
 import { format, addDays, isToday, isAfter, startOfWeek, parse, addMinutes, isSameDay } from "date-fns"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { Calendar, Clock, User, Stethoscope, ChevronLeft, ChevronRight } from 'lucide-react'
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
 
 import "../style/available-slots.css"
 
-const AvailableSlots = ({ doctorId = 1 }) => {
+const AvailableSlots = ({ doctorId: propDoctorId }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { slots, loading, error, doctor } = useSelector((state) => state.appointments)
+  const [searchParams] = useSearchParams()
+  
+  // Get doctorId from props, URL params, or default to 1
+  const doctorId = propDoctorId || searchParams.get('doctorId') || '1'
+  
+  const { availabilitySlots, slotsLoading, slotsError, doctor, bookedAppointments } = useSelector((state) => state.appointments)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }))
 
   useEffect(() => {
-    dispatch(fetchAvailabilitySlots(doctorId))
-    dispatch(fetchDoctorProfile(doctorId))
+    if (doctorId) {
+      dispatch(fetchAvailabilitySlots(doctorId))
+      dispatch(fetchDoctorProfile(doctorId))
+      dispatch(fetchBookedAppointments(doctorId))
+    }
   }, [dispatch, doctorId])
 
   const generateTimeSlots = (startTime, endTime) => {
     const slots = []
-    let currentTime = parse(startTime, "HH:mm:ss", new Date())
-    const end = parse(endTime, "HH:mm:ss", new Date())
+    let currentTime = parse(startTime, "HH:mm", new Date())
+    const end = parse(endTime, "HH:mm", new Date())
 
     while (currentTime < end) {
-      const slotStart = format(currentTime, "HH:mm:ss")
-      const slotEnd = format(addMinutes(currentTime, 30), "HH:mm:ss")
+      const slotStart = format(currentTime, "HH:mm")
+      const slotEnd = format(addMinutes(currentTime, 30), "HH:mm")
       slots.push({ start_time: slotStart, end_time: slotEnd })
       currentTime = addMinutes(currentTime, 30)
     }
@@ -37,9 +43,18 @@ const AvailableSlots = ({ doctorId = 1 }) => {
   }
 
   const getAvailableSlots = () => {
+    // Return empty array if availabilitySlots is not loaded yet
+    if (!availabilitySlots || !Array.isArray(availabilitySlots)) {
+      return []
+    }
+
     const dayOfWeek = selectedDate.getDay()
     const selectedDateStr = format(selectedDate, "yyyy-MM-dd")
-    const daySlots = slots.filter((slot) => slot.day_of_week === dayOfWeek)
+    
+    // Filter slots for the selected day of week
+    const daySlots = availabilitySlots.filter((slot) => 
+      parseInt(slot.day_of_week) === dayOfWeek
+    )
 
     let availableSlots = []
     daySlots.forEach((slot) => {
@@ -47,10 +62,16 @@ const AvailableSlots = ({ doctorId = 1 }) => {
       availableSlots = [...availableSlots, ...timeSlots]
     })
 
-    const bookedSlots = [{ date: "2025-05-28", time: "09:30:00" }]
+    // Get booked slots from database instead of static data
+    const bookedSlots = bookedAppointments ? bookedAppointments.map(appointment => ({
+      date: appointment.date,
+      time: appointment.time
+    })) : []
 
     return availableSlots.filter(
-      (slot) => !bookedSlots.some((booked) => booked.date === selectedDateStr && booked.time === slot.start_time),
+      (slot) => !bookedSlots.some((booked) => 
+        booked.date === selectedDateStr && booked.time === slot.start_time
+      ),
     )
   }
 
@@ -59,8 +80,13 @@ const AvailableSlots = ({ doctorId = 1 }) => {
   }
 
   const handleSlotSelect = (slot) => {
-    dispatch(selectSlot(slot))
-    navigate(`/book-appointment?date=${format(selectedDate, "yyyy-MM-dd")}`)
+    const slotData = {
+      ...slot,
+      date: format(selectedDate, "yyyy-MM-dd"),
+      doctorId: doctorId
+    }
+    dispatch(selectSlot(slotData))
+    navigate(`/book-appointment?date=${format(selectedDate, "yyyy-MM-dd")}&doctorId=${doctorId}&time=${slot.start_time}`)
   }
 
   const navigateWeek = (direction) => {
@@ -85,30 +111,31 @@ const AvailableSlots = ({ doctorId = 1 }) => {
 
         {/* Doctor Info Card */}
         {doctor && (
-        <div className="doctor-card">
-          <div className="flex ">
-            <div className="doctor-avatar">
-              {doctor.profile_picture ? (
-                <img 
-                  src={profile_picture} 
-                  alt={doctor.username}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <User className="w-8 h-8 text-white" />
-              )}
-            </div>
-            <div className="doctors-info">
-              <h2 className="text-lg font-semibold">{doctor.username}</h2>
-              <p className="text-blue-600">{doctor.specialty}</p>
-              <div className="flex items-center text-sm text-gray-500">
-                <Calendar className="w-4 h-4 mr-1" />
-                <span>{doctor.years_of_experience} years experience</span>
+          <div className="doctor-card">
+            <div className="flex">
+              <div className="doctor-avatar">
+                {doctor.profile_picture ? (
+                  <img 
+                    src={profile_picture} 
+                    alt={doctor.name || doctor.username}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-8 h-8 text-white" />
+                )}
+              </div>
+              <div className="doctors-info">
+                <h2 className="text-lg font-semibold">{doctor.name || doctor.username}</h2>
+                <p className="text-blue-600">{doctor.specialty}</p>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Calendar className="w-4 h-4 mr-1" />
+                  <span>{doctor.years_of_experience} years experience</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Date Selection */}
@@ -135,7 +162,6 @@ const AvailableSlots = ({ doctorId = 1 }) => {
                   {weekDates.map((date) => {
                     const isSelected = isSameDay(date, selectedDate)
                     const isPast = isAfter(new Date(), date) && !isToday(date)
-                    const isCurrentDay = isToday(date)
 
                     return (
                       <button
@@ -149,7 +175,6 @@ const AvailableSlots = ({ doctorId = 1 }) => {
                             <div className="day-name">{format(date, "EEEE")}</div>
                             <div className="date-number">{format(date, "MMM d")}</div>
                           </div>
-                          {isCurrentDay && <div className="current-day-indicator"></div>}
                         </div>
                       </button>
                     )
@@ -169,16 +194,16 @@ const AvailableSlots = ({ doctorId = 1 }) => {
                   <div className="selected-date-info">{format(selectedDate, "EEEE, MMMM do yyyy")}</div>
                 </div>
 
-                {loading && (
+                {slotsLoading && (
                   <div className="loading-container">
                     <div className="loading-spinner"></div>
                     <p>Loading available slots...</p>
                   </div>
                 )}
 
-                {error && (
+                {slotsError && (
                   <div className="error-container">
-                    <p>Error: {error}</p>
+                    <p>Error: {slotsError}</p>
                   </div>
                 )}
 
@@ -188,7 +213,7 @@ const AvailableSlots = ({ doctorId = 1 }) => {
                   </div>
                 )}
 
-                {!loading && !error && !isPastDate && (
+                {!slotsLoading && !slotsError && !isPastDate && (
                   <>
                     {availableSlots.length > 0 ? (
                       <div className="time-slots-grid">

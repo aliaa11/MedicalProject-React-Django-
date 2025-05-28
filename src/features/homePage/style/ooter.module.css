@@ -1,0 +1,312 @@
+.footer {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 4rem 0 2rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .grid {
+    display: grid;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem;
+    }
+  }
+  
+  .companySection {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
+  }
+  
+  .logoIcon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  }
+  
+  .logoIconInner {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 4px;
+  }
+  
+  .logoText {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logoTitle {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #1f2937;
+    letter-spacing: -0.025em;
+  }
+  
+  .logoSubtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  
+  .description {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+  
+  .contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .contactItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .contactItem:hover {
+    background: rgba(220, 38, 38, 0.05);
+  }
+  
+  .contactIcon {
+    color: #6b7280;
+    margin-top: 0.125rem;
+    transition: color 0.3s ease;
+  }
+  
+  .contactItem:hover .contactIcon {
+    color: #dc2626;
+  }
+  
+  .contactText {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .sectionTitle {
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+  }
+  
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .tag {
+    padding: 0.5rem 1rem;
+    background: white;
+    color: #6b7280;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    font-weight: 500;
+  }
+  
+  .tag:hover {
+    background: #dc2626;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  }
+  
+  .postsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .postItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .postItem:hover {
+    background: rgba(220, 38, 38, 0.05);
+  }
+  
+  .postIcon {
+    color: #d1d5db;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+    transition: color 0.3s ease;
+  }
+  
+  .postItem:hover .postIcon {
+    color: #dc2626;
+  }
+  
+  .postText {
+    color: #6b7280;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1.5;
+  }
+  
+  .postItem:hover .postText {
+    color: #dc2626;
+  }
+  
+  .newsletterSection {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .newsletterDescription {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+  
+  .emailForm {
+    display: flex;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .emailInput {
+    flex: 1;
+    padding: 14px 16px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-right: none;
+    background: white;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+  }
+  
+  .emailInput:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+  
+  .emailInput::placeholder {
+    color: #9ca3af;
+  }
+  
+  .submitButton {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    transform: scale(1.05);
+  }
+  
+  .socialLinks {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .socialIcon {
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .socialIcon:hover {
+    transform: translateY(-2px);
+  }
+  
+  .socialIcon:nth-child(1):hover {
+    color: #1da1f2;
+  }
+  .socialIcon:nth-child(2):hover {
+    color: #dc2626;
+  }
+  .socialIcon:nth-child(3):hover {
+    color: #1877f2;
+  }
+  .socialIcon:nth-child(4):hover {
+    color: #f97316;
+  }
+  .socialIcon:nth-child(5):hover {
+    color: #1877f2;
+  }
+  .socialIcon:nth-child(6):hover {
+    color: #dc2626;
+  }
+  
+  .copyright {
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    margin-top: 3rem;
+    padding-top: 2rem;
+    text-align: center;
+  }
+  
+  .copyrightText {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .brandHighlight {
+    color: #dc2626;
+    font-weight: 700;
+  }
+  

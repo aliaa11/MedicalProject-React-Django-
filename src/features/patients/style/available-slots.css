@@ -6,7 +6,7 @@
     padding: 3rem;
     padding-bottom: 6rem;
     width: 90%;
-    margin: 0 auto;
+    margin:  auto;
 }
 .doctors-info{
     margin-left: 30px;
@@ -205,13 +205,6 @@ margin-left: 20px;
     margin-top: 0.125rem;
 }
 
-.current-day-indicator {
-    width: 0.5rem;
-    height: 0.5rem;
-    background: #10b981;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-}
 
 /* Time Slots Card */
 .time-slots-card {

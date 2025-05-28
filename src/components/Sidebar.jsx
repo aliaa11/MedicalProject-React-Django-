@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate } from 'react-router-dom';
 import './sidebar.css';
 
 const Sidebar = () => {
@@ -25,11 +25,14 @@ const Sidebar = () => {
       path: '/patient/profile', 
       label: 'My Profile',
       icon: 'fa-user' 
-    }
+    },
   ];
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     console.log('Logging out...');
+    navigate('/login');
   };
 
   const toggleMobileSidebar = () => {

@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 :root {
     --color-nav-bg: #BDDBF2;   
     --color-font: #274760;   
@@ -10,11 +8,11 @@
     --color-nav-bg-dark: #355a75;
     --color-hover-light: #4892d7;
     --color-font-light: #a4c6db;
-    --color-icon-light: #93b5d1;
+    --color-icon-light: #6d94b4;
     --border-color-light:#355a75;
     --color-primary: #3072B2;
     --color-primary-light: #4892d7;
-    --color-primary-dark: #274760;
+    --color-primary-dark: #1c5077;
     --color-secondary: #BDDBF2;
     --color-accent: #317BC4;
     --color-success: #10b981;

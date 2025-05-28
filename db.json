@@ -12,6 +12,16 @@
     },
     {
       "id": "2",
+      "username": "Dr. Aliaa Hesham",
+      "email": "john@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": true,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": "3",
       "username": "patient_ali",
       "email": "ali@example.com",
       "password": "hashed_password",
@@ -22,16 +32,24 @@
     },
     {
       "id": "7e30",
-      "username": "Aliaa_Hesham12",
+      "username": "Dr. Aliaa_Hesham12",
       "email": "aliaaalihesh@gmail.com",
       "password": "123456",
-      "role": "patient",
+      "role": "doctor",
       "is_approved": true
     },
     {
       "id": "b482",
-      "username": "Aliaa_Hesham12",
+      "username": "Dr. Aliaa_Hesham12",
       "email": "aliaaalihesh12@gmail.com",
+      "password": "123456",
+      "role": "doctor",
+      "is_approved": true
+    },
+    {
+      "id": "b473",
+      "username": "Aliaa12",
+      "email": "aliaaalihesh123@gmail.com",
       "password": "123456",
       "role": "patient",
       "is_approved": true
@@ -50,6 +68,45 @@
       "years_of_experience": 10,
       "created_at": "2025-01-01T10:00:00Z",
       "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "user_id": "2",
+      "specialty_id": "2",
+      "gender": "female",
+      "phone": "01000000001",
+      "bio": "Pediatrician with a passion for child health and development.",
+      "profile_picture": "profile2.jpg",
+      "contact_email": "contact.jane@example.com",
+      "years_of_experience": 8,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": "38e7",
+      "user_id": "b482",
+      "gender": "female",
+      "specialty_id": "3",
+      "phone": "01069730946",
+      "bio": "Experienced cardiologist specializing in heart health.",
+      "profile_picture": "profile3.jpg",
+      "contact_email": "contact.doe@example.com",
+      "years_of_experience": 12,
+      "created_at": "2025-05-27T07:47:58.653Z",
+      "updated_at": "2025-05-27T13:49:34.537Z"
+    },
+    {
+      "id": "b473",
+      "user_id": "7e30",
+      "gender": "male",
+      "specialty_id": "1",
+      "phone": "01069730955",
+      "bio": "General practitioner with a focus on preventive care.",
+      "profile_picture": "profile4.jpg",
+      "contact_email": "contact.smith@example.com",
+      "years_of_experience": 5,
+      "created_at": "2025-05-27T07:47:58.653Z",
+      "updated_at": "2025-05-27T13:49:34.537Z"
     }
   ],
   "patients": [
@@ -66,14 +123,14 @@
       "updated_at": "2025-05-27T13:49:34.537Z"
     },
     {
-      "id": "38e7",
-      "user_id": "b482",
+      "id": "2915",
+      "user_id": "b473",
       "gender": "female",
-      "date_of_birth": "2025-05-14",
+      "date_of_birth": "2025-05-15",
       "address": "Hamam, Minya, Egypt",
       "phone": "01069730946",
-      "disease": "blood pressure",
-      "medical_history": "Previous consultation yesterday"
+      "disease": "blod pressure",
+      "medical_history": "al,la;s,l;sala,"
     }
   ],
   "specialties": [
@@ -92,47 +149,20 @@
   ],
   "availabilitySlots": [
     {
-      "id": "1",
-      "doctor_id": "1",
-      "day_of_week": 1,
-      "start_time": "09:00:00",
-      "end_time": "13:00:00"
+      "id": "8133",
+      "doctor_id": 1,
+      "day_of_week": "2",
+      "start_time": "11:56",
+      "end_time": "11:56"
     },
     {
-      "id": "2",
-      "doctor_id": "1",
-      "day_of_week": 1,
-      "start_time": "14:00:00",
-      "end_time": "17:00:00"
-    },
-    {
-      "id": "3",
-      "doctor_id": "1",
-      "day_of_week": 2,
-      "start_time": "09:00:00",
-      "end_time": "12:00:00"
-    },
-    {
-      "id": "4",
-      "doctor_id": "1",
-      "day_of_week": 3,
-      "start_time": "09:00:00",
-      "end_time": "12:00:00"
-    },
-    {
-      "id": "5",
-      "doctor_id": "1",
-      "day_of_week": 4,
-      "start_time": "09:00:00",
-      "end_time": "12:00:00"
-    },
-    {
-      "id": "6",
-      "doctor_id": "1",
-      "day_of_week": 5,
-      "start_time": "09:00:00",
-      "end_time": "12:00:00"
+      "id": "80ea",
+      "doctor_id": 1,
+      "day_of_week": "3",
+      "start_time": "04:06",
+      "end_time": "05:07"
     }
+
   ],
   "appointments": [
     {
@@ -162,6 +192,38 @@
         "currentCondition": "blood pressure",
         "emergencyContact": "",
         "insurance": ""
+      }
+    },
+    {
+      "id": "1d2a",
+      "doctor_id": 1,
+      "patient_id": "38e7",
+      "date": "2025-05-28",
+      "time": "10:30:00",
+      "status": "pending",
+      "notes": "zjhfukfljkd",
+      "patient_data": {
+        "name": "Aliaa Hesham Zaki Drdir",
+        "email": "aliaaalihesh@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "zjhfukfljkd",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "80ac",
+      "doctor_id": 1,
+      "patient_id": "38e7",
+      "date": "2025-05-28",
+      "time": "10:00:00",
+      "status": "pending",
+      "notes": "zczccv",
+      "patient_data": {
+        "name": "Aliaa Hesham Zaki Drdir",
+        "email": "aliaaalihesh@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "zczccv",
+        "disease": "blod pressure"
       }
     }
   ]

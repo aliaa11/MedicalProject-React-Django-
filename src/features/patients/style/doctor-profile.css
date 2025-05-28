@@ -5,7 +5,7 @@
     padding: 3rem;
     padding-bottom: 6rem;
     width: 90%;
-    margin: 0 auto;
+    margin: auto;
   }
   
   /* Header Section */
@@ -128,7 +128,17 @@
     padding-top: 1.5rem;
     border-top: 1px solid var(--gray-200);
   }
-  
+  .schedule-item.available {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+  }
+  .schedule-item.available .schedule-day,
+  .schedule-item.available .schedule-time {
+    color: #1e40af;
+  }
+  .availability-indicator {
+    background-color: #3b82f6;
+  }
   .stat-item {
     text-align: center;
     padding: 1rem;

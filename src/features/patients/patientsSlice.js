@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { setAppointments } from './appointmentSlice';
 
+// Helper function to get user from localStorage
+const getStoredUser = () => {
+  const userString = localStorage.getItem('user');
+  return userString ? JSON.parse(userString) : null;
+};
+
 const initialState = {
   currentPatient: null,
-  user: null,
+  user: getStoredUser(), 
   loading: false,
   error: null
 };
@@ -20,7 +26,10 @@ const patientSlice = createSlice({
         id: action.payload.id,
         username: action.payload.username,
         email: action.payload.email,
-      }
+        role: action.payload.role,
+      };
+      // Save to localStorage when user is set
+      localStorage.setItem('user', JSON.stringify(state.user));
     },
     setPatient: (state, action) => {
       state.currentPatient = {
@@ -47,6 +56,8 @@ const patientSlice = createSlice({
     },
     clearPatient: (state) => {
       state.currentPatient = null;
+      state.user = null;
+      localStorage.removeItem('user'); // Clear user from localStorage
     }
   }
 });
@@ -84,16 +95,25 @@ export const loadAppointments = () => async (dispatch) => {
   }
 };
 
-export const loadPatient = (patientId) => async (dispatch) => {
+export const loadPatient = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await fetch(`${API_URL}/patients/${patientId}`);
-    const patient = await handleApiError(response);
-    dispatch(setPatient(patient));
+    const user = getStoredUser();
+    if (!user) {
+      throw new Error('No user found in local storage');
+    }
 
-    const userResponse = await fetch(`${API_URL}/users/${patient.user_id}`);
-    const user = await handleApiError(userResponse);
-    dispatch(setUser(user));
+    // Find patient by user_id
+    const response = await fetch(`${API_URL}/patients?user_id=${user.id}`);
+    const patients = await handleApiError(response);
+    
+    if (patients.length === 0) {
+      throw new Error('No patient record found for this user');
+    }
+    
+    const patient = patients[0];
+    dispatch(setPatient(patient));
+    dispatch(setUser(user)); // Ensure user is set in state
 
   } catch (err) {
     dispatch(setError(err.message));
@@ -137,13 +157,18 @@ export const updatePatient = (updatedData) => async (dispatch, getState) => {
 export const createPatient = (patientData) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
+    const user = getStoredUser();
+    if (!user) {
+      throw new Error('No user found in local storage');
+    }
+
     const response = await fetch(`${API_URL}/patients`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user_id: patientData.user_id,
+        user_id: user.id,
         gender: patientData.gender,
         date_of_birth: patientData.date_of_birth,
         address: patientData.address,
@@ -163,6 +188,15 @@ export const createPatient = (patientData) => async (dispatch) => {
     throw err;
   } finally {
     dispatch(setLoading(false));
+  }
+};
+
+// Action to initialize user from localStorage
+export const initializeAuth = () => (dispatch) => {
+  const user = getStoredUser();
+  if (user) {
+    dispatch(setUser(user));
+    dispatch(loadPatient());
   }
 };
 
