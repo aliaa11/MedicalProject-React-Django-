@@ -45,7 +45,31 @@ const Dashboard = () => {
       },
     ],
   };
-
+// Add this for animated counter effects
+document.querySelectorAll('.stat-card').forEach(card => {
+  const valueElement = card.querySelector('.stat-value');
+  const targetValue = parseInt(valueElement.textContent);
+  let currentValue = 0;
+  
+  const animateCounter = () => {
+    if (currentValue < targetValue) {
+      currentValue += Math.ceil(targetValue / 50);
+      if (currentValue > targetValue) currentValue = targetValue;
+      valueElement.textContent = currentValue.toLocaleString();
+      requestAnimationFrame(animateCounter);
+    }
+  };
+  
+  // Start animation when card is visible
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      animateCounter();
+      observer.unobserve(card);
+    }
+  });
+  
+  observer.observe(card);
+});
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Dashboard Overview</h1>

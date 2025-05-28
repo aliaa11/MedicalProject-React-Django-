@@ -6,7 +6,8 @@ import {
   deleteDoctor, 
   fetchUsers, 
   fetchSpecialties,
-  updateUserApproval
+  updateUserApproval,
+  updateDoctor
 } from '../services/api';
 import Table from '../components/Table';
 import '../styles/tables.css';
@@ -18,6 +19,14 @@ const Doctors = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingDoctor, setEditingDoctor] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    bio: '',
+    contact_email: '',
+    phone: '',
+    years_of_experience: '',
+    specialty_id: ''
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,22 +51,17 @@ const Doctors = () => {
 
   const handleApprove = async (doctorId, isApproved) => {
     try {
-      // Update doctor approval
       await updateDoctorApproval(doctorId, { is_approved: { is_approved: isApproved } });
       
-      // Find the doctor to get user_id
       const doctor = doctors.find(d => d.id === doctorId);
       if (doctor && doctor.user_id) {
-        // Update user approval status
         await updateUserApproval(doctor.user_id, isApproved);
       }
       
-      // Update local state
       setDoctors(doctors.map(d => 
         d.id === doctorId ? { ...d, is_approved: { is_approved: isApproved } } : d
       ));
       
-      // Update users state if needed
       if (doctor && doctor.user_id) {
         setUsers(users.map(u => 
           u.id === doctor.user_id ? { ...u, is_approved: isApproved } : u
@@ -72,6 +76,41 @@ const Doctors = () => {
     try {
       await deleteDoctor(doctorId);
       setDoctors(doctors.filter(doctor => doctor.id !== doctorId));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleEditClick = (doctor) => {
+    setEditingDoctor(doctor.id);
+    setEditFormData({
+      bio: doctor.bio || '',
+      contact_email: doctor.contact_email || '',
+      phone: doctor.phone || '',
+      years_of_experience: doctor.years_of_experience || '',
+      specialty_id: doctor.specialty_id || ''
+    });
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value
+    });
+  };
+
+  const handleCancelClick = () => {
+    setEditingDoctor(null);
+  };
+
+  const handleSaveClick = async (doctorId) => {
+    try {
+      await updateDoctor(doctorId, editFormData);
+      setDoctors(doctors.map(doctor => 
+        doctor.id === doctorId ? { ...doctor, ...editFormData } : doctor
+      ));
+      setEditingDoctor(null);
     } catch (err) {
       setError(err.message);
     }
@@ -142,14 +181,66 @@ const Doctors = () => {
                   </div>
                 </td>
                 <td className="table-cell">
-                  <div className="text-sm text-gray-900">{doctor.contact_email || 'N/A'}</div>
-                  <div className="text-sm text-gray-500">{doctor.phone || 'N/A'}</div>
+                  {editingDoctor === doctor.id ? (
+                    <div className="space-y-2">
+                      <input
+                        type="email"
+                        name="contact_email"
+                        value={editFormData.contact_email}
+                        onChange={handleEditFormChange}
+                        className="edit-input"
+                        placeholder="Email"
+                      />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={editFormData.phone}
+                        onChange={handleEditFormChange}
+                        className="edit-input"
+                        placeholder="Phone"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-sm text-gray-900">{doctor.contact_email || 'N/A'}</div>
+                      <div className="text-sm text-gray-500">{doctor.phone || 'N/A'}</div>
+                    </>
+                  )}
                 </td>
-                <td className="table-cell text-sm text-gray-500">
-                  {specialty?.name || 'N/A'}
+                <td className="table-cell">
+                  {editingDoctor === doctor.id ? (
+                    <select
+                      name="specialty_id"
+                      value={editFormData.specialty_id}
+                      onChange={handleEditFormChange}
+                      className="edit-input"
+                    >
+                      <option value="">Select Specialty</option>
+                      {specialties.map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="text-sm text-gray-500">
+                      {specialty?.name || 'N/A'}
+                    </span>
+                  )}
                 </td>
-                <td className="table-cell text-sm text-gray-500">
-                  {doctor.years_of_experience ? `${doctor.years_of_experience} years` : 'N/A'}
+                <td className="table-cell">
+                  {editingDoctor === doctor.id ? (
+                    <input
+                      type="number"
+                      name="years_of_experience"
+                      value={editFormData.years_of_experience}
+                      onChange={handleEditFormChange}
+                      className="edit-input"
+                      placeholder="Years of experience"
+                    />
+                  ) : (
+                    <span className="text-sm text-gray-500">
+                      {doctor.years_of_experience ? `${doctor.years_of_experience} years` : 'N/A'}
+                    </span>
+                  )}
                 </td>
                 <td className="table-cell">
                   <span className={`status-badge ${
@@ -160,37 +251,59 @@ const Doctors = () => {
                 </td>
                 <td className="table-cell text-right">
                   <div className="actions-cell">
-                    {!doctor.is_approved?.is_approved && (
-                      <button
-                        onClick={() => handleApprove(doctor.id, true)}
-                        className="action-btn approve-btn"
-                        title="Approve"
-                      >
-                        <FiCheck size={18} />
-                      </button>
+                    {editingDoctor === doctor.id ? (
+                      <>
+                        <button
+                          onClick={() => handleSaveClick(doctor.id)}
+                          className="action-btn approve-btn"
+                          title="Save"
+                        >
+                          <FiCheck size={18} />
+                        </button>
+                        <button
+                          onClick={handleCancelClick}
+                          className="action-btn delete-btn"
+                          title="Cancel"
+                        >
+                          <FiX size={18} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {!doctor.is_approved?.is_approved && (
+                          <button
+                            onClick={() => handleApprove(doctor.id, true)}
+                            className="action-btn approve-btn"
+                            title="Approve"
+                          >
+                            <FiCheck size={18} />
+                          </button>
+                        )}
+                        {doctor.is_approved?.is_approved && (
+                          <button
+                            onClick={() => handleApprove(doctor.id, false)}
+                            className="action-btn delete-btn"
+                            title="Disapprove"
+                          >
+                            <FiX size={18} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleEditClick(doctor)}
+                          className="action-btn edit-btn"
+                          title="Edit"
+                        >
+                          <FiEdit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(doctor.id)}
+                          className="action-btn delete-btn"
+                          title="Delete"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </>
                     )}
-                    {doctor.is_approved?.is_approved && (
-                      <button
-                        onClick={() => handleApprove(doctor.id, false)}
-                        className="action-btn delete-btn"
-                        title="Disapprove"
-                      >
-                        <FiX size={18} />
-                      </button>
-                    )}
-                    <button
-                      className="action-btn edit-btn"
-                      title="Edit"
-                    >
-                      <FiEdit2 size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(doctor.id)}
-                      className="action-btn delete-btn"
-                      title="Delete"
-                    >
-                      <FiTrash2 size={18} />
-                    </button>
                   </div>
                 </td>
               </tr>

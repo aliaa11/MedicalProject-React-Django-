@@ -33,15 +33,35 @@
       "username": "salma",
       "email": "salmahu@gmail.com",
       "password": "s12345",
-      "role": "doctor",
+      "role": "user",
       "is_approved": false
+    },
+    {
+      "id": "a3b2",
+      "username": "dr_ahmed",
+      "email": "ahmed@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": true,
+      "created_at": "2025-01-03T09:00:00Z",
+      "updated_at": "2025-01-03T09:00:00Z"
+    },
+    {
+      "id": "c4d5",
+      "username": "patient_sara",
+      "email": "sara@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": false,
+      "created_at": "2025-01-04T11:00:00Z",
+      "updated_at": "2025-01-04T11:00:00Z"
     }
   ],
   "doctors": [
     {
-      "id": "1",
-      "user_id": 1,
-      "specialty_id": 1,
+      "id": "d1",
+      "user_id": "1",
+      "specialty_id": "1",
       "gender": "male",
       "phone": "01000000000",
       "bio": "Expert in internal medicine.",
@@ -61,16 +81,33 @@
       "gender": "female",
       "bio": "wf;km;w",
       "years_of_experience": "22",
-      "phone": "01029229478",
+      "phone": "01029229",
       "is_approved": {
-        "is_approved": false
+        "is_approved": true
+      },
+      "contact_email": "salmahu457@gmail.com"
+    },
+    {
+      "id": "d3",
+      "user_id": "a3b2",
+      "specialty_id": "2",
+      "gender": "male",
+      "phone": "01234567890",
+      "bio": "Pediatric specialist with 8 years experience.",
+      "profile_picture": "profile3.jpg",
+      "contact_email": "contact.ahmed@example.com",
+      "years_of_experience": 8,
+      "created_at": "2025-01-03T09:00:00Z",
+      "updated_at": "2025-01-03T09:00:00Z",
+      "is_approved": {
+        "is_approved": true
       }
     }
   ],
   "patients": [
     {
       "id": "38e7",
-      "user_id": 2,
+      "user_id": "2",
       "gender": "male",
       "date_of_birth": "1995-05-10",
       "address": "Cairo, Egypt",
@@ -89,6 +126,18 @@
       "phone": "0100000000",
       "disease": "h",
       "medical_history": "h"
+    },
+    {
+      "id": "p4",
+      "user_id": "c4d5",
+      "gender": "female",
+      "date_of_birth": "1990-08-15",
+      "address": "Alexandria, Egypt",
+      "phone": "01234567891",
+      "created_at": "2025-01-04T11:00:00Z",
+      "updated_at": "2025-01-04T11:00:00Z",
+      "medical_history": "Asthma",
+      "disease": "Respiratory issues"
     }
   ],
   "specialties": [
@@ -99,33 +148,82 @@
     {
       "id": "2",
       "name": "Pediatrics"
+    },
+    {
+      "id": "3",
+      "name": "Cardiology"
+    },
+    {
+      "id": "4",
+      "name": "Dermatology"
     }
   ],
   "availabilitySlots": [
     {
       "id": "8133",
-      "doctor_id": 1,
+      "doctor_id": "d1",
       "day_of_week": "2",
       "start_time": "11:56",
       "end_time": "11:56"
     },
     {
       "id": "80ea",
-      "doctor_id": 1,
+      "doctor_id": "d1",
       "day_of_week": "3",
       "start_time": "04:06",
       "end_time": "05:07"
+    },
+    {
+      "id": "s3",
+      "doctor_id": "d3",
+      "day_of_week": "1",
+      "start_time": "09:00",
+      "end_time": "12:00"
+    },
+    {
+      "id": "s4",
+      "doctor_id": "d3",
+      "day_of_week": "3",
+      "start_time": "14:00",
+      "end_time": "17:00"
     }
   ],
   "appointments": [
     {
       "id": "2",
-      "doctor_id": 1,
+      "doctor_id": "d1",
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "09:30:00",
-      "status": "pending",
+      "status": "completed",
       "notes": "hh"
+    },
+    {
+      "id": "1",
+      "doctor_id": "211a",
+      "patient_id": "8272",
+      "date": "2025-05-28",
+      "time": "09:30:00",
+      "status": "cancelled",
+      "notes": "hh"
+    },
+    {
+      "id": "a3",
+      "doctor_id": "d3",
+      "patient_id": "p4",
+      "date": "2025-06-05",
+      "time": "10:00:00",
+      "status": "scheduled",
+      "notes": "Regular checkup"
+    },
+    {
+      "id": "a4",
+      "doctor_id": "d1",
+      "patient_id": "p4",
+      "date": "2025-06-07",
+      "time": "15:30:00",
+      "status": "completed",
+      "notes": "Follow-up visit"
     }
   ]
 }

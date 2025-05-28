@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { FiSearch, FiCalendar, FiClock, FiUser, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiCalendar, FiClock, FiUser, FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
 import { 
   fetchAppointments, 
   updateAppointmentStatus, 
   deleteAppointment,
+  updateAppointment,
   fetchDoctors,
   fetchPatients,
   fetchUsers
@@ -20,6 +21,14 @@ const Appointments = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [editingAppointment, setEditingAppointment] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    date: '',
+    time: '',
+    doctor_id: '',
+    patient_id: '',
+    status: ''
+  });
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,6 +68,41 @@ const Appointments = () => {
     try {
       await deleteAppointment(appointmentId);
       setAppointments(appointments.filter(appt => appt.id !== appointmentId));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleEditClick = (appointment) => {
+    setEditingAppointment(appointment.id);
+    setEditFormData({
+      date: appointment.date || '',
+      time: appointment.time || '',
+      doctor_id: appointment.doctor_id || '',
+      patient_id: appointment.patient_id || '',
+      status: appointment.status || 'pending'
+    });
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingAppointment(null);
+  };
+
+  const handleSaveEdit = async (appointmentId) => {
+    try {
+      await updateAppointment(appointmentId, editFormData);
+      setAppointments(appointments.map(appt => 
+        appt.id === appointmentId ? { ...appt, ...editFormData } : appt
+      ));
+      setEditingAppointment(null);
     } catch (err) {
       setError(err.message);
     }
@@ -144,18 +188,56 @@ const Appointments = () => {
                       <FiCalendar size={18} />
                     </div>
                     <div className="cell-content">
-                      <div className="text-sm font-medium text-gray-900">
-                        {appt.date ? new Date(appt.date).toLocaleDateString() : 'N/A'}
-                      </div>
-                      <div className="text-sm text-gray-500 flex items-center">
-                        <FiClock className="mr-1" size={14} />
-                        {appt.time ? appt.time.substring(0, 5) : 'N/A'}
-                      </div>
+                      {editingAppointment === appt.id ? (
+                        <>
+                          <input
+                            type="date"
+                            name="date"
+                            value={editFormData.date}
+                            onChange={handleEditFormChange}
+                            className="edit-input mb-1"
+                          />
+                          <input
+                            type="time"
+                            name="time"
+                            value={editFormData.time}
+                            onChange={handleEditFormChange}
+                            className="edit-input"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-sm font-medium text-gray-900">
+                            {appt.date ? new Date(appt.date).toLocaleDateString() : 'N/A'}
+                          </div>
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <FiClock className="mr-1" size={14} />
+                            {appt.time ? appt.time.substring(0, 5) : 'N/A'}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </td>
                 <td className="table-cell">
-                  {doctorUser ? (
+                  {editingAppointment === appt.id ? (
+                    <select
+                      name="doctor_id"
+                      value={editFormData.doctor_id}
+                      onChange={handleEditFormChange}
+                      className="edit-input"
+                    >
+                      <option value="">Select Doctor</option>
+                      {doctors.map(d => {
+                        const docUser = users.find(u => u.id.toString() === d.user_id?.toString());
+                        return (
+                          <option key={d.id} value={d.id}>
+                            {docUser?.username || `Doctor ${d.id}`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : doctorUser ? (
                     <div className="avatar-cell">
                       <div className="avatar avatar-purple">
                         <FiUser size={14} />
@@ -172,7 +254,24 @@ const Appointments = () => {
                   ) : 'N/A'}
                 </td>
                 <td className="table-cell">
-                  {patientUser ? (
+                  {editingAppointment === appt.id ? (
+                    <select
+                      name="patient_id"
+                      value={editFormData.patient_id}
+                      onChange={handleEditFormChange}
+                      className="edit-input"
+                    >
+                      <option value="">Select Patient</option>
+                      {patients.map(p => {
+                        const patUser = users.find(u => u.id.toString() === p.user_id?.toString());
+                        return (
+                          <option key={p.id} value={p.id}>
+                            {patUser?.username || `Patient ${p.id}`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : patientUser ? (
                     <div className="avatar-cell">
                       <div className="avatar avatar-green">
                         <FiUser size={14} />
@@ -185,39 +284,82 @@ const Appointments = () => {
                   ) : 'N/A'}
                 </td>
                 <td className="table-cell">
-                  <select
-                    value={appt.status || 'pending'}
-                    onChange={(e) => handleStatusChange(appt.id, e.target.value)}
-                    className={`status-badge ${
-                      appt.status === 'pending' ? 'status-pending' :
-                      appt.status === 'confirmed' ? 'status-confirmed' :
-                      appt.status === 'completed' ? 'status-completed' :
-                      appt.status === 'rejected' ? 'status-cancelled' :
-                      'status-cancelled'
-                    } border-none focus:ring-2 focus:ring-blue-500`}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
+                  {editingAppointment === appt.id ? (
+                    <select
+                      name="status"
+                      value={editFormData.status}
+                      onChange={handleEditFormChange}
+                      className={`status-badge ${
+                        editFormData.status === 'pending' ? 'status-pending' :
+                        editFormData.status === 'confirmed' ? 'status-confirmed' :
+                        editFormData.status === 'completed' ? 'status-completed' :
+                        editFormData.status === 'rejected' ? 'status-cancelled' :
+                        'status-cancelled'
+                      } border-none focus:ring-2 focus:ring-blue-500`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  ) : (
+                    <select
+                      value={appt.status || 'pending'}
+                      onChange={(e) => handleStatusChange(appt.id, e.target.value)}
+                      className={`status-badge ${
+                        appt.status === 'pending' ? 'status-pending' :
+                        appt.status === 'confirmed' ? 'status-confirmed' :
+                        appt.status === 'completed' ? 'status-completed' :
+                        appt.status === 'rejected' ? 'status-cancelled' :
+                        'status-cancelled'
+                      } border-none focus:ring-2 focus:ring-blue-500`}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  )}
                 </td>
                 <td className="table-cell text-right">
                   <div className="actions-cell">
-                    <button
-                      className="action-btn edit-btn"
-                      title="Edit"
-                    >
-                      <FiEdit2 size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(appt.id)}
-                      className="action-btn delete-btn"
-                      title="Delete"
-                    >
-                      <FiTrash2 size={18} />
-                    </button>
+                    {editingAppointment === appt.id ? (
+                      <>
+                        <button
+                          onClick={() => handleSaveEdit(appt.id)}
+                          className="action-btn approve-btn"
+                          title="Save"
+                        >
+                          <FiCheck size={18} />
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="action-btn delete-btn"
+                          title="Cancel"
+                        >
+                          <FiX size={18} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEditClick(appt)}
+                          className="action-btn edit-btn"
+                          title="Edit"
+                        >
+                          <FiEdit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(appt.id)}
+                          className="action-btn delete-btn"
+                          title="Delete"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
