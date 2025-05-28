@@ -5,7 +5,8 @@
     padding: 3rem;
     padding-bottom: 6rem;
     width: 90%;
-    margin: 0 auto;
+  
+  
 }
 
 .back-button {
@@ -40,6 +41,7 @@
     color: var(--color-primary-dark);
     margin-bottom: 0.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
 
 .booking-subtitle {

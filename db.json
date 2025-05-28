@@ -88,18 +88,18 @@
   ],
   "availabilitySlots": [
     {
-      "id": "8133",
-      "doctor_id": 1,
-      "day_of_week": "2",
-      "start_time": "11:56",
-      "end_time": "11:56"
-    },
-    {
       "id": "80ea",
       "doctor_id": 1,
       "day_of_week": "3",
       "start_time": "04:06",
       "end_time": "05:07"
+    },
+    {
+      "id": "5f76",
+      "doctor_id": 1,
+      "day_of_week": "2",
+      "start_time": "02:02",
+      "end_time": "16:05"
     }
   ],
   "appointments": [

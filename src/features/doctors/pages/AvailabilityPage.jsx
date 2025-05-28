@@ -223,7 +223,7 @@ export default function AvailabilityPage() {
                   <button onClick={() => handleEdit(slot)} className="edit-btn">
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(slot.id)} className="delete-btn">
+                  <button onClick={() => handleDelete(slot.id)} className="delete-btn1">
                     Delete
                   </button>
                 </div>

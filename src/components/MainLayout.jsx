@@ -6,7 +6,6 @@ import { getCurrentUser } from '../features/auth/services/AuthService';
 const MainLayout = () => {
   const user = getCurrentUser();
 
-  // لو مفيش مستخدم مسجل دخول، مش هيظهر السايد بار
   if (!user) return <Outlet />;
 
   return (
