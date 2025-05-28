@@ -15,7 +15,7 @@ export default function ListDoctors() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Pagination setup
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
   const totalPages = Math.ceil(filteredDoctors.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
