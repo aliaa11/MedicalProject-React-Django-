@@ -19,11 +19,17 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-import Navbar from './components/Navbar.jsx'
 import AppointmentsList from './features/doctors/pages/AppointmentsList.jsx';
 import DoctorProfile2 from './features/doctors/components/DoctorProfile2.jsx';
 import './App.css';
 import './style/global.css';
+
+import AdminLayout from './features/admin/components/AdminLayout';
+import Dashboard from './features/admin/pages/Dashboard';
+import Users from './features/admin/pages/Users';
+import Doctors from './features/admin/pages/Doctors';
+import Appointments from './features/admin/pages/Appointments';
+import Specialties from './features/admin/pages/Specialties';
 
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
@@ -31,9 +37,12 @@ const PrivateRoute = ({ children, role }) => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-
-  if (role && user.role !== role) {
-    return <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace />;
+    if (role && user.role !== role) {
+    return <Navigate to={
+      user.role === 'admin' ? '/admin' :
+      user.role === 'doctor' ? '/doctor/users' :
+      '/patient-dashboard'
+    } replace />;
   }
 
   return children;
@@ -107,6 +116,19 @@ function App() {
           <Route path="/available-slots" element={<AvailableSlots />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
         </Route>
+           {/* Admin Routes */}
+           <Route path="/admin" element={
+          <PrivateRoute role="admin">
+            <AdminLayout />
+          </PrivateRoute>
+        }>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<Users />} />
+          <Route path="doctors" element={<Doctors />} />
+          <Route path="appointments" element={<Appointments />} />
+          <Route path="specialties" element={<Specialties />} />
+        </Route>
+
       </Routes>
 
       <ToastContainer />
