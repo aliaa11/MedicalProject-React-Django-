@@ -54,10 +54,7 @@ const Sidebar = () => {
           <span className="sidebar-text">Appointments</span>
         </Link>
         
-        <Link to="/admin/settings" className="sidebar-item">
-          <FiSettings className="sidebar-icon" />
-          <span className="sidebar-text">Settings</span>
-        </Link>
+       
       </nav>
       
       <div className="sidebar-footer">
