@@ -105,9 +105,9 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
 
   return (
     <div className="doctor-profile-container">
-      <div className="profile-wrapper max-w-6xl">
+      <div className="doctor-profile-wrapper">
         {/* Doctor Header Section */}
-        <div className="profile-header">
+        <div className="profile-doctor-header">
           <div className="doctor-header-content">
             {/* Doctor Avatar */}
             <div className="doctor-avatar-container">
@@ -271,7 +271,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
 
             {/* Action Buttons */}
             <div className="action-buttons">
-              <button onClick={handleBookAppointment} className="btn-primary">
+              <button onClick={handleBookAppointment} className="bookbtn">
                 <Calendar className="w-5 h-5" />
                 Book Appointment
               </button>

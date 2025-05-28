@@ -1,18 +1,22 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom'; // Import Outlet
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import Navbar from './Navbar';   // Adjust path if necessary
+import { getCurrentUser } from '../features/auth/services/AuthService';
+import Navbar from './Navbar';
+const MainLayout = () => {
+  const user = getCurrentUser();
 
-export default function MainLayout() {
+  if (!user) return <Outlet />;
+
   return (
-    <div className='flex'>
-      <Sidebar />
-      <div className="flex-1">
-        <Navbar />
-        <div className="bg-gray-50 content p-4"> 
-          <Outlet />
-        </div>
-      </div>
+    <div className="app-container" style={{ display: 'flex' }}>
+      <Sidebar userRole={user.role} />
+      <Navbar userRole={user.role} />
+      <main className="main-content" style={{margin:"50px auto", padding:"20px", width: "70%"}}>
+        <Outlet />
+      </main>
     </div>
   );
-}
+};
+
+export default MainLayout;

@@ -1,0 +1,176 @@
+/* Colors */
+:root {
+  --doctor-primary-color: #274760;
+  --doctor-active-color: #1a3347;
+  --doctor-text-color: #ffffff;
+  --doctor-hover-color: #325b7c;
+}
+
+* {
+  box-sizing: border-box; 
+}
+
+.doctor-app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.doctor-sidebar {
+  width: 250px;
+  background-color: var(--doctor-primary-color);
+  color: var(--doctor-text-color);
+  height: 100vh;
+
+  position: fixed;
+  transition: all 0.3s;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+}
+
+.doctor-sidebar-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.doctor-sidebar-header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.doctor-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.doctor-sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: var(--doctor-text-color);
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.doctor-sidebar-link:hover {
+  background-color: var(--doctor-hover-color);
+}
+
+.doctor-sidebar-link.active {
+  background-color: var(--doctor-active-color);
+  border-left: 4px solid #fff;
+}
+
+.doctor-icon {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.doctor-link-text {
+  flex-grow: 1;
+}
+
+.doctor-sidebar-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 15px 0;
+}
+
+.doctor-logout-button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--doctor-text-color);
+  padding: 12px 20px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.doctor-logout-button:hover {
+  background-color: var(--doctor-hover-color);
+}
+
+.doctor-main-content {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* Mobile styles */
+.doctor-mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: var(--doctor-primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  z-index: 1100;
+  cursor: pointer;
+}
+
+.doctor-mobile-close-button {
+  display: none;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.doctor-mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+@media (max-width: 768px) {
+  .doctor-sidebar {
+    left: -250px;
+  }
+  
+  .doctor-sidebar.mobile-open {
+    left: 0;
+  }
+  
+  .doctor-mobile-menu-button {
+    display: block;
+  }
+  
+  .doctor-mobile-close-button {
+    display: block;
+  }
+  
+  .doctor-mobile-overlay.mobile-open {
+    display: block;
+  }
+  
+  .doctor-main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px 15px;
+  }
+}
+

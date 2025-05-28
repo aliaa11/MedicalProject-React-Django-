@@ -96,7 +96,7 @@ export default function DoctorsSection() {
                 <p>{doctor.phone}</p>
               </div>
               <button 
-                onClick={() => navigate(`/doctors/${doctor.id}`)}
+                onClick={() => navigate(`/patient/available-doctors`)}
                 className={styles.readMoreButton}
               >
                 READ MORE

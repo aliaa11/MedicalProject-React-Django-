@@ -104,8 +104,8 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
     <div className="available-slots-container">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="page-header">
-          <h1 className="page-title">Book Your Appointment</h1>
+        <div className="doctor-page-header">
+          <h1 className="doctor-page-title">Book Your Appointment</h1>
           <p className="page-subtitle">Choose your preferred date and time slot</p>
         </div>
 

@@ -2,7 +2,7 @@
   "users": [
     {
       "id": "1",
-      "username": "Dr. John Smith",
+      "username": "aya",
       "email": "john@example.com",
       "password": "hashed_password",
       "role": "doctor",
@@ -43,7 +43,7 @@
       "username": "Dr. Aliaa_Hesham12",
       "email": "aliaaalihesh12@gmail.com",
       "password": "123456",
-      "role": "doctor",
+      "role": "admin",
       "is_approved": true
     },
     {
@@ -53,16 +53,24 @@
       "password": "123456",
       "role": "patient",
       "is_approved": true
+    },
+    {
+      "id": "5",
+      "username": "aya",
+      "email": "admin@gmail.com",
+      "password": "admin@gmail.com",
+      "role": "admin",
+      "is_approved": true
     }
   ],
   "doctors": [
     {
       "id": "1",
-      "user_id": "1",
-      "specialty_id": "1",
+      "user_id": 1,
+      "specialty_id": 1,
       "gender": "male",
       "phone": "01000000000",
-      "bio": "Expert in internal medicine with over 10 years of experience.",
+      "bio": "Expert in internal medicine.",
       "profile_picture": "profile1.jpg",
       "contact_email": "contact.john@example.com",
       "years_of_experience": 10,
@@ -111,16 +119,16 @@
   ],
   "patients": [
     {
-      "id": "04f0",
-      "user_id": "2",
-      "gender": "female",
-      "date_of_birth": "2025-05-14",
-      "address": "123 Main Street, City",
-      "phone": "01069730955",
-      "medical_history": "No significant medical history",
-      "disease": "blood pressure",
-      "created_at": "2025-05-27T07:47:58.653Z",
-      "updated_at": "2025-05-27T13:49:34.537Z"
+      "id": "38e7",
+      "user_id": 2,
+      "gender": "male",
+      "date_of_birth": "1995-05-10",
+      "address": "Cairo, Egypt",
+      "phone": "01111111111",
+      "created_at": "2025-01-02T12:00:00Z",
+      "updated_at": "2025-05-28T14:40:31.268Z",
+      "medical_history": "aya",
+      "disease": ",,,,"
     },
     {
       "id": "2915",
@@ -131,6 +139,16 @@
       "phone": "01069730946",
       "disease": "blod pressure",
       "medical_history": "al,la;s,l;sala,"
+    },
+    {
+      "id": "8272",
+      "user_id": "f1c6",
+      "gender": "female",
+      "date_of_birth": "2222-02-22",
+      "address": "dd",
+      "phone": "0100000000",
+      "disease": "h",
+      "medical_history": "h"
     }
   ],
   "specialties": [
@@ -141,10 +159,6 @@
     {
       "id": "2",
       "name": "Pediatrics"
-    },
-    {
-      "id": "3",
-      "name": "Cardiology"
     }
   ],
   "availabilitySlots": [
@@ -161,24 +175,36 @@
       "day_of_week": "3",
       "start_time": "04:06",
       "end_time": "05:07"
+    },
+    {
+      "id": "80ea",
+      "doctor_id": 1,
+      "day_of_week": "3",
+      "start_time": "04:06",
+      "end_time": "05:07"
+    },
+    {
+      "id": "5f76",
+      "doctor_id": 1,
+      "day_of_week": "2",
+      "start_time": "02:02",
+      "end_time": "16:05"
     }
 
   ],
   "appointments": [
     {
-      "id": "1",
-      "doctor_id": "1",
+      "id": "8",
+      "doctor_id": 1,
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "09:30:00",
       "status": "pending",
-      "notes": "",
-      "created_at": "2025-05-01T08:00:00Z",
-      "updated_at": "2025-05-01T08:00:00Z"
+      "notes": "hh"
     },
     {
-      "id": "3f2a",
-      "doctor_id": "1",
+      "id": "7",
+      "doctor_id": 1,
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "14:00:00",
@@ -207,22 +233,6 @@
         "email": "aliaaalihesh@gmail.com",
         "phone": "01069730946",
         "medicalHistory": "zjhfukfljkd",
-        "disease": "blod pressure"
-      }
-    },
-    {
-      "id": "80ac",
-      "doctor_id": 1,
-      "patient_id": "38e7",
-      "date": "2025-05-28",
-      "time": "10:00:00",
-      "status": "pending",
-      "notes": "zczccv",
-      "patient_data": {
-        "name": "Aliaa Hesham Zaki Drdir",
-        "email": "aliaaalihesh@gmail.com",
-        "phone": "01069730946",
-        "medicalHistory": "zczccv",
         "disease": "blod pressure"
       }
     }

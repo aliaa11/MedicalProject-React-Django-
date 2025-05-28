@@ -27,7 +27,7 @@ const Login = () => {
       const user = await login(formData.email, formData.password);
       
       if (user.role === 'doctor') {
-        navigate('/doctor-dashboard');
+        navigate('/doctor/users');
       } else {
         navigate('/patient/profile');
       }

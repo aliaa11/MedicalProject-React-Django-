@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #3f51b5;
+  --color-primary-dark: #274760;
+  --color-primary-light: #c5cae9;
+  --color-accent: #ff4081;
+  --color-text-primary: #212121;
+  --color-text-secondary: #757575;
+  --color-divider: #e0e0e0;
+  --color-white: #ffffff;
+  --color-error: #f44336;
+  --color-success: #4caf50;
+}
+
+.admin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-white));
+  display: flex;
+}
+
+.admin-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: #f5f7fa;
+}
+
+.card {
+  background: var(--color-white);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-divider);
+  background-color: #f9fafb;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.animated {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -12,7 +12,7 @@ const Navbar = () => {
       icon: 'fa-house'
     },
     {
-      path: '/dashboard',
+      path: '/patient/profile',
       label: 'Dashboard', 
       icon: 'fa-chart-line'
     }
@@ -86,26 +86,6 @@ const Navbar = () => {
     return matchedRoute ? matchedRoute.title : 'Hospital Management';
   };
 
-  // Get breadcrumb or subtitle if needed
-  const getSubtitle = () => {
-    const currentPath = location.pathname;
-    
-    // Add custom logic for subtitles
-    if (currentPath.includes('/edit-profile/')) {
-      const id = currentPath.split('/').pop();
-      return `Patient ID: ${id}`;
-    }
-    
-    if (currentPath.includes('/patients/')) {
-      const id = currentPath.split('/').pop();
-      if (id !== 'patients') {
-        return `Patient Details - ID: ${id}`;
-      }
-    }
-    
-    return null;
-  };
-
   const handlePrint = () => {
     window.print();
   };
@@ -116,9 +96,6 @@ const Navbar = () => {
         {/* Left side - Dynamic page title */}
         <div className="navbar-left">
           <h1 className="page-title">{getPageTitle()}</h1>
-          {getSubtitle() && (
-            <p className="page-subtitle">{getSubtitle()}</p>
-          )}
         </div>
 
         {/* Center - Navigation Links */}

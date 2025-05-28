@@ -152,7 +152,7 @@ const BookAppointment = ({ doctorId = 1 }) => {
                             )}
                         </div>
                         <div className="doctors-info">
-                            <h2 className="text-lg font-semibold">Dr. {doctor.username}</h2>
+                            <h2 className="text-lg font-semibold"> {doctor.username}</h2>
                             <p className="text-blue-600">{doctor.specialty}</p>
                             <div className="flex items-center text-sm text-gray-500">
                             <Calendar className="w-4 h-4 mr-1" />
@@ -302,7 +302,7 @@ const BookAppointment = ({ doctorId = 1 }) => {
                     <button
                       type="submit"
                       disabled={bookingStatus === "loading"}
-                      className="btn btn-primary"
+                      className="btn confirmbtn"
                     >
                       {bookingStatus === "loading" ? (
                         <>

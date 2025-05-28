@@ -19,7 +19,7 @@ export default function Header() {
   }, [])
   const getDashboardUrl = () => {
     if (userRole === 'doctor') {
-      return '/doctor-dashboard'
+      return '/doctor/profile'
     } else if (userRole === 'patient') {
       return '/patient/profile'
     }

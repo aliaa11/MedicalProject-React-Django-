@@ -70,7 +70,7 @@ const PatientForm = () => {
       }
       
       // Navigate to profile page on success
-      navigate('/profile');
+      navigate('/patient/profile');
       
     } catch (err) {
       console.error('Failed to save patient:', err);

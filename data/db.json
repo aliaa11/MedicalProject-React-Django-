@@ -1,166 +1,88 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "username": "dr_john",
-        "email": "john@example.com",
-        "password": "hashed_password",
-        "role": "doctor",
-        "is_approved": true,
-        "created_at": "2025-01-01T10:00:00Z",
-        "updated_at": "2025-01-01T10:00:00Z"
-      },
-      {
-        "id": 2,
-        "username": "patient_ali",
-        "email": "ali@example.com",
-        "password": "hashed_password",
-        "role": "patient",
-        "is_approved": true,
-        "created_at": "2025-01-02T12:00:00Z",
-        "updated_at": "2025-01-02T12:00:00Z"
-      }
-    ],
+  "users": [
+    {
+      "id": "1",
+      "username": "dr_john",
+      "email": "john@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": true,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "username": "patient_ali",
+      "email": "ali@example.com",
+      "password": "hashed_password",
+      "role": "patient",
+      "is_approved": true,
+      "created_at": "2025-01-02T12:00:00Z",
+      "updated_at": "2025-01-02T12:00:00Z"
+    }
+  ],
   "doctors": [
     {
-      "id": 1,
+      "id": "1",
       "user_id": 1,
       "specialty_id": 1,
       "gender": "male",
       "phone": "01000000000",
-      "bio": "Expert in internal medicine, focusing on chronic disease management.",
+      "bio": "Expert in internal medicine.",
       "profile_picture": "profile1.jpg",
       "contact_email": "contact.john@example.com",
       "years_of_experience": 10,
       "created_at": "2025-01-01T10:00:00Z",
       "updated_at": "2025-01-01T10:00:00Z"
-    },
-    {
-      "id": 2,
-      "user_id": 2,
-      "specialty_id": 2,
-      "gender": "female",
-      "phone": "01112345678",
-      "bio": "Pediatrician with a passion for child health and development.",
-      "profile_picture": "profile2.jpg",
-      "contact_email": "dr.sarah@example.com",
-      "years_of_experience": 7,
-      "created_at": "2024-03-15T09:30:00Z",
-      "updated_at": "2025-02-10T11:45:00Z"
-    },
-    {
-      "id": 3,
-      "user_id": 3,
-      "specialty_id": 3,
-      "gender": "male",
-      "phone": "01229876543",
-      "bio": "Experienced cardiologist specializing in heart rhythm disorders.",
-      "profile_picture": "profile3.jpg",
-      "contact_email": "dr.ahmed@example.com",
-      "years_of_experience": 15,
-      "created_at": "2023-05-20T14:15:00Z",
-      "updated_at": "2025-03-01T08:00:00Z"
-    },
-    {
-      "id": 4,
-      "user_id": 4,
-      "specialty_id": 4,
-      "gender": "female",
-      "phone": "01551122334",
-      "bio": "Dermatologist focused on skin conditions and cosmetic procedures.",
-      "profile_picture": "profile4.jpg",
-      "contact_email": "drs.lina@example.com",
-      "years_of_experience": 5,
-      "created_at": "2024-09-01T11:00:00Z",
-      "updated_at": "2025-01-20T10:00:00Z"
-    },
-    {
-      "id": 5,
-      "user_id": 5,
-      "specialty_id": 5,
-      "gender": "male",
-      "phone": "01098765432",
-      "bio": "Orthopedic surgeon specializing in knee and hip replacements.",
-      "profile_picture": "profile5.jpg",
-      "contact_email": "dr.mohamed@example.com",
-      "years_of_experience": 12,
-      "created_at": "2023-01-01T16:00:00Z",
-      "updated_at": "2025-04-05T09:00:00Z"
-    },
-    {
-      "id": 6,
-      "user_id": 6,
-      "specialty_id": 1,
-      "gender": "female",
-      "phone": "01011223344",
-      "bio": "Internal medicine specialist with a focus on preventative care.",
-      "profile_picture": "profile6.jpg",
-      "contact_email": "dr.noura@example.com",
-      "years_of_experience": 8,
-      "created_at": "2024-02-20T08:30:00Z",
-      "updated_at": "2025-01-01T08:30:00Z"
-    },
-    {
-      "id": 7,
-      "user_id": 7,
-      "specialty_id": 2,
-      "gender": "male",
-      "phone": "01156789012",
-      "bio": "Pediatrician providing comprehensive care for infants and children.",
-      "profile_picture": "profile7.jpg",
-      "contact_email": "dr.omar@example.com",
-      "years_of_experience": 6,
-      "created_at": "2024-06-10T12:00:00Z",
-      "updated_at": "2025-02-15T10:00:00Z"
     }
   ],
-    "patients": [
-      {
-        "id": 1,
-        "user_id": 2,
-        "gender": "male",
-        "date_of_birth": "1995-05-10",
-        "address": "Cairo, Egypt",
-        "phone": "01111111111",
-        "created_at": "2025-01-02T12:00:00Z",
-        "updated_at": "2025-01-02T12:00:00Z"
-      }
-    ],
-    "specialties": [
-      {
-        "id": 1,
-        "name": "Internal Medicine"
-      },
-      {
-        "id": 2,
-        "name": "Pediatrics"
-      }
-    ],
-    "availabilitySlots": [
-      {
-        "id": 1,
-        "doctor_id": 1,
-        "day_of_week": 1,
-        "start_time": "09:00:00",
-        "end_time": "13:00:00"
-      },
-      {
-        "id": 2,
-        "doctor_id": 1,
-        "day_of_week": 3,
-        "start_time": "14:00:00",
-        "end_time": "18:00:00"
-      }
-    ],
-    "appointments": [
-      {
-        "id": 1,
-        "doctor_id": 1,
-        "patient_id": 1,
-        "date": "2025-05-28",
-        "time": "09:30:00",
-        "status": "pending"
-      }
-    ]
-  }
-  
+  "patients": [
+    {
+      "id": "1",
+      "user_id": 2,
+      "gender": "male",
+      "date_of_birth": "1995-05-10",
+      "address": "Cairo, Egypt",
+      "phone": "01111111111",
+      "created_at": "2025-01-02T12:00:00Z",
+      "updated_at": "2025-01-02T12:00:00Z"
+    }
+  ],
+  "specialties": [
+    {
+      "id": "1",
+      "name": "Internal Medicine"
+    },
+    {
+      "id": "2",
+      "name": "Pediatrics"
+    }
+  ],
+  "availabilitySlots": [
+    {
+      "id": 1,
+      "doctor_id": 1,
+      "day_of_week": "1",
+      "start_time": "02:03",
+      "end_time": "16:05"
+    },
+    {
+      "id": "2",
+      "doctor_id": "1",
+      "day_of_week": "4",
+      "start_time": "15:04",
+      "end_time": "16:04"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "2",
+      "doctor_id": 1,
+      "patient_id": 1,
+      "date": "2025-05-28",
+      "time": "09:30:00",
+      "status": "rejected",
+      "notes": "تت"
+    }
+  ]
+}

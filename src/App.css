@@ -3,49 +3,18 @@
   height: 100%;
 }
 
-.flex {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.content {
-  flex: 1;
-  margin-left: 250px;
-  height: 100vh;
-  margin-top: 60px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #f9fafb;
-  transition: margin-left 0.3s ease;
-}
-
-.patient-profile-container {
-  min-height: 100%;
-  padding-bottom: 20px;
-}
-
-.content {
-  scroll-behavior: smooth;
-}
 
 html, body {
   height: 100%;
 }
 
-#root {
-  height: 100%;
-}
 
 @media (max-width: 768px) {
   .content {
     margin-left: 0;
-    padding-top: 80px; /* Space for mobile menu button */
+    padding-top: 80px; 
   }
-  
-  .patient-profile-container {
-    padding: 20px 15px;
-  }
+
 }
 
 /* Tablet styles */
