@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { 
   FiHome, 
@@ -9,10 +9,17 @@ import {
   FiMenu,
   FiLogOut
 } from 'react-icons/fi';
+import { logout } from '../../auth/services/AuthService';
 import '../styles/sidebar.css';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); // استدعاء وظيفة تسجيل الخروج
+    navigate('/login'); // إعادة التوجيه إلى صفحة تسجيل الدخول
+  };
 
   return (
     <div className={`sidebar ${collapsed ? 'sidebar-collapsed' : ''}`}>
@@ -54,7 +61,10 @@ const Sidebar = () => {
       </nav>
       
       <div className="sidebar-footer">
-        <button className="sidebar-item w-full">
+        <button 
+          onClick={handleLogout}
+          className="sidebar-item w-full"
+        >
           <FiLogOut className="sidebar-icon" />
           <span className="sidebar-text">Logout</span>
         </button>
