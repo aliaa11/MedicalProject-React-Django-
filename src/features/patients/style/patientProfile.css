@@ -391,7 +391,7 @@
   border: 1px solid var(--color-social-icon);
 }
 
-.doctor-name {
+.appointment-doctor-name {
   margin: 0;
   font-weight: 600;
   color: var(--color-hover);

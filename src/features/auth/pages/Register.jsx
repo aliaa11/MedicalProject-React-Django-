@@ -17,7 +17,10 @@ const Register = () => {
     bio: '',
     years_of_experience: '',
     date_of_birth: '',
-    address: ''
+    address: '',
+    disease: '',
+    medical_history:''
+    
   });
 
   const [errors, setErrors] = useState({});
@@ -117,7 +120,9 @@ const Register = () => {
                 gender: formData.gender,
                 date_of_birth: formData.date_of_birth,
                 address: formData.address,
-                phone: formData.phone
+                phone: formData.phone,
+                disease: formData.disease,
+                medical_history: formData.medical_history
               }),
             });
           }
@@ -294,6 +299,30 @@ const Register = () => {
                         placeholder="Enter phone number"
                       />
                       {errors.phone && <span className="error-message">{errors.phone}</span>}
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Disease*</label>
+                      <input
+                        type="text"
+                        name="disease"
+                        value={formData.disease}
+                        onChange={handleChange}
+                        className={`form-input ${errors.disease ? 'error' : ''}`}
+                        placeholder="Enter your disease"
+                      />
+                      {errors.disease && <span className="error-message">{errors.disease}</span>}
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Medical History*</label>
+                      <input
+                        type="text"
+                        name="medical_history"
+                        value={formData.medical_history}
+                        onChange={handleChange}
+                        className={`form-input ${errors.medical_history ? 'error' : ''}`}
+                        placeholder="Enter your Medical History"
+                      />
+                      {errors.medical_history && <span className="error-message">{errors.medical_history}</span>}
                     </div>
 
                     {role === 'doctor' ? (

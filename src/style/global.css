@@ -12,19 +12,70 @@
     --color-font-light: #a4c6db;
     --color-icon-light: #93b5d1;
     --border-color-light:#355a75;
+    --color-primary: #3072B2;
+    --color-primary-light: #4892d7;
+    --color-primary-dark: #274760;
+    --color-secondary: #BDDBF2;
+    --color-accent: #317BC4;
+    --color-success: #10b981;
+    --color-error: #ef4444;
+    --color-warning: #f59e0b;
+    --color-background: #f0f4f8;
+    --color-card: #ffffff;
+    --color-border: #e5e7eb;
+    --color-text-primary: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
 }
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f0f4f8;
+    background-color: var(--color-background);
     color: var(--color-font);
-
+    line-height: 1.6;
 }
+
 a {
     text-decoration: none;
     color: inherit;
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-dark);
+}
+
+/* Smooth transitions */
+* {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Focus styles */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+

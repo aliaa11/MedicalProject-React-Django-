@@ -29,7 +29,7 @@ const Login = () => {
       if (user.role === 'doctor') {
         navigate('/doctor-dashboard');
       } else {
-        navigate('/patient-dashboard');
+        navigate('/patient/profile');
       }
     } catch (err) {
       setError(err.message);

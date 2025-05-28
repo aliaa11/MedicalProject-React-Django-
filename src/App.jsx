@@ -15,6 +15,9 @@ import Navbar from './components/Navbar'
 
 import './style/global.css'; 
 import ListDoctors from './features/doctors/pages/ListDoctors';
+import AvailableSlots from './features/patients/pages/AvailableAppointments';
+import BookAppointment from './features/patients/pages/BookAppointment';
+import DoctorProfile from './features/patients/pages/DoctorProfile';
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
   
@@ -23,17 +26,13 @@ const PrivateRoute = ({ children, role }) => {
   }
   
   if (role && user.role !== role) {
-    return <Navigate to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'} replace />;
+    return <Navigate to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient/profile'} replace />;
   }
   
   return children;
 };
 function App() {
   return (
-    
-
-
-
 
       <Routes>
 
@@ -43,30 +42,14 @@ function App() {
         <Route element={<MainLayout />}>
         
           <Route path="/" element={<Home />} />
-          <Route path="/doctors" element={<ListDoctors />} />
-
-        
-          <Route path="/profile" element={<PatientProfile />} />
+          <Route path="/patient/available-doctors" element={<ListDoctors />} />
+          <Route path="/patient/profile" element={<PatientProfile />} />
           <Route path="/edit-profile/:id" element={<PatientForm />} />
-          <Route path="/create-profile" element={<PatientForm />} />
-
-        
-          <Route
-            path="/doctor-dashboard"
-            element={
-              <PrivateRoute role="doctor">
-                <DoctorDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/patient-dashboard"
-            element={
-              <PrivateRoute role="patient">
-                <PatientDashboard />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/doctors/:doctorId" element={<DoctorProfile />} />
+          <Route path="/available-slots" element={<AvailableSlots />} />
+          <Route path="/book-appointment" element={<BookAppointment />} />
+          <Route path="/doctor-dashboard" element={<PrivateRoute role="doctor"> <DoctorDashboard /></PrivateRoute>}/>
+          <Route path="/patient/profile" element={<PrivateRoute role="patient"> <PatientProfile /> </PrivateRoute>} />
         </Route>
       </Routes>
    

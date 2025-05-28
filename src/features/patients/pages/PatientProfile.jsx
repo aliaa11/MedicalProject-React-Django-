@@ -14,7 +14,7 @@ const PatientProfile = () => {
   const appointments = useSelector((state) => state.appointments?.items || []);
 
   useEffect(() => {
-    dispatch(loadPatient('04f0'));
+    dispatch(loadPatient('38e7'));
     dispatch(loadAppointments('1'));
   }, [dispatch]);
 
@@ -200,7 +200,7 @@ const PatientProfile = () => {
                 </div>
                 
                 <div className="doctor-info">
-                  <p className="doctor-name">
+                  <p className="appointment-doctor-name">
                     {appointment.doctorName}
                   </p>
                   <p className="doctor-specialty">

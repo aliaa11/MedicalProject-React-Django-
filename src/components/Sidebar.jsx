@@ -12,14 +12,19 @@ const Sidebar = () => {
       icon: 'fa-gauge-high' 
     },
     { 
-      path: '/profile', 
-      label: 'My Profile',
-      icon: 'fa-user' 
+      path: '/patient/available-doctors', 
+      label: 'Available Doctors',
+      icon: 'fa-solid fa-user-doctor' 
+    },
+    {
+      path:"/doctors/1",
+      label: 'Doctor Profile',
+      icon: 'fa-solid fa-user-doctor'
     },
     { 
-      path: '/credits', 
-      label: 'Credits Account',
-      icon: 'fa-credit-card' 
+      path: '/patient/profile', 
+      label: 'My Profile',
+      icon: 'fa-user' 
     }
   ];
 
@@ -80,7 +85,7 @@ const Sidebar = () => {
                   className={({ isActive }) => 
                     `sidebar-link ${isActive ? 'active' : ''}`
                   }
-                  onClick={closeMobileSidebar} // Close sidebar when link is clicked on mobile
+                  onClick={closeMobileSidebar}
                 >
                   <i className={`fa-solid ${item.icon} icon`}></i>
                   <span className="link-text">{item.label}</span>
