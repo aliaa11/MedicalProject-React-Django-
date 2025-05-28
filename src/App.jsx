@@ -1,5 +1,5 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './features/auth/pages/Register';
 import Login from './features/auth/pages/Login';
 import Home from './features/auth/pages/Home'; // Make sure this import exists
@@ -11,10 +11,10 @@ import PatientProfile from './features/patients/pages/PatientProfile'
 import PatientForm from './features/patients/pages/PatientForm'
 import Sidebar from './components/Sidebar'
 import './App.css'
+import './style/global.css'; 
 import Navbar from './components/Navbar'
 
-import './style/global.css'; 
-import ListDoctors from './features/doctors/pages/ListDoctors';
+import ListDoctors from './features/patients/pages/ListDoctors';
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
   
@@ -30,13 +30,7 @@ const PrivateRoute = ({ children, role }) => {
 };
 function App() {
   return (
-    
-
-
-
-
       <Routes>
-
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

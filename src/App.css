@@ -1,16 +1,13 @@
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 #root {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: auto;
   padding: 2rem;
   text-align: center;
 }
 
-.flex {
+.layout-flex {
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -21,8 +18,8 @@
   margin-left: 250px;
   height: 100vh;
   margin-top: 60px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* overflow-y: auto; */
+  /* overflow-x: hidden; */
   background-color: #f9fafb;
   transition: margin-left 0.3s ease;
 }
@@ -32,9 +29,7 @@
   padding-bottom: 20px;
 }
 
-.content {
-  scroll-behavior: smooth;
-}
+
 
 html, body {
   height: 100%;

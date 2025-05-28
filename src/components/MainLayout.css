@@ -1,0 +1,34 @@
+/* Main container - prevents horizontal overflow */
+.main-layout-container {
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Main content area (flex-1 div) */
+.main-content-area {
+  overflow-x: hidden;
+  max-width: calc(100vw - 250px); /* Adjust 250px to your sidebar width */
+  min-width: 0; /* Important for flex items */
+}
+
+/* Content wrapper (bg-gray-50 content p-4) */
+.content-wrapper {
+  overflow-x: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Alternative: If you want to target all child elements */
+.content-wrapper * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive sidebar adjustment */
+@media (max-width: 768px) {
+  .main-content-area {
+    max-width: 100vw;
+  }
+}
