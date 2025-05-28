@@ -15,12 +15,14 @@ import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
 import DoctorProfile from './features/patients/pages/DoctorAvailableProfile';
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
-// import DoctorProfile from './features/doctors/components/DoctorProfile.jsx';
 
+
+import Navbar from './components/Navbar.jsx'
+import AppointmentsList from './features/doctors/pages/AppointmentsList.jsx';
+import DoctorProfile2 from './features/doctors/components/DoctorProfile2.jsx';
+import './App.css';
 import './style/global.css';
 
 const PrivateRoute = ({ children, role }) => {
@@ -31,7 +33,7 @@ const PrivateRoute = ({ children, role }) => {
   }
 
   if (role && user.role !== role) {
-    return <Navigate to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient/profile'} replace />;
+    return <Navigate to={user.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard'} replace />;
   }
 
   return children;
@@ -40,41 +42,75 @@ const PrivateRoute = ({ children, role }) => {
 function App() {
   return (
     <>
+    
       <Routes>
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-    
 
+        {/* Protected Routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-{/* 
-          <Route path="/doctor/profile" element={<DoctorProfile />} /> */}
-
           <Route path="/doctor/users" element={<UsersList />} />
-        <Route path="/doctor/availability" element={<AvailabilityPage />} />
-        <Route path="/doctor/appointments/:id" element={<AppointmentDetails />} />
-          <Route path="/patient/available-doctors" element={<ListDoctors />} />
+
+          {/* Doctor Routes */}
+          <Route path="/doctor/dashboard" element={
+            <PrivateRoute role="doctor">
+              <DoctorDashboard />
+            </PrivateRoute>
+          } />
+
+<Route path="/doctor/appointments" element={
+  <PrivateRoute role="doctor">
+    <AppointmentsList />
+  </PrivateRoute>
+} />
+          <Route path="/doctor/availability" element={
+            <PrivateRoute role="doctor">
+              <AvailabilityPage />
+            </PrivateRoute>
+          } />
+          <Route path="/doctor/appointments/:id" element={
+            <PrivateRoute role="doctor">
+              <AppointmentDetails />
+            </PrivateRoute>
+          } />
+          
+
+<Route path="/doctor/profile" element={
+            <PrivateRoute role="doctor">
+              <DoctorProfile2 />
+            </PrivateRoute>
+          } />
+
+          {/* Patient Routes */}
+          <Route path="/patient/dashboard" element={
+            <PrivateRoute role="patient">
+              <PatientDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/patient/available-doctors" element={
+            <PrivateRoute role="patient">
+              <ListDoctors />
+            </PrivateRoute>
+          } />
           <Route path="/patient/profile" element={
             <PrivateRoute role="patient">
               <PatientProfile />
             </PrivateRoute>
           } />
+
+          {/* Shared Routes */}
+          <Route path="/profile" element={<PatientProfile />} />
           <Route path="/edit-profile/:id" element={<PatientForm />} />
           <Route path="/doctors/:doctorId" element={<DoctorProfile />} />
           <Route path="/available-slots" element={<AvailableSlots />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
-          <Route path="/doctor-dashboard" element={
-            <PrivateRoute role="doctor">
-
-
-              <DoctorDashboard />
-            </PrivateRoute>
-          } />
         </Route>
       </Routes>
+
       <ToastContainer />
     </>
-
   );
 }
 

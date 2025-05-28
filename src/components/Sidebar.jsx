@@ -2,34 +2,67 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ userRole }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const mainItems = [
+  // العناصر المشتركة بين كلا الدورين
+  const commonItems = [
     { 
-      path: '/dashboard', 
-      label: 'Dashboard',
-      icon: 'fa-gauge-high' 
-    },
-    { 
-      path: '/patient/available-doctors', 
-      label: 'Available Doctors',
-      icon: 'fa-solid fa-user-doctor' 
-    },
-    {
-      path:"/doctors/1",
-      label: 'Doctor Profile',
-      icon: 'fa-solid fa-user-doctor'
-    },
-    { 
-      path: '/patient/profile', 
-      label: 'My Profile',
-      icon: 'fa-user' 
+      path: userRole === 'doctor' ? '/doctor/users' : '/patient/profile', 
+      label: userRole === 'doctor' ? 'Patients' : 'My Profile', 
+      icon: userRole === 'doctor' ? 'fa-users' : 'fa-user' 
     }
   ];
 
+  // عناصر خاصة بالطبيب
+  const doctorItems = [
+    { 
+      path: '/doctor/profile',
+      label: 'My Profile',
+      icon: 'fa-user-md'
+    },
+    { 
+      path: '/doctor/availability', 
+      label: 'Availability', 
+      icon: 'fa-calendar-plus' 
+    },
+    { 
+      path: '/doctor/appointments', 
+      label: 'Appointments', 
+      icon: 'fa-calendar-check' 
+    }
+  ];
+  
+
+  // عناصر خاصة بالمريض
+  const patientItems = [
+    { 
+      path: '/patient/available-doctors', 
+      label: 'Available Doctors', 
+      icon: 'fa-user-doctor' 
+    },
+    { 
+      path: '/doctors/:doctorId', 
+      label: 'Doctor Profile', 
+      icon: 'fa-user-md' 
+    },
+    { 
+      path: '/book-appointment', 
+      label: 'Book Appointment', 
+      icon: 'fa-calendar-plus' 
+    }
+  ];
+
+  // دمج العناصر حسب الدور
+  const navItems = [
+    ...commonItems,
+    ...(userRole === 'doctor' ? doctorItems : []),
+    ...(userRole === 'patient' ? patientItems : [])
+  ];
+
   const handleLogout = () => {
-    console.log('Logging out...');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
   };
 
   const toggleMobileSidebar = () => {
@@ -72,13 +105,14 @@ const Sidebar = () => {
 
         <div className="sidebar-header">
           <h1 className='font-bold'>
-            HOSPITAL <i className="fa-solid fa-truck-medical"></i>
+            {userRole === 'doctor' ? 'DOCTOR PORTAL' : 'PATIENT PORTAL'}
+            <i className="fa-solid fa-truck-medical"></i>
           </h1>
         </div>
 
         <div className="sidebar-section">
           <ul className="sidebar-list">
-            {mainItems.map((item) => (
+            {navItems.map((item) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
@@ -109,242 +143,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-
-
-
-
-
-
-
-//code to make sidebar dynamic 
-// import React, { useState } from 'react';
-// import { NavLink } from 'react-router-dom';
-// import './sidebar.css';
-
-// const Sidebar = ({ userRole }) => { // Accept userRole as prop
-//   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-//   // Define navigation items for each role
-//   const getNavigationItems = (role) => {
-//     const commonItems = [
-//       {
-//         path: '/dashboard',
-//         label: 'Dashboard',
-//         icon: 'fa-gauge-high'
-//       },
-//       {
-//         path: '/profile',
-//         label: 'My Profile',
-//         icon: 'fa-user'
-//       }
-//     ];
-
-//     switch (role) {
-//       case 'patient':
-//         return [
-//           ...commonItems,
-//           {
-//             path: '/appointments',
-//             label: 'My Appointments',
-//             icon: 'fa-calendar-check'
-//           },
-//           {
-//             path: '/medical-records',
-//             label: 'Medical Records',
-//             icon: 'fa-file-medical'
-//           },
-//           {
-//             path: '/prescriptions',
-//             label: 'Prescriptions',
-//             icon: 'fa-prescription-bottle'
-//           },
-//           {
-//             path: '/billing',
-//             label: 'Billing & Insurance',
-//             icon: 'fa-credit-card'
-//           }
-//         ];
-
-//       case 'doctor':
-//         return [
-//           ...commonItems,
-//           {
-//             path: '/patients',
-//             label: 'My Patients',
-//             icon: 'fa-users'
-//           },
-//           {
-//             path: '/appointments',
-//             label: 'Appointments',
-//             icon: 'fa-calendar-check'
-//           },
-//           {
-//             path: '/schedule',
-//             label: 'Schedule',
-//             icon: 'fa-calendar-alt'
-//           },
-//           {
-//             path: '/prescriptions',
-//             label: 'Prescriptions',
-//             icon: 'fa-prescription-bottle'
-//           },
-//           {
-//             path: '/consultations',
-//             label: 'Consultations',
-//             icon: 'fa-stethoscope'
-//           }
-//         ];
-
-//       case 'admin':
-//         return [
-//           ...commonItems,
-//           {
-//             path: '/users',
-//             label: 'User Management',
-//             icon: 'fa-users-cog'
-//           },
-//           {
-//             path: '/doctors',
-//             label: 'Doctors',
-//             icon: 'fa-user-md'
-//           },
-//           {
-//             path: '/patients',
-//             label: 'Patients',
-//             icon: 'fa-bed'
-//           },
-//           {
-//             path: '/appointments',
-//             label: 'All Appointments',
-//             icon: 'fa-calendar-check'
-//           },
-//           {
-//             path: '/reports',
-//             label: 'Reports',
-//             icon: 'fa-chart-bar'
-//           },
-//           {
-//             path: '/settings',
-//             label: 'System Settings',
-//             icon: 'fa-cogs'
-//           }
-//         ];
-
-//       default:
-//         return commonItems;
-//     }
-//   };
-
-//   const navigationItems = getNavigationItems(userRole);
-
-//   const handleLogout = () => {
-//     console.log('Logging out...');
-//   };
-
-//   const toggleMobileSidebar = () => {
-//     setIsMobileOpen(!isMobileOpen);
-//   };
-
-//   const closeMobileSidebar = () => {
-//     setIsMobileOpen(false);
-//   };
-
-//   // Get role display name
-//   const getRoleDisplayName = (role) => {
-//     switch (role) {
-//       case 'patient':
-//         return 'Patient Portal';
-//       case 'doctor':
-//         return 'Doctor Portal';
-//       case 'admin':
-//         return 'Admin Panel';
-//       default:
-//         return 'HOSPITAL';
-//     }
-//   };
-
-//   return (
-//     <>
-//       {/* Mobile Menu Button */}
-//       <button
-//         className="mobile-menu-btn"
-//         onClick={toggleMobileSidebar}
-//         aria-label="Toggle mobile menu"
-//       >
-//         <i className="fas fa-bars"></i>
-//       </button>
-
-//       {/* Mobile Overlay */}
-//       {isMobileOpen && (
-//         <div 
-//           className="mobile-overlay"
-//           onClick={closeMobileSidebar}
-//         />
-//       )}
-
-//       {/* Sidebar */}
-//       <div className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
-//         {/* Mobile Close Button */}
-//         <button
-//           className="mobile-close-btn"
-//           onClick={closeMobileSidebar}
-//           aria-label="Close mobile menu"
-//         >
-//           <i className="fas fa-times"></i>
-//         </button>
-
-//         <div className="sidebar-header">
-//           <div className="logo">
-//             <i className="fas fa-hospital"></i>
-//             {getRoleDisplayName(userRole)}
-//           </div>
-//         </div>
-
-//         {/* Role indicator */}
-//         <div className="role-indicator">
-//           <i className={`fas ${
-//             userRole === 'patient' ? 'fa-user' : 
-//             userRole === 'doctor' ? 'fa-user-md' : 
-//             'fa-user-shield'
-//           }`}></i>
-//           <span className="role-text">
-//             {userRole ? userRole.charAt(0).toUpperCase() + userRole.slice(1) : 'User'}
-//           </span>
-//         </div>
-
-//         <nav className="sidebar-nav">
-//           <ul className="nav-list">
-//             {navigationItems.map((item) => (
-//               <li key={item.path} className="nav-item">
-//                 <NavLink
-//                   to={item.path}
-//                   className={({ isActive }) =>
-//                     `sidebar-link ${isActive ? 'active' : ''}`
-//                   }
-//                   onClick={closeMobileSidebar}
-//                 >
-//                   <i className={`fas ${item.icon}`}></i>
-//                   <span className="link-text">{item.label}</span>
-//                 </NavLink>
-//               </li>
-//             ))}
-//           </ul>
-//         </nav>
-
-//         <div className="sidebar-footer">
-//           <button
-//             className="logout-btn"
-//             onClick={handleLogout}
-//           >
-//             <i className="fas fa-sign-out-alt"></i>
-//             <span className="link-text">Logout</span>
-//           </button>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Sidebar;
