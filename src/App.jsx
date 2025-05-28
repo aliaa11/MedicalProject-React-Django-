@@ -17,7 +17,7 @@ import './style/global.css';
 import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
-import DoctorProfile from './features/patients/pages/DoctorProfile';
+import DoctorProfile from './features/patients/pages/DoctorAvailableProfile';
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
   
