@@ -89,7 +89,7 @@
       "is_approved": true
     },
     {
-      "id": "138d",
+      "id": "9851",
       "username": "Aliaa_Hesham",
       "email": "aliaa@gmail.com",
       "password": "aliaa@gmail.com",
@@ -164,8 +164,8 @@
       "updated_at": "2025-05-27T13:49:24.537Z"
     },
     {
-      "id": "138d",
-      "user_id": "138d",
+      "id": "9851",
+      "user_id": "9851",
       "specialty_id": "2",
       "gender": "female",
       "bio": "aliaajdfjdnkglnskfssa",
@@ -274,8 +274,8 @@
     {
       "id": "646a",
       "doctor_id": "9851",
-      "day_of_week": "1",
-      "start_time": "00:52",
+      "day_of_week": "5",
+      "start_time": "00:00",
       "end_time": "12:52"
     }
   ],
@@ -473,6 +473,23 @@
         "phone": "01000000000",
         "medicalHistory": "ssss",
         "disease": "sss"
+      }
+    },
+    {
+      "id": "5dca",
+      "doctor_id": "9851",
+      "patient_id": "526d",
+      "date": "2025-05-30",
+      "time": "00:30",
+      "status": "approved",
+      "notes": "sd",
+      "patient_data": {
+        "id": "526d",
+        "name": "Aliaa15",
+        "email": "aliaaalihesh44@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "sd",
+        "disease": "blod pressure"
       }
     }
   ]

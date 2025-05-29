@@ -315,6 +315,7 @@ const appointmentsSlice = createSlice({
       .addCase(fetchPatientAppointmentsWithDoctors.fulfilled, (state, action) => {
         state.patientAppointmentsLoading = false;
         state.patientAppointments = action.payload;
+        localStorage.setItem('appointments', JSON.stringify(action.payload));
       })
       .addCase(fetchPatientAppointmentsWithDoctors.rejected, (state, action) => {
         state.patientAppointmentsLoading = false;
