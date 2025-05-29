@@ -5,9 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
 
 export default function AvailabilityPage() {
-   const [slots, setSlots] = useState([]);
+  const [slots, setSlots] = useState([]);
   const [formData, setFormData] = useState({
-    doctor_id: 1,
+    doctor_id: "",
     day_of_week: "",
     start_time: "",
     end_time: "",
@@ -17,13 +17,20 @@ export default function AvailabilityPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchSlots();
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData && userData.role === "doctor") {
+      setFormData(prev => ({ ...prev, doctor_id: userData.id }));
+      fetchSlots(userData.id);
+    } else {
+      toast.error("Only doctors can manage availability slots");
+      setIsLoading(false);
+    }
   }, []);
 
-  const fetchSlots = async () => {
+  const fetchSlots = async (doctorId) => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:3001/availabilitySlots");
+      const res = await axios.get(`http://localhost:3001/availabilitySlots?doctor_id=${doctorId}`);
       setSlots(res.data);
     } catch (error) {
       toast.error("Failed to fetch slots");
@@ -48,16 +55,33 @@ export default function AvailabilityPage() {
     if (!validateForm()) return;
 
     try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      if (!userData || userData.role !== "doctor") {
+        toast.error("Only doctors can manage availability slots");
+        return;
+      }
+
+      const dataToSend = {
+        ...formData,
+        doctor_id: userData.id
+      };
+
       if (editingSlotId) {
-        await axios.patch(`http://localhost:3001/availabilitySlots/${editingSlotId}`, formData);
+        await axios.patch(`http://localhost:3001/availabilitySlots/${editingSlotId}`, dataToSend);
         toast.success("Slot updated successfully");
       } else {
-        await axios.post("http://localhost:3001/availabilitySlots", formData);
+        await axios.post("http://localhost:3001/availabilitySlots", dataToSend);
         toast.success("Slot added successfully");
       }
-      setFormData({ doctor_id: 1, day_of_week: "", start_time: "", end_time: "" });
+      
+      setFormData({ 
+        doctor_id: userData.id, 
+        day_of_week: "", 
+        start_time: "", 
+        end_time: "" 
+      });
       setEditingSlotId(null);
-      await fetchSlots();
+      fetchSlots(userData.id);
       setErrors({});
     } catch (error) {
       toast.error("Error saving slot");
@@ -84,7 +108,8 @@ export default function AvailabilityPage() {
               await axios.delete(`http://localhost:3001/availabilitySlots/${id}`);
               toast.dismiss();
               toast.success("Slot deleted successfully");
-              fetchSlots();
+              const userData = JSON.parse(localStorage.getItem("user"));
+              fetchSlots(userData.id);
             }}
             style={{
               backgroundColor: "#dc2626",
@@ -141,7 +166,6 @@ export default function AvailabilityPage() {
 
       <form onSubmit={handleSubmit} className="availability-form">
         <div className="form-grid">
-          {/* Day Select */}
           <div className="form-group">
             <label className="form-label">Day</label>
             <select
@@ -160,7 +184,6 @@ export default function AvailabilityPage() {
             {errors.day_of_week && <p className="text-red-600 text-sm mt-1">{errors.day_of_week}</p>}
           </div>
 
-          {/* Start Time */}
           <div className="form-group">
             <label className="form-label">Start Time</label>
             <input
@@ -172,7 +195,6 @@ export default function AvailabilityPage() {
             {errors.start_time && <p className="text-red-600 text-sm mt-1">{errors.start_time}</p>}
           </div>
 
-          {/* End Time */}
           <div className="form-group">
             <label className="form-label">End Time</label>
             <input
@@ -194,7 +216,13 @@ export default function AvailabilityPage() {
               type="button"
               onClick={() => {
                 setEditingSlotId(null);
-                setFormData({ doctor_id: 1, day_of_week: "", start_time: "", end_time: "" });
+                const userData = JSON.parse(localStorage.getItem("user"));
+                setFormData({ 
+                  doctor_id: userData.id, 
+                  day_of_week: "", 
+                  start_time: "", 
+                  end_time: "" 
+                });
                 setErrors({});
               }}
               className="cancel-btn"

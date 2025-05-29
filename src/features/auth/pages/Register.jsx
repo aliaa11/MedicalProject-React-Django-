@@ -300,7 +300,41 @@ const Register = () => {
                       />
                       {errors.phone && <span className="error-message">{errors.phone}</span>}
                     </div>
-                    <div className="form-group">
+                 
+                    {role === 'doctor' ? (
+                      <div className="form-group">
+                        <label className="form-label">Specialty*</label>
+                        <select
+                          name="specialty_id"
+                          value={formData.specialty_id}
+                          onChange={handleChange}
+                          className={`form-input ${errors.specialty_id ? 'error' : ''}`}
+                        >
+                          <option value="">Select Specialty</option>
+                          <option value="1">Internal Medicine</option>
+                          <option value="2">Pediatrics</option>
+                        </select>
+                        {errors.specialty_id && (
+                          <span className="error-message">{errors.specialty_id}</span>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="form-group">
+                        <label className="form-label">Date of Birth*</label>
+
+                        <input
+                          type="date"
+                          name="date_of_birth"
+                          value={formData.date_of_birth}
+                          onChange={handleChange}
+                          className={`form-input ${errors.date_of_birth ? 'error' : ''}`}
+                        />
+                        {errors.date_of_birth && (
+                          <span className="error-message">{errors.date_of_birth}</span>
+                        )
+                         }
+
+<div className="form-group">
                       <label className="form-label">Disease*</label>
                       <input
                         type="text"
@@ -325,39 +359,10 @@ const Register = () => {
                       {errors.medical_history && <span className="error-message">{errors.medical_history}</span>}
                     </div>
 
-                    {role === 'doctor' ? (
-                      <div className="form-group">
-                        <label className="form-label">Specialty*</label>
-                        <select
-                          name="specialty_id"
-                          value={formData.specialty_id}
-                          onChange={handleChange}
-                          className={`form-input ${errors.specialty_id ? 'error' : ''}`}
-                        >
-                          <option value="">Select Specialty</option>
-                          <option value="1">Internal Medicine</option>
-                          <option value="2">Pediatrics</option>
-                        </select>
-                        {errors.specialty_id && (
-                          <span className="error-message">{errors.specialty_id}</span>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="form-group">
-                        <label className="form-label">Date of Birth*</label>
-                        <input
-                          type="date"
-                          name="date_of_birth"
-                          value={formData.date_of_birth}
-                          onChange={handleChange}
-                          className={`form-input ${errors.date_of_birth ? 'error' : ''}`}
-                        />
-                        {errors.date_of_birth && (
-                          <span className="error-message">{errors.date_of_birth}</span>
-                        )}
                       </div>
                     )}
                   </div>
+
 
                   <div className="form-grid">
                     <div className="form-group">

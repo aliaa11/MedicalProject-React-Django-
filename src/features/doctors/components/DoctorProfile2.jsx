@@ -39,7 +39,7 @@ const DoctorProfile = () => {
       try {
         const resDoctors = await fetch("http://localhost:3001/doctors");
         const doctorsData = await resDoctors.json();
-        const doctor = doctorsData[0];
+        const doctor = doctorsData[1];
         if (!doctor) throw new Error("Doctor not found");
 
         const resUsers = await fetch("http://localhost:3001/users");

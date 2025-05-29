@@ -12,7 +12,7 @@
     },
     {
       "id": "2",
-      "username": "Dr. Aliaa Hesham",
+      "username": "Dr. Aya Tarek",
       "email": "john@example.com",
       "password": "hashed_password",
       "role": "doctor",
@@ -42,7 +42,7 @@
     },
     {
       "id": "38e7",
-      "username": "Dr. Aliaa_Hesham12",
+      "username": "Dr. Aya Tarek",
       "email": "aliaaalihesh@gmail.com",
       "password": "123456",
       "role": "doctor",
@@ -78,6 +78,22 @@
       "email": "aliaaalihesh44@gmail.com",
       "password": "aliaaalihesh44@gmail.com",
       "role": "patient",
+      "is_approved": true
+    },
+    {
+      "id": "437d",
+      "username": "Ayaa",
+      "email": "aya12@gmail.com",
+      "password": "aya12@gmail.com",
+      "role": "patient",
+      "is_approved": true
+    },
+    {
+      "id": "9851",
+      "username": "doc",
+      "email": "ayaa1@gmail.com",
+      "password": "ayaa1@gmail.com",
+      "role": "doctor",
       "is_approved": true
     }
   ],
@@ -133,6 +149,15 @@
       "years_of_experience": 5,
       "created_at": "2025-05-27T07:47:58.653Z",
       "updated_at": "2025-05-27T13:49:34.537Z"
+    },
+    {
+      "id": "a77d",
+      "user_id": "9851",
+      "specialty_id": "1",
+      "gender": "female",
+      "bio": "expert doc",
+      "years_of_experience": "20",
+      "phone": "0100000000"
     }
   ],
   "patients": [
@@ -178,6 +203,16 @@
       "disease": "blod pressure",
       "medical_history": "welcome",
       "updated_at": "2025-05-29T14:00:13.072Z"
+    },
+    {
+      "id": "77f2",
+      "user_id": "437d",
+      "gender": "female",
+      "date_of_birth": "2025-05-14",
+      "address": "ff",
+      "phone": "010000000",
+      "disease": "ff",
+      "medical_history": "ff"
     }
   ],
   "specialties": [
@@ -196,22 +231,8 @@
   ],
   "availabilitySlots": [
     {
-      "id": "8133",
-      "doctor_id": 1,
-      "day_of_week": "2",
-      "start_time": "11:56",
-      "end_time": "11:56"
-    },
-    {
       "id": "80ea",
       "doctor_id": 7e+30,
-      "day_of_week": "3",
-      "start_time": "04:06",
-      "end_time": "05:07"
-    },
-    {
-      "id": "80ea",
-      "doctor_id": 1,
       "day_of_week": "3",
       "start_time": "04:06",
       "end_time": "05:07"
@@ -229,6 +250,20 @@
       "day_of_week": "6",
       "start_time": "12:00",
       "end_time": "15:00"
+    },
+    {
+      "id": "7889",
+      "doctor_id": 1,
+      "day_of_week": "0",
+      "start_time": "22:00",
+      "end_time": "22:02"
+    },
+    {
+      "id": "646a",
+      "doctor_id": "9851",
+      "day_of_week": "1",
+      "start_time": "00:52",
+      "end_time": "12:52"
     }
   ],
   "appointments": [
@@ -238,8 +273,8 @@
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "09:30:00",
-      "status": "confirmed",
-      "notes": "hh"
+      "status": "rejected",
+      "notes": "ss"
     },
     {
       "id": "7",
@@ -407,6 +442,23 @@
         "email": "aliaaalihesh44@gmail.com",
         "phone": "01069730946",
         "medicalHistory": "sss",
+        "disease": "sss"
+      }
+    },
+    {
+      "id": "5ef7",
+      "doctor_id": "1",
+      "patient_id": "437d",
+      "date": "2025-05-31",
+      "time": "13:00",
+      "status": "pending",
+      "notes": "ssss",
+      "patient_data": {
+        "id": "437d",
+        "name": "Ayaa",
+        "email": "aya12@gmail.com",
+        "phone": "01000000000",
+        "medicalHistory": "ssss",
         "disease": "sss"
       }
     }
