@@ -1,20 +1,32 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { bookAppointment, clearSelection, resetBookingStatus } from "../appointmentSlice"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate, useLocation, useParams } from "react-router-dom"
 import { Calendar, Clock, User, Phone, Mail, FileText, Heart, ArrowLeft, Check, X } from 'lucide-react'
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
-
-// Import the specific CSS file
 import "../style/book-appointment.css"
 
-const BookAppointment = ({ doctorId = 1 }) => {
+
+const BookAppointment = ({ doctorId: propDoctorId }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
+  const params = useParams() 
+  
   const { selectedSlot, bookingStatus, bookingError, doctor } = useSelector((state) => state.appointments)
 
+  const doctorId = propDoctorId || params.doctorId || params.id || doctor?.id;
+
+  console.log('All potential doctor IDs:', {
+    propDoctorId,
+    paramsId: params.id,
+    paramsDoctorId: params.doctorId,
+    doctorFromRedux: doctor?.id,
+    finalDoctorId: doctorId
+  });
+
   const [patientData, setPatientData] = useState({
+    id: "",
     name: "",
     email: "",
     phone: "",
@@ -26,6 +38,17 @@ const BookAppointment = ({ doctorId = 1 }) => {
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
+    const storedPatient = JSON.parse(localStorage.getItem('user'));
+    if (storedPatient) {
+      setPatientData(prev => ({
+        ...prev,
+        id: storedPatient.id || "",
+        name: storedPatient.username || storedPatient.name || "",
+        email: storedPatient.email || "",
+        phone: storedPatient.phone || "",
+      }));
+    }
+
     if (!selectedSlot) {
       navigate("/available-slots")
     }
@@ -58,7 +81,6 @@ const BookAppointment = ({ doctorId = 1 }) => {
     } else if (!/^\d{11}$/.test(patientData.phone.replace(/\D/g, ""))) {
       newErrors.phone = "Please enter a valid phone number"
     }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -70,7 +92,6 @@ const BookAppointment = ({ doctorId = 1 }) => {
       [name]: value,
     })
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -86,9 +107,21 @@ const BookAppointment = ({ doctorId = 1 }) => {
       return
     }
 
+    if (!doctorId) {
+      console.error('Doctor ID is missing. Available data:', {
+        propDoctorId,
+        params,
+        doctor,
+        location: location.pathname
+      });
+      setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
+      return;
+    }
+
+
     const appointment = {
       doctor_id: doctorId,
-      patient_id: patientData.id || "guest",
+      patient_id: patientData.id,
       date: appointmentDate,
       time: selectedSlot.start_time,
       status: "pending",
@@ -96,8 +129,10 @@ const BookAppointment = ({ doctorId = 1 }) => {
       patient_data: patientData,
     }
 
+
     dispatch(bookAppointment(appointment))
   }
+
 
   const handleCancel = () => {
     dispatch(clearSelection())
@@ -117,6 +152,18 @@ const BookAppointment = ({ doctorId = 1 }) => {
 
   return (
     <div className="book-appointment-container">
+      {errors.general && (
+        <div className="error-banner" style={{ 
+          background: '#fee', 
+          color: '#c33', 
+          padding: '10px', 
+          margin: '10px', 
+          borderRadius: '4px',
+          border: '1px solid #fcc'
+        }}>
+          {errors.general}
+        </div>
+      )}
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <button onClick={handleCancel} className="back-button">
@@ -302,7 +349,7 @@ const BookAppointment = ({ doctorId = 1 }) => {
                     <button
                       type="submit"
                       disabled={bookingStatus === "loading"}
-                      className="btn confirmbtn"
+                      className="btn confirmbtn !mb-7"
                     >
                       {bookingStatus === "loading" ? (
                         <>

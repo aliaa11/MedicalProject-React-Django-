@@ -11,15 +11,12 @@ import { getCurrentUser } from './features/auth/services/AuthService';
 import MainLayout from './components/MainLayout';
 import PatientProfile from './features/patients/pages/PatientProfile';
 import PatientForm from './features/patients/pages/PatientForm';
-import ListDoctors from './features/doctors/pages/ListDoctors';
 import AvailableSlots from './features/patients/pages/AvailableAppointments';
 import BookAppointment from './features/patients/pages/BookAppointment';
 import DoctorAvailableProfile from './features/patients/pages/DoctorAvailableProfile';
 import HomePage from './features/homePage/homePage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 import AppointmentsList from './features/doctors/pages/AppointmentsList.jsx';
 import DoctorProfile2 from './features/doctors/components/DoctorProfile2.jsx';
 import './App.css';
@@ -31,6 +28,8 @@ import Users from './features/admin/pages/Users';
 import Doctors from './features/admin/pages/Doctors';
 import Appointments from './features/admin/pages/Appointments';
 import Specialties from './features/admin/pages/Specialties';
+
+import ListDoctors from './features/patients/pages/ListDoctors';
 
 const PrivateRoute = ({ children, role }) => {
   const user = getCurrentUser();
@@ -116,6 +115,7 @@ function App() {
           <Route path="/edit-profile/:id" element={<PatientForm />} />
           <Route path="/doctors/:doctorId" element={<DoctorAvailableProfile />} />
           <Route path="/available-slots" element={<AvailableSlots />} />
+          <Route path="/book-appointment/:doctorId" element={<BookAppointment />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
         </Route>
            {/* Admin Routes */}

@@ -59,14 +59,12 @@ const PatientForm = () => {
       if (currentPatient) {
         // Update existing patient
         await dispatch(updatePatient(formData));
-        console.log("Patient updated successfully, navigating to profile.");
       } else {
         // Create new patient
         await dispatch(createPatient({
           ...formData,
           user_id: 2
         }));
-        console.log("Patient created successfully, navigating to profile.");
       }
       
       // Navigate to profile page on success

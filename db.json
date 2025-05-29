@@ -21,6 +21,16 @@
       "updated_at": "2025-01-01T10:00:00Z"
     },
     {
+      "id": "7e30",
+      "username": "Dr. Mariem",
+      "email": "john@example.com",
+      "password": "hashed_password",
+      "role": "doctor",
+      "is_approved": true,
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-01-01T10:00:00Z"
+    },
+    {
       "id": "3",
       "username": "patient_ali",
       "email": "ali@example.com",
@@ -31,7 +41,7 @@
       "updated_at": "2025-01-02T12:00:00Z"
     },
     {
-      "id": "7e30",
+      "id": "38e7",
       "username": "Dr. Aliaa_Hesham12",
       "email": "aliaaalihesh@gmail.com",
       "password": "123456",
@@ -67,7 +77,7 @@
     {
       "id": "1",
       "user_id": 1,
-      "specialty_id": 1,
+      "specialty_id": "1",
       "gender": "male",
       "phone": "01000000000",
       "bio": "Expert in internal medicine.",
@@ -159,6 +169,10 @@
     {
       "id": "2",
       "name": "Pediatrics"
+    },
+    {
+      "id": "3",
+      "name": "General Practitioner"
     }
   ],
   "availabilitySlots": [
@@ -171,7 +185,7 @@
     },
     {
       "id": "80ea",
-      "doctor_id": 1,
+      "doctor_id": 7e+30,
       "day_of_week": "3",
       "start_time": "04:06",
       "end_time": "05:07"
@@ -190,7 +204,6 @@
       "start_time": "02:02",
       "end_time": "16:05"
     }
-
   ],
   "appointments": [
     {
@@ -234,6 +247,73 @@
         "phone": "01069730946",
         "medicalHistory": "zjhfukfljkd",
         "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "2e1a",
+      "doctor_id": 1,
+      "patient_id": "b473",
+      "date": "2025-06-03",
+      "time": "02:32",
+      "status": "approved",
+      "notes": "",
+      "patient_data": {
+        "name": "Aliaa Hesham Zaki Drdir",
+        "email": "aliaaalihesh@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "9716",
+      "doctor_id": 1,
+      "patient_id": "b473",
+      "date": "2025-06-04",
+      "time": "04:06",
+      "status": "approved",
+      "notes": "sdsf",
+      "patient_data": {
+        "id": "b473",
+        "name": "Aliaa12",
+        "email": "aliaaalihesh123@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "sdsf",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "cf7d",
+      "doctor_id": "1",
+      "patient_id": "b473",
+      "date": "2025-06-03",
+      "time": "04:02",
+      "status": "rejected",
+      "notes": "ssss",
+      "patient_data": {
+        "id": "b473",
+        "name": "Aliaa12",
+        "email": "aliaaalihesh123@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "ssss",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "1713",
+      "doctor_id": "1",
+      "patient_id": "b473",
+      "date": "2025-06-04",
+      "time": "05:06",
+      "status": "approved",
+      "notes": "zfsdfS",
+      "patient_data": {
+        "id": "b473",
+        "name": "Aliaa12",
+        "email": "aliaaalihesh123@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "zfsdfS",
+        "disease": "blod pressuresfsa"
       }
     }
   ]

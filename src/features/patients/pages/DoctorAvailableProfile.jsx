@@ -14,7 +14,7 @@ import {
   MessageCircle,
   AlertCircle,
 } from "lucide-react";
-import { fetchDoctorProfile, fetchAvailabilitySlots } from "../appointmentSlice";
+import { fetchDoctorProfile, fetchAvailabilitySlots, fetchAllSpecialties } from "../appointmentSlice";
 import "../style/doctor-profile.css";
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
 
@@ -30,13 +30,17 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
     error,
     availabilitySlots,
     slotsLoading,
-    slotsError
+    slotsError,
+    specialties,
+    specialtiesLoading,
+    specialtiesError
   } = useSelector((state) => state.appointments);
 
   useEffect(() => {
     if (doctorId) {
       dispatch(fetchDoctorProfile(doctorId));
       dispatch(fetchAvailabilitySlots(doctorId));
+      dispatch(fetchAllSpecialties(doctorId))
     }
   }, [dispatch, doctorId]);
 
@@ -106,10 +110,8 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
   return (
     <div className="doctor-profile-container">
       <div className="doctor-profile-wrapper">
-        {/* Doctor Header Section */}
         <div className="profile-doctor-header">
           <div className="doctor-header-content">
-            {/* Doctor Avatar */}
             <div className="doctor-avatar-container">
               <div className="doctor-avatar">
                 {doctor.profile_picture ? (
@@ -156,30 +158,37 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
             </div>
 
             {/* Professional Information */}
-            <div className="info-card">
-              <h2 className="card-title">
-                <Stethoscope className="w-5 h-5" />
-                <span>Professional Information</span>
-              </h2>
-              <div className="info-grid grid md:grid-cols-2 gap-4">
-                <div className="info-item">
-                  <span className="info-label">Specialty</span>
-                  <span className="info-value">{doctor.specialty}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Experience</span>
-                  <span className="info-value">{doctor.years_of_experience} years</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Gender</span>
-                  <span className="info-value capitalize">{doctor.gender || "Not specified"}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Consultation Fee</span>
-                  <span className="info-value font-semibold">$150</span>
+              <div className="info-card">
+                <h2 className="card-title">
+                  <Stethoscope className="w-5 h-5" />
+                  <span>Professional Information</span>
+                </h2>
+                <div className="info-grid grid md:grid-cols-2 gap-4">
+                  <div className="info-item">
+                    <span className="info-label">Specialty</span>
+                    <span className="info-value">
+                      {doctor.specialty}
+                      {specialties && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({specialties.name || 'Loading specialties...'})
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Experience</span>
+                    <span className="info-value">{doctor.years_of_experience} years</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Gender</span>
+                    <span className="info-value capitalize">{doctor.gender || "Not specified"}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Consultation Fee</span>
+                    <span className="info-value font-semibold">$150</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
             {/* Availability Schedule */}
             <div className="info-card">
@@ -228,7 +237,6 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             {/* Contact Information */}
             <div className="info-card">
@@ -268,7 +276,41 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
                 </div>
               </div>
             </div>
-
+            {/* Specialties Section */}
+              <div className="info-card">
+                <h2 className="card-title">
+                  <Stethoscope className="w-5 h-5" />
+                  <span>Specialties</span>
+                </h2>
+                {specialtiesError ? (
+                  <div className="error-message p-4 bg-red-50 text-red-600 rounded">
+                    <AlertCircle className="inline mr-2" />
+                    {specialtiesError}
+                    <button 
+                      onClick={() => dispatch(fetchAllSpecialties(doctorId))}
+                      className="ml-4 text-blue-600 hover:underline"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : specialtiesLoading ? (
+                  <div className="loading-text p-4">Loading specialties...</div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {Array.isArray(specialties) ? (
+                      specialties.map(specialty => (
+                        <span key={specialty.id} className="specialty-badge">
+                          {specialty.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="specialty-badge">
+                        {doctor.specialty}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             {/* Action Buttons */}
             <div className="action-buttons">
               <button onClick={handleBookAppointment} className="bookbtn">

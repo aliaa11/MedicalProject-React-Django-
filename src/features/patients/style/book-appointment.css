@@ -2,7 +2,6 @@
 .book-appointment-container {
     min-height: 100vh;
     background: linear-gradient(135deg, var(--color-secondary) 0%, #f0f4f8 50%, #e0e7ff 100%);
-    padding: 3rem;
     padding-bottom: 6rem;
     width: 90%;
     margin: auto;
@@ -309,9 +308,8 @@
 }
 
 .btn-secondary:hover {
-    background: #f9fafb;
-    border-color: var(--color-text-muted);
-    color: var(--color-text-primary);
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary)) !important;
+    color: white;
     transform: translateY(-1px);
 }
 
@@ -335,7 +333,7 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-}
+} 
 
 .loading-spinner-btn {
     width: 1.25rem;

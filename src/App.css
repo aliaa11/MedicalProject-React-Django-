@@ -3,6 +3,27 @@
   height: 100%;
 }
 
+.layout-flex {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  margin-left: 50px;
+  height: 100vh;
+  margin-top: 60px;
+  background-color: #f9fafb;
+  transition: margin-left 0.3s ease;
+}
+
+.patient-profile-container {
+  min-height: 100%;
+  padding-bottom: 20px;
+}
+
+
 
 html, body {
   height: 100%;

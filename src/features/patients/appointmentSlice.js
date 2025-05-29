@@ -52,6 +52,24 @@ export const fetchBookedAppointments = createAsyncThunk(
     }
   }
 );
+export const fetchAllSpecialties = createAsyncThunk(
+  'appointments/fetchAllSpecialties',
+  async (doctorId, { rejectWithValue }) => {
+    try {
+      // First fetch the doctor to get their specialty_id
+      const doctorRes = await axios.get(`${API_URL}/doctors/${doctorId}`);
+      const specialtyId = doctorRes.data.specialty_id;
+      
+      // Then fetch all specialties and find the matching one
+      const specialtiesRes = await axios.get(`${API_URL}/specialties`);
+      const specialty = specialtiesRes.data.find(s => s.id === specialtyId);
+      
+      return specialty || { name: 'Unknown Specialty' };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch specialties');
+    }
+  }
+);
 
 export const bookAppointment = createAsyncThunk(
   'appointments/bookAppointment',
@@ -64,7 +82,104 @@ export const bookAppointment = createAsyncThunk(
     }
   }
 );
+export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
+  'appointments/fetchPatientAppointmentsWithDoctors',
+  async (_, { rejectWithValue }) => { 
+    try {
+      let patientId;
+      try {
+        const userStr = localStorage.getItem("user");
+        if (!userStr) {
+          throw new Error('No user data found in localStorage');
+        }
+        const user = JSON.parse(userStr); // Parse the JSON string
+        patientId = user.id;
+      } catch (parseError) {
+        console.error('Error parsing user from localStorage:', parseError);
+        throw new Error('Invalid user data in localStorage');
+      }
+      
+      if (!patientId) {
+        throw new Error('No patient ID found in user data');
+      }
+      
 
+      const appointmentsUrl = `${API_URL}/appointments?patient_id=${patientId}`;
+      
+      const appointmentsResponse = await axios.get(appointmentsUrl);
+      const appointments = appointmentsResponse.data || [];
+      
+
+      if (appointments.length === 0) {
+        return [];
+      }
+      
+      const validAppointments = appointments.filter(app => {
+        if (!app.doctor_id) {
+          console.warn('Appointment missing doctor_id:', app);
+          return false;
+        }
+        return true;
+      });
+      
+      const invalidAppointments = appointments.filter(app => !app.doctor_id);
+    
+      
+      // Fetch doctor details only for valid appointments
+      const appointmentsWithDoctors = await Promise.all(
+        validAppointments.map(async (appointment) => {
+          try {
+            
+            const [doctorRes, userRes, specialtiesRes] = await Promise.all([
+              axios.get(`${API_URL}/doctors/${appointment.doctor_id}`),
+              axios.get(`${API_URL}/users/${appointment.doctor_id}`),
+              axios.get(`${API_URL}/specialties`)
+            ]);
+            
+            const doctor = doctorRes.data;
+            const user = userRes.data;
+            const specialty = specialtiesRes.data.find(s => s.id === doctor.specialty_id);
+            
+            return {
+              ...appointment,
+              doctor: {
+                ...doctor,
+                ...user,
+                specialty: specialty?.name || 'Unknown Specialty',
+                name: user.username || `Dr. ${user.first_name} ${user.last_name}`
+              }
+            };
+          } catch (error) {
+            console.error(`Failed to fetch doctor data for appointment ${appointment.id}:`, error);
+            return {
+              ...appointment,
+              doctor: {
+                name: 'Unknown Doctor',
+                specialty: 'Unknown Specialty'
+              }
+            };
+          }
+        })
+      );
+      
+      const incompleteAppointments = invalidAppointments.map(appointment => ({
+        ...appointment,
+        doctor: {
+          name: 'Doctor information missing',
+          specialty: 'Unknown',
+          incomplete: true
+        }
+      }));
+      
+      const finalResult = [...appointmentsWithDoctors, ...incompleteAppointments];
+      
+      return finalResult;
+    } catch (error) {
+      console.error('Error in fetchPatientAppointmentsWithDoctors:', error);
+      return rejectWithValue(error.message || 'Failed to fetch patient appointments');
+    }
+  }
+);
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {
@@ -79,7 +194,10 @@ const appointmentsSlice = createSlice({
     appointmentsError: null,
     selectedSlot: null,
     bookingStatus: 'idle',
-    bookingError: null
+    bookingError: null,
+    patientAppointments: [],
+    patientAppointmentsLoading: false,
+    patientAppointmentsError: null,
   },
   reducers: {
     setAppointments: (state, action) => {
@@ -152,6 +270,18 @@ const appointmentsSlice = createSlice({
       .addCase(bookAppointment.rejected, (state, action) => {
         state.bookingStatus = 'failed';
         state.bookingError = action.payload;
+      })
+      .addCase(fetchPatientAppointmentsWithDoctors.pending, (state) => {
+        state.patientAppointmentsLoading = true;
+        state.patientAppointmentsError = null;
+      })
+      .addCase(fetchPatientAppointmentsWithDoctors.fulfilled, (state, action) => {
+        state.patientAppointmentsLoading = false;
+        state.patientAppointments = action.payload;
+      })
+      .addCase(fetchPatientAppointmentsWithDoctors.rejected, (state, action) => {
+        state.patientAppointmentsLoading = false;
+        state.patientAppointmentsError = action.payload;
       });
   }
 });
@@ -162,7 +292,9 @@ export const {
   setError, 
   selectSlot, 
   clearSelection,
-  resetBookingStatus
+  resetBookingStatus,
+  clearPatientAppointments, 
+  updateAppointmentStatus
 } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;

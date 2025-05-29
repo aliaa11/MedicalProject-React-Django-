@@ -5,22 +5,59 @@ import headerBg from '../../../assets/2148071818.jpg';
 import "../style/patientProfile.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loadAppointments, loadPatient } from '../patientsSlice';
+import { loadPatient } from '../patientsSlice';
+import { fetchPatientAppointmentsWithDoctors } from '../appointmentSlice';
 
 const PatientProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentPatient, loading, user } = useSelector((state) => state.patient);
-  const appointments = useSelector((state) => state.appointments?.items || []);
+  const { 
+    patientAppointments, 
+    patientAppointmentsLoading, 
+    patientAppointmentsError 
+  } = useSelector((state) => state.appointments);
+
+  // Get user data from localStorage safely
+  const getLocalStorageUser = () => {
+    try {
+      const userString = localStorage.getItem('user');
+      return userString ? JSON.parse(userString) : null;
+    } catch (error) {
+      console.error('Error reading user from localStorage:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+  }, [patientAppointments]);
+  
+
+  const localStorageUser = getLocalStorageUser();
+  const patientIdFromStorage = localStorageUser?.id;
 
   useEffect(() => {
     dispatch(loadPatient());
-    dispatch(loadAppointments('1'));
   }, [dispatch]);
 
+  useEffect(() => {
+    const idFromStorage = localStorageUser?.id;
+    const idFromRedux = currentPatient?.id;
+        
+    const idToUse = idFromRedux || idFromStorage;
+    
+    if (idToUse) {
+      dispatch(fetchPatientAppointmentsWithDoctors(idToUse));
+    }
+  }, [dispatch, currentPatient?.id, localStorageUser?.id]);
+
   const handleEditClick = () => {
-    navigate(`/edit-profile/${currentPatient.id}`);
+    const idToUse = currentPatient?.id || patientIdFromStorage;
+    if (idToUse) {
+      navigate(`/edit-profile/${idToUse}`);
+    }
   };
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not available';
@@ -31,7 +68,6 @@ const PatientProfile = () => {
       day: 'numeric'
     });
   };
-
 
   const formatTime = (timeString) => {
     if (!timeString) return '';
@@ -53,7 +89,7 @@ const PatientProfile = () => {
   if (!currentPatient) {
     return (
       <div className="no-patient-data-container">
-        <p>No patient data found</p>
+        <p>No patient profile found</p>
         <button
           onClick={() => navigate('/create-profile')}
           className="create-profile-button"
@@ -63,13 +99,6 @@ const PatientProfile = () => {
       </div>
     );
   }
-
-  const patientAppointments = appointments.filter(appt => appt.patient_id === currentPatient.id)
-    .map(appt => ({
-      ...appt,
-      doctorName: "Dr. John",
-      doctorSpecialty: "Internal Medicine"
-    }));
 
   return (
     <div className="patient-profile-container">
@@ -95,13 +124,12 @@ const PatientProfile = () => {
           <div className="patient-info">
             <div className="name-gender-wrapper">
               <h1 className="patient-name">
-                {user?.username || 'Not available'}
+                {user?.username || localStorageUser?.username || 'Not available'}
               </h1>
               <div className="gender-icon-container">
                 <User className="gender-icon" size={20} />
               </div>
             </div>
-       
           </div>
         </div>
       </div>
@@ -118,7 +146,7 @@ const PatientProfile = () => {
               <h3 className="card-title">Primary Condition</h3>
             </div>
             <p className="disease-value">
-              {currentPatient.disease || 'Not specified'}
+              {currentPatient?.disease || 'Not specified'}
             </p>
           </div>
 
@@ -130,18 +158,17 @@ const PatientProfile = () => {
             </h3>
             <div className="contact-info">
               <p className="contact-item">
-                <strong>Phone:</strong> {currentPatient.phone || 'Not available'}
+                <strong>Phone:</strong> {currentPatient?.phone || 'Not available'}
               </p>
               <p className="contact-item">
-               <strong>Email:</strong> {user?.email || 'Not available'}
+                <strong>Email:</strong> {user?.email || localStorageUser?.email || 'Not available'}
               </p>
-          
               <p className="contact-item address-item">
                 <MapPin size={14} className="address-icon" />
-                <span>{currentPatient.address || 'Not available'}</span>
+                <span>{currentPatient?.address || 'Not available'}</span>
               </p>
               <p className="contact-item">
-                <strong>DOB:</strong> {formatDate(currentPatient.date_of_birth)}
+                <strong>DOB:</strong> {formatDate(currentPatient?.date_of_birth)}
               </p>
             </div>
           </div>
@@ -156,7 +183,7 @@ const PatientProfile = () => {
         </h3>
         <div className="story-content">
           <p className="story-text">
-            {currentPatient.medical_history || 'No medical history provided'}
+            {currentPatient?.medical_history || 'No medical history provided'}
           </p>
         </div>
       </div>
@@ -168,7 +195,22 @@ const PatientProfile = () => {
           My Appointments
         </h3>
         
-        {patientAppointments.length > 0 ? (
+        {patientAppointmentsLoading ? (
+          <div className="appointments-loading">
+            <div className="loading-spinner"></div>
+            <p>Loading appointments...</p>
+          </div>
+        ) : patientAppointmentsError ? (
+          <div className="appointments-error">
+            <p>Error loading appointments: {patientAppointmentsError}</p>
+            <button 
+              onClick={() => dispatch(fetchPatientAppointmentsWithDoctors(currentPatient?.id || patientIdFromStorage))}
+              className="retry-button"
+            >
+              Retry
+            </button>
+          </div>
+        ) : patientAppointments.length > 0 ? (
           <div className="appointments-grid">
             {patientAppointments.map((appointment) => (
               <div key={appointment.id} className="appointment-card">
@@ -192,12 +234,23 @@ const PatientProfile = () => {
                 </div>
                 
                 <div className="doctor-info">
-                  <p className="appointment-doctor-name">
-                    {appointment.doctorName}
-                  </p>
-                  <p className="doctor-specialty">
-                    {appointment.doctorSpecialty}
-                  </p>
+                  <div className="doctor-profile">
+                    <div className="doctor-details">
+                      <p className="appointment-doctor-name">
+                        {appointment.doctor.name}
+                      </p>
+                      <p className="doctor-specialty">
+                        {appointment.doctor.specialty}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {appointment.notes && (
+                    <div className="appointment-notes">
+                      <p className="notes-label">Notes:</p>
+                      <p className="notes-text">{appointment.notes}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -205,7 +258,13 @@ const PatientProfile = () => {
         ) : (
           <div className="no-appointments-message">
             <Calendar size={48} className="no-appointments-icon" />
-            <p>No upcoming appointments scheduled</p>
+            <p>No appointments scheduled</p>
+            <button 
+              onClick={() => navigate('/patient/available-doctors')} 
+              className="book-appointment-button"
+            >
+              Book Your First Appointment
+            </button>
           </div>
         )}
       </div>

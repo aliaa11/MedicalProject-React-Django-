@@ -10,7 +10,57 @@
   overflow: hidden;
   background-color: white;
 }
+/* Add these styles to your patientProfile.css */
+.appointments-loading {
+  text-align: center;
+  padding: 2rem;
+}
 
+.appointments-error {
+  text-align: center;
+  padding: 2rem;
+  color: #ef4444;
+}
+
+.retry-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.appointment-notes {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.notes-label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #374151;
+  margin: 0 0 0.25rem 0;
+}
+
+.notes-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.book-appointment-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+}
 /* Loading Styles */
 .loading-container {
   display: flex;
@@ -352,7 +402,7 @@
 .appointment-status {
   padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.85em;
+  font-size: 15px;
   font-weight: 600;
   text-transform: capitalize;
 }
@@ -367,7 +417,7 @@
   color: #92400e;
 }
 
-.status-cancelled {
+.status-rejected {
   background-color: #fee2e2;
   color: #dc2626;
 }

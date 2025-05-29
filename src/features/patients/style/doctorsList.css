@@ -1,0 +1,115 @@
+@import "tailwindcss";
+/* Add these color overrides to your doctorsList.css file */
+
+/* Background colors */
+
+
+.bg-gray-50 {
+  background-color: var(--color-social-icon) !important; /* Very light blue */
+}
+
+.bg-white {
+  background-color: white !important; /* Keep white cards */
+}
+
+.bg-blue-50 {
+  background-color: var(--color-social-icon) !important; /* Search results info background */
+}
+
+/* Text colors */
+.text-gray-900 {
+  color: var(--color-font) !important; /* Dark blue text */
+}
+
+.text-gray-700 {
+  color: var(--color-font) !important; /* Dark blue text */
+}
+
+.text-gray-600 {
+  color: var(--color-font-light) !important; /* Light blue text */
+}
+
+.text-gray-500 {
+  color: var(--color-font-light) !important; /* Light blue text */
+}
+
+.text-blue-700 {
+  color: var(--color-font) !important; /* Dark blue for search results */
+}
+
+.text-blue-600 {
+  color: var(--color-icon) !important; /* Icon blue for links */
+}
+
+.text-blue-800 {
+  color: var(--color-nav-bg-dark) !important; /* Darker blue for hover */
+}
+
+/* Button and interactive element colors */
+.bg-blue-600 {
+  background-color: var(--color-icon) !important; /* Primary button color */
+}
+
+.bg-blue-700 {
+  background-color: var(--color-nav-bg-dark) !important; /* Button hover color */
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: var(--color-nav-bg-dark) !important;
+}
+
+.hover\:bg-blue-800:hover {
+  background-color: var(--color-nav-bg-dark) !important;
+}
+
+.bg-gradient-to-r.from-blue-600.to-blue-700 {
+  background: linear-gradient(to right, var(--color-icon), var(--color-nav-bg-dark)) !important;
+}
+
+.hover\:from-blue-700.hover\:to-blue-800:hover {
+  background: linear-gradient(to right, var(--color-nav-bg-dark), var(--color-nav-bg-dark)) !important;
+}
+
+/* Specialty badge colors */
+.bg-blue-100 {
+  background-color: var(--color-social-icon) !important;
+}
+
+.text-blue-800 {
+  color: var(--color-font) !important;
+}
+
+/* Border colors */
+.border-blue-500 {
+  border-color: var(--color-icon) !important;
+}
+
+.border-blue-600 {
+  border-color: var(--color-icon) !important;
+}
+
+/* Focus and ring colors */
+.focus\:ring-blue-500:focus {
+  --tw-ring-color: var(--color-icon) !important;
+}
+
+.focus\:border-blue-500:focus {
+  border-color: var(--color-icon) !important;
+}
+
+/* Hover effects */
+.hover\:bg-gray-200:hover {
+  background-color: var(--color-social-icon) !important;
+}
+
+.hover\:text-blue-600:hover {
+  color: var(--color-icon) !important;
+}
+
+.hover\:text-blue-800:hover {
+  color: var(--color-nav-bg-dark) !important;
+}
+
+.hover\:text-gray-600:hover {
+  color: var(--color-font-light) !important;
+}

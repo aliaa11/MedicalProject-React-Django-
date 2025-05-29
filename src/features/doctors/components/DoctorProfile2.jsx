@@ -12,7 +12,7 @@ import {
   Clock,
   MessageCircle,
 } from "lucide-react";
-import "../style/doctor.css";
+import "../../patients/style/doctor-profile.css";
 
 const DoctorProfile = () => {
   const [doctor, setDoctor] = useState(null);
@@ -177,164 +177,176 @@ const DoctorProfile = () => {
 
   return (
     <div className="doctor-profile-container">
-      <div className="profile-wrapper max-w-6xl">
-        <div className="profile-header">
-          <div className="doctor-header-content">
-            <div className="doctor-avatar-container">
-              <div className="doctor-avatar">
-                <img src={doctorImage} alt={user.username} />
-              </div>
-              <div className="status-badge"></div>
+      <div className="profile-doctor-header">
+        <div className="doctor-header-content">
+          <div className="doctor-avatar-container">
+            <div className="doctor-avatar">
+              <img src={doctorImage} alt={user.username} />
             </div>
+            <div className="status-badge"></div>
+          </div>
 
-            <div className="doctor-profile-info">
-              <h1 className="doctor-name">{user.username}</h1>
-              <div className="doctor-specialty">
-                <Stethoscope className="w-5 h-5 inline mr-2" />
-                {specialty.name}
+          <div className="doctor-profile-info">
+            <h1 className="doctor-name">{user.username}</h1>
+            <div className="doctor-specialty">
+              <Stethoscope className="w-5 h-5 inline mr-2" />
+              {specialty.name}
+            </div>
+            <div className="doctor-experience">
+              <Calendar className="w-4 h-4" />
+              <span>{doctor.years_of_experience} years experience</span>
+            </div>
+            <div className="quick-stats">
+              <div className="stat-item">
+                <div className="stat-number">{appointments.length}</div>
+                <div className="stat-label">Appointments</div>
               </div>
-              <div className="doctor-experience">
-                <Calendar className="w-4 h-4" />
-                <span>{doctor.years_of_experience} years experience</span>
+              <div className="stat-item">
+                <div className="stat-number">{new Set(appointments.map(a => a.patient_id)).size}</div>
+                <div className="stat-label">Patients</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number">{availabilitySlots.length}</div>
+                <div className="stat-label">Availability Slots</div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="profile-content">
-          <div className="space-y-6">
-            <div className="info-card">
-              <h2 className="card-title">
-                <User className="w-5 h-5" />
-                <span>About Dr. {user.username}</span>
-              </h2>
-              <div className="biography-text">
-                {doctor.bio || `Dr. ${user.username} is a highly experienced ${specialty.name} specialist with ${doctor.years_of_experience} years of practice. Known for providing compassionate and comprehensive care to patients.`}
-              </div>
+      <div className="profile-content">
+        <div className="space-y-6">
+          <div className="info-card">
+            <h2 className="card-title">
+              <User className="w-5 h-5" />
+              <span>About Dr. {user.username}</span>
+            </h2>
+            <div className="biography-text">
+              {doctor.bio || `Dr. ${user.username} is a highly experienced ${specialty.name} specialist with ${doctor.years_of_experience} years of practice. Known for providing compassionate and comprehensive care to patients.`}
             </div>
+          </div>
 
-            <div className="info-card">
-              <h2 className="card-title">
-                <Stethoscope className="w-5 h-5" />
-                <span>Professional Information</span>
-              </h2>
-              <div className="info-grid grid md:grid-cols-2 gap-4">
-                <div className="info-item">
-                  <span className="info-label">Specialty</span>
-                  <span className="info-value">{specialty.name}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Experience</span>
-                  <span className="info-value">{doctor.years_of_experience} years</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Gender</span>
-                  <span className="info-value capitalize">{doctor.gender || "Not specified"}</span>
-                </div>
+          <div className="info-card">
+            <h2 className="card-title">
+              <Stethoscope className="w-5 h-5" />
+              <span>Professional Information</span>
+            </h2>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="info-label">Specialty</span>
+                <span className="info-value">{specialty.name}</span>
               </div>
-            </div>
-
-            <div className="info-card">
-              <h2 className="card-title">
-                <Calendar className="w-5 h-5" />
-                <span>Availability Schedule</span>
-              </h2>
-              <div className="schedule-grid">
-                {allDays.map((schedule, index) => (
-                  <div key={index} className={`schedule-item ${!schedule.available ? "unavailable" : ""}`}>
-                    <span className="schedule-day">{schedule.day}</span>
-                    <span className="schedule-time">{schedule.time}</span>
-                  </div>
-                ))}
+              <div className="info-item">
+                <span className="info-label">Experience</span>
+                <span className="info-value">{doctor.years_of_experience} years</span>
               </div>
-            </div>
-
-            <div className="info-card">
-              <h2 className="card-title">
-                <Calendar className="w-5 h-5" />
-                <span>Appointments</span>
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-left text-gray-700 text-base border border-gray-200 rounded-lg">
-                  <thead className="bg-blue-50">
-                    <tr>
-                      <th className="p-4 font-semibold border-b">Date</th>
-                      <th className="p-4 font-semibold border-b">Time</th>
-                      <th className="p-4 font-semibold border-b">Patient</th>
-                      <th className="p-4 font-semibold border-b">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {appointments.length === 0 ? (
-                      <tr>
-                        <td colSpan="4" className="text-center py-6 text-gray-500">No appointments found.</td>
-                      </tr>
-                    ) : (
-                      appointments.map(appt => (
-                        <tr key={appt.id} className="hover:bg-gray-50 border-b border-gray-100">
-                          <td className="p-4">{formatDate(appt.date)}</td>
-                          <td className="p-4">{formatTime(appt.time)}</td>
-                          <td className="p-4">{getPatientName(appt.patient_id)}</td>
-                          <td className="p-4">
-                            <span className={`px-4 py-1 rounded-full text-sm font-semibold ${
-                              appt.status === "confirmed"
-                                ? "bg-green-100 text-green-700"
-                                : appt.status === "pending"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-100 text-gray-700"
-                            }`}>
-                              {appt.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+              <div className="info-item">
+                <span className="info-label">Gender</span>
+                <span className="info-value capitalize">{doctor.gender || "Not specified"}</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="info-card">
-              <h2 className="card-title">
-                <Phone className="w-5 h-5" />
-                <span>Contact Information</span>
-              </h2>
-              <div className="space-y-4">
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div className="contact-details">
-                    <p className="contact-label">Phone</p>
-                    <p className="contact-value">{doctor.phone}</p>
-                  </div>
+          <div className="info-card">
+            <h2 className="card-title">
+              <Calendar className="w-5 h-5" />
+              <span>Availability Schedule</span>
+            </h2>
+            <div className="schedule-grid">
+              {allDays.map((schedule, index) => (
+                <div key={index} className={`schedule-item ${!schedule.available ? "unavailable" : "available"}`}>
+                  <span className="schedule-day">{schedule.day}</span>
+                  <span className="schedule-time">{schedule.time}</span>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div className="contact-details">
-                    <p className="contact-label">Email</p>
-                    <p className="contact-value">{doctor.contact_email || user.email}</p>
-                  </div>
+          <div className="info-card">
+            <h2 className="card-title">
+              <Calendar className="w-5 h-5" />
+              <span>Appointments</span>
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-left text-sm border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="p-3 font-semibold border-b">Date</th>
+                    <th className="p-3 font-semibold border-b">Time</th>
+                    <th className="p-3 font-semibold border-b">Patient</th>
+                    <th className="p-3 font-semibold border-b">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appointments.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="text-center p-4 text-gray-500">No appointments found.</td>
+                    </tr>
+                  ) : (
+                    appointments.map(appt => (
+                      <tr key={appt.id} className="hover:bg-gray-50 border-b border-gray-100">
+                        <td className="p-3">{formatDate(appt.date)}</td>
+                        <td className="p-3">{formatTime(appt.time)}</td>
+                        <td className="p-3">{getPatientName(appt.patient_id)}</td>
+                        <td className="p-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            appt.status === "confirmed"
+                              ? "bg-green-100 text-green-700"
+                              : appt.status === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}>
+                            {appt.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="info-card">
+            <h2 className="card-title">
+              <Phone className="w-5 h-5" />
+              <span>Contact Information</span>
+            </h2>
+            <div className="space-y-4">
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div className="contact-details">
+                  <p className="contact-label">Phone</p>
+                  <p className="contact-value">{doctor.phone}</p>
+                </div>
+              </div>
+
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div className="contact-details">
+                  <p className="contact-label">Email</p>
+                  <p className="contact-value">{doctor.contact_email || user.email}</p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="action-buttons">
-              <button onClick={() => setEditOpen(true)} className="btn-primary">
-                <Edit3 className="w-5 h-5" />
-                Edit Profile
-              </button>
+          <div className="action-buttons">
+            <button onClick={() => setEditOpen(true)} className="bookbtn">
+              <Edit3 className="w-5 h-5" />
+              Edit Profile
+            </button>
 
-              <button onClick={handleContactDoctor} className="btn-secondary">
-                <MessageCircle className="w-5 h-5" />
-                Contact Doctor
-              </button>
-            </div>
+            <button onClick={handleContactDoctor} className="btn-secondary">
+              <MessageCircle className="w-5 h-5" />
+              Contact Doctor
+            </button>
           </div>
         </div>
       </div>
@@ -349,11 +361,11 @@ const DoctorProfile = () => {
             >
               <X size={28} />
             </button>
-            <h2 className="text-3xl font-semibold mb-8 text-blue-600">Edit Profile</h2>
-            <div className="space-y-6">
+            <h2 className="text-2xl font-semibold mb-6 text-primary-600">Edit Profile</h2>
+            <div className="space-y-4">
               {["name", "email", "phone", "specialtyName", "bio"].map((field, idx) => (
                 <div key={idx}>
-                  <label className="block mb-2 font-semibold text-gray-700" htmlFor={field}>
+                  <label className="block mb-1 font-medium text-gray-700" htmlFor={field}>
                     {field === "specialtyName" ? "Specialty" : field.charAt(0).toUpperCase() + field.slice(1)}
                   </label>
                   {field === "bio" ? (
@@ -363,7 +375,7 @@ const DoctorProfile = () => {
                       rows="4"
                       value={formData[field]}
                       onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   ) : (
                     <input
@@ -372,24 +384,24 @@ const DoctorProfile = () => {
                       type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
                       value={formData[field]}
                       onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   )}
                 </div>
               ))}
 
-              <div className="flex justify-end gap-6 mt-8">
+              <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={() => setEditOpen(false)}
-                  className="cancel-button"
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="primary-button px-8 py-3 rounded-lg"
+                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                 >
                   Save
                 </button>

@@ -34,22 +34,11 @@ const Sidebar = ({ userRole }) => {
   ];
   
 
-  // عناصر خاصة بالمريض
   const patientItems = [
     { 
       path: '/patient/available-doctors', 
       label: 'Available Doctors', 
       icon: 'fa-user-doctor' 
-    },
-    { 
-      path: '/doctors/:doctorId', 
-      label: 'Doctor Profile', 
-      icon: 'fa-user-md' 
-    },
-    { 
-      path: '/book-appointment', 
-      label: 'Book Appointment', 
-      icon: 'fa-calendar-plus' 
     }
   ];
 

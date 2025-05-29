@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --header-bg: linear-gradient(135deg, #485569 0%, #60a5fa 100%);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
+} */
 
-.profile-container {
-  padding: 0;
-  background-color: #f3f6fb; 
+/* .profile-container {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.profile-content {
+  background: linear-gradient(135deg, var(--primary-50) 0%, white 50%, var(--secondary-50) 100%);
+  padding-bottom: 6rem;
+  width: 90%;
+  margin: auto;
+} */
+/* .profile-content {
   display: flex;
   flex-direction: column;
   gap: 0;
-}
+} */
 
 
 .profile-wrapper {
@@ -31,7 +31,7 @@
 }
 
 
-.profile-header {
+/* .profile-header {
   background: var(--header-bg);
   border-radius: 1rem;
   padding: 2rem 3rem;
@@ -42,13 +42,13 @@
   color: white;
   margin-bottom: 1rem; 
   box-shadow: var(--card-shadow);
-}
+} */
 
-.doctor-header-content {
+/* .doctor-header-content {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-}
+} */
 
 .doctor-avatar-container {
   position: relative;
@@ -254,7 +254,7 @@
   color: #b45309;
 }
 
-body,
+/* body,
 html {
   margin: 0;
   padding: 0;
@@ -264,23 +264,23 @@ html {
 
 #root {
   height: 100%;
-}
+} */
 
-.profile-container {
+/* .profile-container {
   padding: 0;
   background-color: #f8fafc;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
+} */
 
-.profile-wrapper {
+/* .profile-wrapper {
   width: 100%;
   max-width: 100%;
   padding: 2rem 3rem;
   display: flex;
   flex-direction: column;
-}
+} */
 
 .info-card {
   border-radius: 0;

@@ -29,7 +29,7 @@ const Sidebar = () => {
             <FiMenu className="text-white text-xl" />
           </button>
         ) : (
-          <h1 className="text-xl font-bold">Admin Panel</h1>
+          <h3 className="text-xl font-bold">Admin Panel</h3>
         )}
       </div>
       

@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import './navbar.css';
-import patentPicture from '../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg'; // Adjust the path as necessary
 const Navbar = () => {
   const location = useLocation();
   
@@ -93,7 +92,6 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        {/* Left side - Dynamic page title */}
         <div className="navbar-left">
           <h1 className="page-title">{getPageTitle()}</h1>
         </div>
@@ -119,14 +117,6 @@ const Navbar = () => {
           <button className="print-button" onClick={handlePrint} title="Print">
             <i className="fa-solid fa-print"></i>
           </button>
-          
-          <div className="user-profile">
-            <img 
-              src={patentPicture} 
-              alt="User Avatar" 
-              className="user-avatar"
-            />
-          </div>
         </div>
       </div>
     </nav>
