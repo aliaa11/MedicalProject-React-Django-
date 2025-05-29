@@ -300,31 +300,7 @@ const Register = () => {
                       />
                       {errors.phone && <span className="error-message">{errors.phone}</span>}
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Disease*</label>
-                      <input
-                        type="text"
-                        name="disease"
-                        value={formData.disease}
-                        onChange={handleChange}
-                        className={`form-input ${errors.disease ? 'error' : ''}`}
-                        placeholder="Enter your disease"
-                      />
-                      {errors.disease && <span className="error-message">{errors.disease}</span>}
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Medical History*</label>
-                      <input
-                        type="text"
-                        name="medical_history"
-                        value={formData.medical_history}
-                        onChange={handleChange}
-                        className={`form-input ${errors.medical_history ? 'error' : ''}`}
-                        placeholder="Enter your Medical History"
-                      />
-                      {errors.medical_history && <span className="error-message">{errors.medical_history}</span>}
-                    </div>
-
+               
                     {role === 'doctor' ? (
                       <div className="form-group">
                         <label className="form-label">Specialty*</label>
@@ -355,7 +331,32 @@ const Register = () => {
                         {errors.date_of_birth && (
                           <span className="error-message">{errors.date_of_birth}</span>
                         )}
+                             <div className="form-group">
+                      <label className="form-label">Disease*</label>
+                      <input
+                        type="text"
+                        name="disease"
+                        value={formData.disease}
+                        onChange={handleChange}
+                        className={`form-input ${errors.disease ? 'error' : ''}`}
+                        placeholder="Enter your disease"
+                      />
+                      {errors.disease && <span className="error-message">{errors.disease}</span>}
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Medical History*</label>
+                      <input
+                        type="text"
+                        name="medical_history"
+                        value={formData.medical_history}
+                        onChange={handleChange}
+                        className={`form-input ${errors.medical_history ? 'error' : ''}`}
+                        placeholder="Enter your Medical History"
+                      />
+                      {errors.medical_history && <span className="error-message">{errors.medical_history}</span>}
+                    </div>
                       </div>
+                      
                     )}
                   </div>
 
