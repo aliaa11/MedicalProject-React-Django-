@@ -11,7 +11,13 @@ const AppointmentsList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:3001/appointments')
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (!userData || userData.role !== "doctor") {
+      console.error("Only doctors can view appointments");
+      return;
+    }
+
+    axios.get(`http://localhost:3001/appointments?doctor_id=${userData.id}`)
       .then(res => setAppointments(res.data))
       .catch(err => console.error("Error fetching appointments:", err));
   }, []);
@@ -49,7 +55,7 @@ const AppointmentsList = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Appointments</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">My Appointments</h1>
       
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
@@ -96,6 +102,14 @@ const AppointmentsList = () => {
                       </svg>
                       <strong>Time:</strong> <span className="ml-1">{appointment.time}</span>
                     </p>
+                    {appointment.patient_data && (
+                      <p className="flex items-center text-gray-700">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <strong>Patient:</strong> <span className="ml-1">{appointment.patient_data.name}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -128,7 +142,7 @@ const AppointmentsList = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
             </svg>
             <h3 className="mt-2 text-lg font-medium text-gray-900">No appointments found</h3>
-            <p className="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+            <p className="mt-1 text-gray-500">You don't have any appointments yet.</p>
           </div>
         )}
       </div>

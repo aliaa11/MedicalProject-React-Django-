@@ -37,10 +37,17 @@ const DoctorProfile = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        // الحصول على user.id من localStorage
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        if (!currentUser || !currentUser.id) {
+          throw new Error("User not found in localStorage");
+        }
+
         const resDoctors = await fetch("http://localhost:3001/doctors");
         const doctorsData = await resDoctors.json();
-        const doctor = doctorsData[0];
-        if (!doctor) throw new Error("Doctor not found");
+        // البحث عن الطبيب باستخدام user_id المطابق لـ user.id من localStorage
+        const doctor = doctorsData.find(d => String(d.user_id) === String(currentUser.id));
+        if (!doctor) throw new Error("Doctor not found for this user");
 
         const resUsers = await fetch("http://localhost:3001/users");
         const usersData = await resUsers.json();
@@ -86,6 +93,7 @@ const DoctorProfile = () => {
 
     fetchData();
   }, []);
+
 
   const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
 

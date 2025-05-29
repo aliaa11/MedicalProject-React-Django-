@@ -362,6 +362,7 @@ const Register = () => {
                     )}
                   </div>
 
+
                   <div className="form-grid">
                     <div className="form-group">
                       <label className="form-label">Gender*</label>
