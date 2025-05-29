@@ -8,19 +8,15 @@ const Sidebar = ({ userRole }) => {
   // العناصر المشتركة بين كلا الدورين
   const commonItems = [
     { 
-      path: userRole === 'doctor' ? '/doctor/users' : '/patient/profile', 
-      label: userRole === 'doctor' ? 'Patients' : 'My Profile', 
-      icon: userRole === 'doctor' ? 'fa-users' : 'fa-user' 
+      path: userRole === 'doctor' ? '/doctor/profile' : '/patient/profile', 
+      label: userRole === 'doctor' ? 'My Profile' : 'My Profile', 
+      icon: userRole === 'doctor' ? 'fa-user-md' : 'fa-user' 
     }
   ];
 
   // عناصر خاصة بالطبيب
   const doctorItems = [
-    { 
-      path: '/doctor/profile',
-      label: 'My Profile',
-      icon: 'fa-user-md'
-    },
+
     { 
       path: '/doctor/availability', 
       label: 'Availability', 

@@ -73,12 +73,21 @@ export const fetchAllSpecialties = createAsyncThunk(
 
 export const bookAppointment = createAsyncThunk(
   'appointments/bookAppointment',
-  async (appointmentData, { rejectWithValue }) => {
+  async (appointmentData, { rejectWithValue, getState }) => {
     try {
+      const state = getState();
+      const existingAtSameTime = state.appointments.patientAppointments.some(
+        appt => appt.date === appointmentData.date && appt.time === appointmentData.time
+      );
+
+      if (existingAtSameTime) {
+        throw new Error('You already have an appointment at this time');
+      }
+
       const response = await axios.post(`${API_URL}/appointments`, appointmentData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to book appointment');
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -180,6 +189,22 @@ export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
     }
   }
 );
+export const checkTimeSlotAvailability = createAsyncThunk(
+  'appointments/checkTimeSlotAvailability',
+  async ({ patientId, date, time }, { rejectWithValue }) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      const user = JSON.parse(userStr)
+      patientId = user.id;
+      const response = await axios.get(
+        `${API_URL}/appointments?patient_id=${patientId}&date=${date}&time=${time}`
+      );
+      return response.data.length === 0; // Returns true if slot is available
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to check time slot');
+    }
+  }
+);
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {
@@ -195,6 +220,11 @@ const appointmentsSlice = createSlice({
     selectedSlot: null,
     bookingStatus: 'idle',
     bookingError: null,
+    timeSlotCheck: {
+      loading: false,
+      available: null,
+      error: null
+    },
     patientAppointments: [],
     patientAppointmentsLoading: false,
     patientAppointmentsError: null,
@@ -202,6 +232,13 @@ const appointmentsSlice = createSlice({
   reducers: {
     setAppointments: (state, action) => {
       state.items = action.payload;
+    },
+    resetTimeSlotCheck: (state) => {
+      state.timeSlotCheck = {
+        loading: false,
+        available: null,
+        error: null
+      };
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -282,6 +319,18 @@ const appointmentsSlice = createSlice({
       .addCase(fetchPatientAppointmentsWithDoctors.rejected, (state, action) => {
         state.patientAppointmentsLoading = false;
         state.patientAppointmentsError = action.payload;
+      })
+      .addCase(checkTimeSlotAvailability.pending, (state) => {
+        state.timeSlotCheck.loading = true;
+        state.timeSlotCheck.error = null;
+      })
+      .addCase(checkTimeSlotAvailability.fulfilled, (state, action) => {
+        state.timeSlotCheck.loading = false;
+        state.timeSlotCheck.available = action.payload;
+      })
+      .addCase(checkTimeSlotAvailability.rejected, (state, action) => {
+        state.timeSlotCheck.loading = false;
+        state.timeSlotCheck.error = action.payload;
       });
   }
 });
@@ -294,7 +343,8 @@ export const {
   clearSelection,
   resetBookingStatus,
   clearPatientAppointments, 
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  resetTimeSlotCheck
 } = appointmentsSlice.actions;
 
 export default appointmentsSlice.reducer;

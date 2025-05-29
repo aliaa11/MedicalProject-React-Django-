@@ -264,9 +264,6 @@ export default function ListDoctors() {
                 <h3 className="text-xl font-semibold text-gray-900 !mb-1">
                   {doctorName}
                 </h3>
-                <p className="text-sm text-gray-500 !mb-1">
-                  #{doctor.id}
-                </p>
                 <p className="text-md font-medium text-blue-600 !mb-1">
                   {specialtyName}
                 </p>

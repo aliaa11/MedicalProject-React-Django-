@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { bookAppointment, clearSelection, resetBookingStatus } from "../appointmentSlice"
+import { bookAppointment, clearSelection, resetBookingStatus, fetchPatientAppointmentsWithDoctors } from "../appointmentSlice"
 import { useNavigate, useLocation, useParams } from "react-router-dom"
 import { Calendar, Clock, User, Phone, Mail, FileText, Heart, ArrowLeft, Check, X } from 'lucide-react'
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
@@ -16,7 +16,8 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
   const { selectedSlot, bookingStatus, bookingError, doctor } = useSelector((state) => state.appointments)
 
   const doctorId = propDoctorId || params.doctorId || params.id || doctor?.id;
-
+  const { patientAppointments } = useSelector((state) => state.appointments);
+  
   console.log('All potential doctor IDs:', {
     propDoctorId,
     paramsId: params.id,
@@ -53,6 +54,21 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
       navigate("/available-slots")
     }
   }, [selectedSlot, navigate])
+  useEffect(() => {
+    const storedPatient = JSON.parse(localStorage.getItem('user'));
+    if (storedPatient?.id) {
+      dispatch(fetchPatientAppointmentsWithDoctors());
+    }
+  }, [dispatch]);
+
+  const checkTimeSlotConflict = () => {
+    if (!selectedSlot || !appointmentDate) return false;
+    
+    return patientAppointments.some(appt => 
+      appt.date === appointmentDate && 
+      appt.time === selectedSlot.start_time
+    );
+  };
 
   useEffect(() => {
     if (bookingStatus === "succeeded" || bookingStatus === "failed") {
@@ -100,24 +116,25 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+ const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     if (!doctorId) {
-      console.error('Doctor ID is missing. Available data:', {
-        propDoctorId,
-        params,
-        doctor,
-        location: location.pathname
-      });
+      console.error('Doctor ID is missing');
       setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
       return;
     }
 
+    if (checkTimeSlotConflict()) {
+      setErrors({ 
+        general: 'You already have an appointment at this time. Please choose a different time slot.' 
+      });
+      return;
+    }
 
     const appointment = {
       doctor_id: doctorId,
@@ -127,11 +144,10 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
       status: "pending",
       notes: patientData.medicalHistory,
       patient_data: patientData,
-    }
+    };
 
-
-    dispatch(bookAppointment(appointment))
-  }
+    dispatch(bookAppointment(appointment));
+  };
 
 
   const handleCancel = () => {
