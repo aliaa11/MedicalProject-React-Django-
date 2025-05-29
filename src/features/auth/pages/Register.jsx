@@ -101,6 +101,7 @@ const Register = () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
+                id: user.id,
                 user_id: user.id,
                 specialty_id: formData.specialty_id,
                 gender: formData.gender,
@@ -116,6 +117,7 @@ const Register = () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
+                id: user.id,
                 user_id: user.id,
                 gender: formData.gender,
                 date_of_birth: formData.date_of_birth,

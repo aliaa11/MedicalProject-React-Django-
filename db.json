@@ -79,6 +79,22 @@
       "password": "aliaaalihesh44@gmail.com",
       "role": "patient",
       "is_approved": true
+    },
+    {
+      "id": "297a",
+      "username": "Doctor",
+      "email": "Doctor@gmail.com",
+      "password": "Doctor@gmail.com",
+      "role": "doctor",
+      "is_approved": true
+    },
+    {
+      "id": "138d",
+      "username": "Aliaa_Hesham",
+      "email": "aliaa@gmail.com",
+      "password": "aliaa@gmail.com",
+      "role": "doctor",
+      "is_approved": true
     }
   ],
   "doctors": [
@@ -122,7 +138,7 @@
       "updated_at": "2025-05-27T13:49:34.537Z"
     },
     {
-      "id": "b473",
+      "id": "7e30",
       "user_id": "7e30",
       "gender": "male",
       "specialty_id": "1",
@@ -133,6 +149,28 @@
       "years_of_experience": 5,
       "created_at": "2025-05-27T07:47:58.653Z",
       "updated_at": "2025-05-27T13:49:34.537Z"
+    },
+    {
+      "id": "297a",
+      "user_id": "297a",
+      "specialty_id": "2",
+      "gender": "female",
+      "bio": "klsdl/fl;dg;s/g;lkkdfmsla;d,",
+      "years_of_experience": 3,
+      "profile_picture": "profile4.jpg",
+      "phone": "01069730946",
+      "contact_email": "contact.smith@example.com",
+      "created_at": "2025-05-27T07:47:48.653Z",
+      "updated_at": "2025-05-27T13:49:24.537Z"
+    },
+    {
+      "id": "138d",
+      "user_id": "138d",
+      "specialty_id": "2",
+      "gender": "female",
+      "bio": "aliaajdfjdnkglnskfssa",
+      "years_of_experience": "3",
+      "phone": "01044223153"
     }
   ],
   "patients": [
