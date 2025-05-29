@@ -183,7 +183,7 @@ const DoctorProfile = () => {
             <div className="doctor-avatar">
               <img src={doctorImage} alt={user.username} />
             </div>
-            <div className="status-badge"></div>
+            <div className="doctor-status-badge"></div>
           </div>
 
           <div className="doctor-profile-info">

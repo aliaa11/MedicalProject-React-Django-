@@ -120,7 +120,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
                   <User />
                 )}
               </div>
-              <div className="status-badge"></div>
+              <div className="doctor-status-badge"></div>
             </div>
 
             {/* Doctor Info */}

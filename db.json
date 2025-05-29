@@ -71,6 +71,14 @@
       "password": "admin@gmail.com",
       "role": "admin",
       "is_approved": true
+    },
+    {
+      "id": "526d",
+      "username": "Aliaa15",
+      "email": "aliaaalihesh44@gmail.com",
+      "password": "aliaaalihesh44@gmail.com",
+      "role": "patient",
+      "is_approved": true
     }
   ],
   "doctors": [
@@ -159,6 +167,17 @@
       "phone": "0100000000",
       "disease": "h",
       "medical_history": "h"
+    },
+    {
+      "id": "a4b5",
+      "user_id": "526d",
+      "gender": "female",
+      "date_of_birth": "2025-05-23",
+      "address": "Hamam, Minya, Egypt",
+      "phone": "01069730946",
+      "disease": "blod pressure",
+      "medical_history": "welcome",
+      "updated_at": "2025-05-29T14:00:13.072Z"
     }
   ],
   "specialties": [
@@ -203,6 +222,13 @@
       "day_of_week": "2",
       "start_time": "02:02",
       "end_time": "16:05"
+    },
+    {
+      "id": "fe28",
+      "doctor_id": 1,
+      "day_of_week": "6",
+      "start_time": "12:00",
+      "end_time": "15:00"
     }
   ],
   "appointments": [
@@ -212,7 +238,7 @@
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "09:30:00",
-      "status": "pending",
+      "status": "confirmed",
       "notes": "hh"
     },
     {
@@ -221,7 +247,7 @@
       "patient_id": "38e7",
       "date": "2025-05-28",
       "time": "14:00:00",
-      "status": "confirmed",
+      "status": "cancelled",
       "notes": "Regular checkup",
       "patient_data": {
         "name": "Aliaa Hesham Zaki",
@@ -348,6 +374,40 @@
         "phone": "01069730946",
         "medicalHistory": "dfgfg",
         "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "2ed0",
+      "doctor_id": "1",
+      "patient_id": "526d",
+      "date": "2025-06-03",
+      "time": "16:02",
+      "status": "approved",
+      "notes": "Wating You",
+      "patient_data": {
+        "id": "526d",
+        "name": "Aliaa15",
+        "email": "aliaaalihesh44@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "sfdgfdhfh",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "704a",
+      "doctor_id": "1",
+      "patient_id": "526d",
+      "date": "2025-06-07",
+      "time": "12:00",
+      "status": "rejected",
+      "notes": "sss",
+      "patient_data": {
+        "id": "526d",
+        "name": "Aliaa15",
+        "email": "aliaaalihesh44@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "sss",
+        "disease": "sss"
       }
     }
   ]
