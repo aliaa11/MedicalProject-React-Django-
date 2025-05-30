@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { bookAppointment, clearSelection, resetBookingStatus, fetchPatientAppointmentsWithDoctors } from "../appointmentSlice"
-import { useNavigate, useLocation, useParams } from "react-router-dom"
-import { Calendar, Clock, User, Phone, Mail, FileText, Heart, ArrowLeft, Check, X } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { bookAppointment, clearSelection, resetBookingStatus, fetchPatientAppointmentsWithDoctors } from "../appointmentSlice";
+import { useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Calendar, Clock, User, Phone, Mail, FileText, Heart, ArrowLeft, Check, X } from 'lucide-react';
 import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
-import "../style/book-appointment.css"
-
+import "../style/book-appointment.css";
 
 const BookAppointment = ({ doctorId: propDoctorId }) => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const params = useParams() 
-  
-  const { selectedSlot, bookingStatus, bookingError, doctor } = useSelector((state) => state.appointments)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
 
-  const doctorId = propDoctorId || params.doctorId || params.id || doctor?.id;
+  const { selectedSlot, bookingStatus, bookingError, doctor } = useSelector((state) => state.appointments);
+
+  // Get doctorId from props, URL params, or search params
+  const doctorId = propDoctorId || params.doctorId || searchParams.get('doctorId') || doctor?.id;
+
   const { patientAppointments } = useSelector((state) => state.appointments);
-  
-  console.log('All potential doctor IDs:', {
-    propDoctorId,
-    paramsId: params.id,
-    paramsDoctorId: params.doctorId,
-    doctorFromRedux: doctor?.id,
-    finalDoctorId: doctorId
-  });
 
   const [patientData, setPatientData] = useState({
     id: "",
@@ -33,10 +27,10 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
     phone: "",
     medicalHistory: "",
     disease: "",
-  })
+  });
 
-  const [showConfirmation, setShowConfirmation] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const storedPatient = JSON.parse(localStorage.getItem('user'));
@@ -51,9 +45,10 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
     }
 
     if (!selectedSlot) {
-      navigate("/available-slots")
+      navigate(`/available-slots?doctorId=${doctorId}`);
     }
-  }, [selectedSlot, navigate])
+  }, [selectedSlot, navigate, doctorId]);
+
   useEffect(() => {
     const storedPatient = JSON.parse(localStorage.getItem('user'));
     if (storedPatient?.id) {
@@ -63,7 +58,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
 
   const checkTimeSlotConflict = () => {
     if (!selectedSlot || !appointmentDate) return false;
-    
     return patientAppointments.some(appt => 
       appt.date === appointmentDate && 
       appt.time === selectedSlot.start_time
@@ -72,63 +66,52 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
 
   useEffect(() => {
     if (bookingStatus === "succeeded" || bookingStatus === "failed") {
-      setShowConfirmation(true)
+      setShowConfirmation(true);
     }
-  }, [bookingStatus])
+  }, [bookingStatus]);
 
-  const query = new URLSearchParams(location.search)
-  const appointmentDate = query.get("date")
+  const query = new URLSearchParams(location.search);
+  const appointmentDate = query.get("date");
 
   const validateForm = () => {
-    const newErrors = {}
-
-    if (!patientData.name.trim()) {
-      newErrors.name = "Full name is required"
-    }
-
+    const newErrors = {};
+    if (!patientData.name.trim()) newErrors.name = "Full name is required";
     if (!patientData.email.trim()) {
-      newErrors.email = "Email is required"
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(patientData.email)) {
-      newErrors.email = "Please enter a valid email"
+      newErrors.email = "Please enter a valid email";
     }
-
     if (!patientData.phone.trim()) {
-      newErrors.phone = "Phone number is required"
+      newErrors.phone = "Phone number is required";
     } else if (!/^\d{11}$/.test(patientData.phone.replace(/\D/g, ""))) {
-      newErrors.phone = "Please enter a valid phone number"
+      newErrors.phone = "Please enter a valid phone number";
     }
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setPatientData({
       ...patientData,
       [name]: value,
-    })
-
+    });
     if (errors[name]) {
       setErrors({
         ...errors,
         [name]: "",
-      })
+      });
     }
-  }
+  };
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
     if (!doctorId) {
       console.error('Doctor ID is missing');
       setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
       return;
     }
-
     if (checkTimeSlotConflict()) {
       setErrors({ 
         general: 'You already have an appointment at this time. Please choose a different time slot.' 
@@ -149,22 +132,21 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
     dispatch(bookAppointment(appointment));
   };
 
-
   const handleCancel = () => {
-    dispatch(clearSelection())
-    navigate("/available-slots")
-  }
+    dispatch(clearSelection());
+    navigate(`/available-slots?doctorId=${doctorId}`);
+  };
 
   const closeModal = () => {
-    setShowConfirmation(false)
+    setShowConfirmation(false);
     if (bookingStatus === "succeeded") {
-      dispatch(clearSelection())
-      dispatch(resetBookingStatus())
-      navigate("/available-slots")
+      dispatch(clearSelection());
+      dispatch(resetBookingStatus());
+      navigate(`/available-slots?doctorId=${doctorId}`); // Navigate back to the same doctor's slots
     }
-  }
+  };
 
-  if (!selectedSlot) return null
+  if (!selectedSlot) return null;
 
   return (
     <div className="book-appointment-container">
@@ -181,51 +163,45 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
         </div>
       )}
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <button onClick={handleCancel} className="back-button">
-            <ArrowLeft className="w-5 h-5" />
-            Back to Available Slots
-          </button>
+          <ArrowLeft className="w-5 h-5" />
+          Back to Available Slots
+        </button>
         <div className="max-w-4xl !m-auto">
-        
-
           <div className="booking-header">
             <h1 className="booking-title">Complete Your Booking</h1>
             <p className="booking-subtitle">Please fill in your details to confirm the appointment</p>
           </div>
 
           <div>
-            {/* Appointment Summary */}
             <div className=" !mb-5">
               <div className="appointment-summary">
                 <h3 className="summary-header">Appointment Summary</h3>
-
                 {doctor && (
-                    <div className="doctor-summary">
+                  <div className="doctor-summary">
                     <div className="flex">
-                        <div className="doctor-avatar">
-                            {doctor.profile_picture ? (
-                            <img 
-                                src={profile_picture} 
-                                alt={doctor.username}
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                            ) : (
-                            <User className="w-8 h-8 text-white" />
-                            )}
+                      <div className="doctor-avatar">
+                        {doctor.profile_picture ? (
+                          <img 
+                            src={profile_picture} 
+                            alt={doctor.username}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-8 h-8 text-white" />
+                        )}
+                      </div>
+                      <div className="doctors-info">
+                        <h2 className="text-lg font-semibold"> {doctor.username}</h2>
+                        <p className="text-blue-600">{doctor.specialty}</p>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          <span>{doctor.years_of_experience} years experience</span>
                         </div>
-                        <div className="doctors-info">
-                            <h2 className="text-lg font-semibold"> {doctor.username}</h2>
-                            <p className="text-blue-600">{doctor.specialty}</p>
-                            <div className="flex items-center text-sm text-gray-500">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            <span>{doctor.years_of_experience} years experience</span>
-                            </div>
-                        </div>
+                      </div>
                     </div>
-                    </div>
+                  </div>
                 )}
-
                 <div className="appointment-details">
                   <div className="detail-item">
                     <Calendar className="w-5 h-5 detail-icon" />
@@ -234,7 +210,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                       <p className="value">{appointmentDate}</p>
                     </div>
                   </div>
-
                   <div className="detail-item">
                     <Clock className="w-5 h-5 detail-icon" />
                     <div className="detail-content">
@@ -248,17 +223,14 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
               </div>
             </div>
 
-            {/* Booking Form */}
             <div className="!mb-5">
               <div className="booking-form-card">
                 <form onSubmit={handleSubmit}>
-                  {/* Personal Information */}
                   <div className="form-section">
                     <h4 className="section-title">
                       <User className="w-5 h-5" />
                       Personal Information
                     </h4>
-
                     <div className="form-grid">
                       <div className="form-field">
                         <label htmlFor="name" className="form-label">
@@ -275,7 +247,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                         />
                         {errors.name && <p className="error-message">{errors.name}</p>}
                       </div>
-
                       <div className="form-field">
                         <label htmlFor="phone" className="form-label">
                           Phone Number *
@@ -295,7 +266,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                         {errors.phone && <p className="error-message">{errors.phone}</p>}
                       </div>
                     </div>
-
                     <div className="form-field">
                       <label htmlFor="email" className="form-label">
                         Email Address *
@@ -316,13 +286,11 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                     </div>
                   </div>
 
-                  {/* Medical Information */}
                   <div className="form-section">
                     <h4 className="section-title">
                       <Heart className="w-5 h-5" />
                       Medical Information
                     </h4>
-
                     <div className="form-field">
                       <label htmlFor="disease" className="form-label">
                         Current Condition
@@ -337,7 +305,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                         placeholder="Describe your current condition"
                       />
                     </div>
-
                     <div className="form-field">
                       <label htmlFor="medicalHistory" className="form-label">
                         Medical History & Additional Notes
@@ -357,7 +324,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
                     </div>
                   </div>
 
-                  {/* Form Actions */}
                   <div className="form-actions">
                     <button type="button" onClick={handleCancel} className="btn btn-secondary">
                       Cancel
@@ -386,7 +352,6 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
           </div>
         </div>
 
-        {/* Confirmation Modal */}
         {showConfirmation && (
           <div className="modal-overlay">
             <div className="modal-content">
@@ -423,7 +388,7 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BookAppointment
+export default BookAppointment;

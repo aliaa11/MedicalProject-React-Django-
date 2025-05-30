@@ -20,7 +20,7 @@ const Navbar = () => {
     }
   ];
   useEffect(() => {
-    // Check for upcoming appointments
+    // Function to check for appointments coming within 25 minutes
     const checkUpcomingAppointments = () => {
       const user = JSON.parse(localStorage.getItem('user'));
       if (!user) return;
@@ -29,15 +29,40 @@ const Navbar = () => {
       const now = new Date();
       const upcoming = appointments.filter(appt => {
         const apptDate = new Date(`${appt.date}T${appt.time}`);
-        const timeDiff = (apptDate - now) / (1000 * 60); // difference in minutes
+        const timeDiff = (apptDate - now) / (1000 * 60); // Difference in minutes
         
-        // Notify if appointment is within next 30 minutes and not passed yet
-        return timeDiff > 0 && timeDiff <= 30;
+        // Check if appointment is within 25 minutes (changed from 30)
+        return timeDiff > 0 && timeDiff <= 25;
       });
 
-      setNotifications(upcoming);
-      setHasUnread(upcoming.length > 0);
+      // Only show notifications for the current user's appointments
+      const userAppointments = upcoming.filter(appt => 
+        (user.role === 'doctor' && appt.doctor_id === user.id) ||
+        (user.role === 'patient' && appt.patient_id === user.id)
+      );
+
+      setNotifications(userAppointments);
+      setHasUnread(userAppointments.length > 0);
+
+      // Show browser notification if there are upcoming appointments
+      if (userAppointments.length > 0 && Notification.permission === 'granted') {
+        userAppointments.forEach(appt => {
+          const notificationTitle = user.role === 'doctor' 
+            ? `Appointment with ${appt.patient_name}` 
+            : `Appointment with Dr. ${appt.doctor_name}`;
+          
+          new Notification(notificationTitle, {
+            body: `Starts at ${formatTime(appt.date, appt.time)}`,
+            icon: '/favicon.ico'
+          });
+        });
+      }
     };
+
+    // Request notification permission if not already granted
+    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+      Notification.requestPermission();
+    }
 
     // Check immediately
     checkUpcomingAppointments();
@@ -72,43 +97,8 @@ const Navbar = () => {
       exact: true 
     },
     { 
-      pattern: '/credits', 
-      title: 'Credits Account',
-      exact: true 
-    },
-    { 
-      pattern: '/edit-profile', 
-      title: 'Edit Profile',
-      exact: false 
-    },
-    { 
-      pattern: '/create-profile', 
-      title: 'Create Profile',
-      exact: true 
-    },
-    { 
       pattern: '/home', 
       title: 'Home',
-      exact: true 
-    },
-    { 
-      pattern: '/appointments', 
-      title: 'Appointments',
-      exact: true 
-    },
-    { 
-      pattern: '/patients', 
-      title: 'Patients',
-      exact: false 
-    },
-    { 
-      pattern: '/doctors', 
-      title: 'Doctors',
-      exact: false 
-    },
-    { 
-      pattern: '/settings', 
-      title: 'Settings',
       exact: true 
     }
   ];
@@ -155,8 +145,7 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side - User info and actions */}
-         <div className="navbar-right">
+        <div className="navbar-right">
           <div className="notification-container">
             <button 
               className="notification-button" 
@@ -170,20 +159,27 @@ const Navbar = () => {
             {showNotifications && (
               <div className="notification-dropdown">
                 <div className="notification-header">
-                  <h4>Upcoming Appointments</h4>
+                  <h4>Upcoming Appointments (within 25 minutes)</h4>
                 </div>
                 {notifications.length > 0 ? (
                   <div className="notification-list">
-                    {notifications.map((appt, index) => (
-                      <div key={index} className="notification-item">
-                        <div className="notification-time">
-                          {formatTime(appt.date, appt.time)}
+                    {notifications.map((appt, index) => {
+                      const user = JSON.parse(localStorage.getItem('user'));
+                      return (
+                        <div key={index} className="notification-item">
+                          <div className="notification-time">
+                            {formatTime(appt.date, appt.time)}
+                          </div>
+                          <div className="notification-details">
+                            {user.role === 'doctor' ? (
+                              <>With {appt.patient_name || 'Patient'}</>
+                            ) : (
+                              <>With Dr. {appt.doctor_name || 'Doctor'}</>
+                            )}
+                          </div>
                         </div>
-                        <div className="notification-details">
-                          With Dr. {appt.doctor?.name || 'Unknown Doctor'}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="notification-empty">

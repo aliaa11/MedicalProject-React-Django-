@@ -14,7 +14,7 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
   const [searchParams] = useSearchParams()
   
   // Get doctorId from props, URL params, or default to 1
-  const doctorId = propDoctorId || searchParams.get('doctorId') || '1'
+  const doctorId = propDoctorId || searchParams.get('doctorId')
   
   const { availabilitySlots, slotsLoading, slotsError, doctor, bookedAppointments } = useSelector((state) => state.appointments)
   const [selectedDate, setSelectedDate] = useState(new Date())

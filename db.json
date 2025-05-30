@@ -95,12 +95,28 @@
       "password": "aliaa@gmail.com",
       "role": "doctor",
       "is_approved": true
+    },
+    {
+      "id": "2335",
+      "username": "AliaaZaki",
+      "email": "aliaaZaki@gmail.com",
+      "password": "aliaaZaki@gmail.com",
+      "role": "patient",
+      "is_approved": true
+    },
+    {
+      "id": "cc6f",
+      "username": "Salma",
+      "email": "salma@gmail.com",
+      "password": "salma@gmail.com",
+      "role": "doctor",
+      "is_approved": true
     }
   ],
   "doctors": [
     {
       "id": "1",
-      "user_id": 1,
+      "user_id": "1",
       "specialty_id": "1",
       "gender": "male",
       "phone": "01000000000",
@@ -171,6 +187,15 @@
       "bio": "aliaajdfjdnkglnskfssa",
       "years_of_experience": "3",
       "phone": "01044223153"
+    },
+    {
+      "id": "cc6f",
+      "user_id": "cc6f",
+      "specialty_id": "1",
+      "gender": "female",
+      "bio": "njksndjklsjka;gklk'l;';l",
+      "years_of_experience": "4",
+      "phone": "01069730955"
     }
   ],
   "patients": [
@@ -226,6 +251,16 @@
       "phone": "010000000",
       "disease": "ff",
       "medical_history": "ff"
+    },
+    {
+      "id": "2335",
+      "user_id": "2335",
+      "gender": "female",
+      "date_of_birth": "2002-05-14",
+      "address": "Hamam, Minya, Egypt",
+      "phone": "01044223153",
+      "disease": "blod pressure",
+      "medical_history": "nothing"
     }
   ],
   "specialties": [
@@ -277,6 +312,13 @@
       "day_of_week": "5",
       "start_time": "00:00",
       "end_time": "12:52"
+    },
+    {
+      "id": "a08e",
+      "doctor_id": "cc6f",
+      "day_of_week": "0",
+      "start_time": "12:00",
+      "end_time": "17:00"
     }
   ],
   "appointments": [
@@ -490,6 +532,40 @@
         "phone": "01069730946",
         "medicalHistory": "sd",
         "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "f2cd",
+      "doctor_id": "9851",
+      "patient_id": "2335",
+      "date": "2025-05-30",
+      "time": "13:00",
+      "status": "approved",
+      "notes": "huhik",
+      "patient_data": {
+        "id": "2335",
+        "name": "AliaaZaki",
+        "email": "aliaaZaki@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "huhik",
+        "disease": "blod pressure"
+      }
+    },
+    {
+      "id": "6369",
+      "doctor_id": "9851",
+      "patient_id": "2335",
+      "date": "2025-05-30",
+      "time": "13:15",
+      "status": "approved",
+      "notes": "",
+      "patient_data": {
+        "id": "2335",
+        "name": "AliaaZaki",
+        "email": "aliaaZaki@gmail.com",
+        "phone": "01069730946",
+        "medicalHistory": "",
+        "disease": ""
       }
     }
   ]
