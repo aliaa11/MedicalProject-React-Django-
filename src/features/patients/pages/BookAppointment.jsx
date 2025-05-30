@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { bookAppointment, clearSelection, resetBookingStatus, fetchPatientAppointmentsWithDoctors } from "../appointmentSlice";
 import { useNavigate, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { Calendar, Clock, User, Phone, Mail, FileText, Heart, ArrowLeft, Check, X } from 'lucide-react';
-import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
+import profile_picture from '../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg';
 import "../style/book-appointment.css";
 
 const BookAppointment = ({ doctorId: propDoctorId }) => {

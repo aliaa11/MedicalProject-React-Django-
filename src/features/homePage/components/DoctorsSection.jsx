@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchAllDoctors, fetchAllUsers, fetchAllSpecialties } from "../dataSlice";
 import styles from "../style/DoctorsSection.module.css";
-import doctorImage from "../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg"; 
+import doctorImage from "../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg"; 
 import { useNavigate } from "react-router-dom";
 
 export default function DoctorsSection() {
@@ -11,6 +11,10 @@ export default function DoctorsSection() {
   const [allSpecialties, setAllSpecialties] = useState([]);
   const [selectedSpecialty, setSelectedSpecialty] = useState("all");
   const navigate = useNavigate();
+
+  // Get user role from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isDoctor = user?.role === 'doctor';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +56,15 @@ export default function DoctorsSection() {
     currentPage * doctorsPerPage,
     (currentPage + 1) * doctorsPerPage
   );
+
+  const handleReadMore = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    navigate('/patient/available-doctors');
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.container}>
@@ -84,27 +97,30 @@ export default function DoctorsSection() {
         <div className={styles.doctorsGrid}>
           {currentDoctors.map((doctor) => (
             <div key={doctor.id} className={styles.doctorCard}>
-               <div className={styles.cardContent}>
-              <img src={doctorImage} alt={doctor.username} className={styles.doctorImage} />
-              <h3 className={styles.doctorName}>
+              <div className={styles.cardContent}>
+                <img src={doctorImage} alt={doctor.username} className={styles.doctorImage} />
+                <h3 className={styles.doctorName}>
                   <span className={styles.nameHighlight}>{doctor.username}</span>  
-              </h3>
-              <p className={styles.specialty}>{doctor.specialtyName}</p>
-              <p className={styles.bio}>{doctor.bio}</p>
-              <div className={styles.details}>
-                <p>{doctor.years_of_experience} years of experience</p>
-                <p>{doctor.phone}</p>
+                </h3>
+                <p className={styles.specialty}>{doctor.specialtyName}</p>
+                <p className={styles.bio}>{doctor.bio}</p>
+                <div className={styles.details}>
+                  <p>{doctor.years_of_experience} years of experience</p>
+                  <p>{doctor.phone}</p>
+                </div>
+                {!isDoctor && (
+                  <button 
+                    onClick={handleReadMore}
+                    className={styles.readMoreButton}
+                  >
+                    READ MORE
+                  </button>
+                )}
               </div>
-              <button 
-                onClick={() => navigate(`/patient/available-doctors`)}
-                className={styles.readMoreButton}
-              >
-                READ MORE
-              </button>
-            </div>
             </div>
           ))}
         </div>
+
         {/* Pagination Controls */}
         <div className={styles.pagination}>
           {Array.from({ length: totalPages }, (_, index) => (

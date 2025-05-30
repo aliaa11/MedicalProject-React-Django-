@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { fetchDoctorProfile, fetchAvailabilitySlots, fetchAllSpecialties } from "../appointmentSlice";
 import "../style/doctor-profile.css";
-import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
+import profile_picture from '../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg';
 
 const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
   const params = useParams();

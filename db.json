@@ -2,7 +2,7 @@
   "users": [
     {
       "id": "1",
-      "username": "aya",
+      "username": "Dr .Salma",
       "email": "john@example.com",
       "password": "hashed_password",
       "role": "doctor",
@@ -58,10 +58,10 @@
     },
     {
       "id": "b473",
-      "username": "Aliaa12",
-      "email": "aliaaalihesh123@gmail.com",
+      "username": "Salma",
+      "email": "salmaa@gmail.com",
       "password": "123456",
-      "role": "patient",
+      "role": "admin",
       "is_approved": true
     },
     {
@@ -82,7 +82,7 @@
     },
     {
       "id": "297a",
-      "username": "Doctor",
+      "username": "Dr. Arwa",
       "email": "Doctor@gmail.com",
       "password": "Doctor@gmail.com",
       "role": "doctor",
@@ -90,7 +90,7 @@
     },
     {
       "id": "9851",
-      "username": "Aliaa_Hesham",
+      "username": "Dr. Abdulrahman",
       "email": "aliaa@gmail.com",
       "password": "aliaa@gmail.com",
       "role": "doctor",

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Calendar, Phone, MapPin, User, Clock, Stethoscope, Edit3, Heart } from 'lucide-react';
-import patientImage from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
+import patientImage from '../../../assets/lifestyle-people-emotions-casual-concept-confident-nice-smiling-asian-woman-cross-arms-chest-confident-ready-help-listening-coworkers-taking-part-conversation.jpg';
 import headerBg from '../../../assets/2148071818.jpg';
 import "../style/patientProfile.css";
 import { useDispatch, useSelector } from 'react-redux';

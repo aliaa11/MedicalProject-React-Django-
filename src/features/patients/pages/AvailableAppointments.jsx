@@ -4,7 +4,7 @@ import { fetchAvailabilitySlots, selectSlot, fetchDoctorProfile, fetchBookedAppo
 import { format, addDays, isToday, isAfter, startOfWeek, parse, addMinutes, isSameDay } from "date-fns"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Calendar, Clock, User, Stethoscope, ChevronLeft, ChevronRight } from 'lucide-react'
-import profile_picture from '../../../assets/portrait-smiling-charming-young-man-grey-t-shirt-standing-against-plain-background.jpg';
+import profile_picture from  '../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg';
 
 import "../style/available-slots.css"
 
@@ -13,7 +13,6 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   
-  // Get doctorId from props, URL params, or default to 1
   const doctorId = propDoctorId || searchParams.get('doctorId')
   
   const { availabilitySlots, slotsLoading, slotsError, doctor, bookedAppointments } = useSelector((state) => state.appointments)
