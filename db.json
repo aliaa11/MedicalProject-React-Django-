@@ -319,6 +319,13 @@
       "day_of_week": "0",
       "start_time": "12:00",
       "end_time": "17:00"
+    },
+    {
+      "id": "5848",
+      "doctor_id": "cc6f",
+      "day_of_week": "5",
+      "start_time": "14:00",
+      "end_time": "15:00"
     }
   ],
   "appointments": [
@@ -566,6 +573,23 @@
         "phone": "01069730946",
         "medicalHistory": "",
         "disease": ""
+      }
+    },
+    {
+      "id": "1e49",
+      "doctor_id": "cc6f",
+      "patient_id": "2335",
+      "date": "2025-05-30",
+      "time": "14:00",
+      "status": "approved",
+      "notes": "ip2n3piur2i",
+      "patient_data": {
+        "id": "2335",
+        "name": "AliaaZaki",
+        "email": "aliaaZaki@gmail.com",
+        "phone": "01029229478",
+        "medicalHistory": "ip2n3piur2i",
+        "disease": "sugar"
       }
     }
   ]

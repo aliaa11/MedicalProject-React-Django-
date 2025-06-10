@@ -1,467 +1,381 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Register.css';
-import boxdocLogo from '../../../assets/boxdoc-logo.png';
 
-const Register = () => {
+const RegisterPage = () => {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState('');
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  // Common fields for all users
+  const [userData, setUserData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    phone: '',
-    specialty_id: '',
-    gender: '',
-    bio: '',
-    years_of_experience: '',
-    date_of_birth: '',
-    address: '',
-    disease: '',
-    medical_history:''
-    
+    role: '',
   });
 
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
+  // Doctor specific fields
+  const [doctorData, setDoctorData] = useState({
+    specialty_id: 1,
+    gender: '',
+    phone: '',
+    bio: '',
+    contact_email: '',
+    years_of_experience: 0,
+  });
 
-  const handleChange = (e) => {
+  // Patient specific fields
+  const [patientData, setPatientData] = useState({
+    gender: '',
+    date_of_birth: '',
+    address: '',
+    phone: '',
+    disease: '',
+    medical_history: '',
+  });
+
+  const handleRoleSelection = (selectedRole) => {
+    setRole(selectedRole);
+    setUserData(prev => ({ ...prev, role: selectedRole }));
+    setStep(2);
+  };
+
+  const handleUserInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setUserData(prev => ({ ...prev, [name]: value }));
   };
 
-  const validateStep1 = () => {
-    const newErrors = {};
-    if (!formData.username) newErrors.username = 'Username is required';
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    if (!role) newErrors.role = 'Please select a role';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleDoctorInputChange = (e) => {
+    const { name, value } = e.target;
+    setDoctorData(prev => ({ ...prev, [name]: value }));
   };
 
-  const validateStep2 = () => {
-    const newErrors = {};
-    if (!formData.phone) newErrors.phone = 'Phone number is required';
-    
-    if (role === 'doctor') {
-      if (!formData.specialty_id) newErrors.specialty_id = 'Specialty is required';
-      if (!formData.gender) newErrors.gender = 'Gender is required';
-    } else {
-      if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handlePatientInputChange = (e) => {
+    const { name, value } = e.target;
+    setPatientData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+
+  try {
+    // Log the data being sent
+    console.log('Sending user data:', userData);
     
-    if (step === 1) {
-      if (validateStep1()) setStep(2);
-    } else {
-      if (validateStep2()) {
-        try {
-          // Submit user data
-          const userResponse = await fetch('http://localhost:3001/users', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: formData.username,
-              email: formData.email,
-              password: formData.password,
-              role: role,
-              is_approved: role === 'patient'
-            }),
-          });
+    // Step 1: Register the base user
+    const userResponse = await axios.post('http://localhost:8000/api/register/', userData, {
+      headers: {
+        'Content-Type': 'application/json',
+        // Add this if you're using CSRF protection
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+    });
+    
+    console.log('User registration response:', userResponse.data);
+    const userId = userResponse.data.user_id;
 
-          const user = await userResponse.json();
+    // Step 2: Register role-specific details
+    if (role === 'doctor') {
+      console.log('Sending doctor data:', doctorData);
+      await axios.post('http://localhost:8000/api/register/doctor/', {
+        user_id: userId,
+        ...doctorData
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      });
+    } else if (role === 'patient') {
+      console.log('Sending patient data:', patientData);
+      await axios.post('http://localhost:8000/api/register/patient/', {
+        user_id: userId,
+        ...patientData
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      });
+    }
 
-          // Submit role-specific data
-          if (role === 'doctor') {
-            await fetch('http://localhost:3001/doctors', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: user.id,
-                user_id: user.id,
-                specialty_id: formData.specialty_id,
-                gender: formData.gender,
-                bio: formData.bio,
-                years_of_experience: formData.years_of_experience,
-                phone: formData.phone
-              }),
-            });
-          } else {
-            await fetch('http://localhost:3001/patients', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: user.id,
-                user_id: user.id,
-                gender: formData.gender,
-                date_of_birth: formData.date_of_birth,
-                address: formData.address,
-                phone: formData.phone,
-                disease: formData.disease,
-                medical_history: formData.medical_history
-              }),
-            });
-          }
+    navigate('/login');
+  } catch (err) {
+    console.error('Full error:', err);
+    console.error('Error response:', err.response);
+    setError(err.response?.data?.error || 
+             err.response?.data?.message || 
+             'Registration failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
-          navigate('/login');
-        } catch (error) {
-          console.error('Registration failed:', error);
-        }
+// Helper function to get CSRF token
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
     }
-  };
-
+  }
+  return cookieValue;
+}
   return (
-    <div className="register-container">
-      <div className="register-card">
-        {/* Left Side - Branding */}
-        <div className="brand-section">
-          <div className="brand-content">
-            <img src={boxdocLogo} alt="BoxDoc Logo" className="logo" />
-            <h1 className="brand-title">BoxDoc</h1>
-            <p className="brand-subtitle">Your Trusted Healthcare Partner</p>
-            <div className="brand-features">
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Secure Medical Records</span>
-              </div>
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>24/7 Doctor Access</span>
-              </div>
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                </svg>
-                <span>Cloud-Based Solutions</span>
-              </div>
-            </div>
+    <div className="max-w-md mx-auto my-10 p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
+      
+      {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
+
+      {step === 1 && (
+        <div className="step-1">
+          <h3 className="text-lg font-semibold mb-4">Select Your Role</h3>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => handleRoleSelection('doctor')}
+              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              I'm a Doctor
+            </button>
+            <button
+              onClick={() => handleRoleSelection('patient')}
+              className="px-6 py-3 bg-green-500 text-white rounded hover:bg-green-600 transition"
+            >
+              I'm a Patient
+            </button>
           </div>
         </div>
+      )}
 
-        {/* Right Side - Form */}
-        <div className="form-section">
-          {/* Progress Indicator */}
-          <div className="progress-container">
-            <div className="progress-steps">
-              <div className={`progress-step ${step >= 1 ? 'active' : ''}`}>
-                <div className="step-number">1</div>
-                <div className="step-label">Account</div>
-              </div>
-              <div className={`progress-line ${step >= 2 ? 'active' : ''}`}></div>
-              <div className={`progress-step ${step >= 2 ? 'active' : ''}`}>
-                <div className="step-number">2</div>
-                <div className="step-label">Profile</div>
-              </div>
+      {step === 2 && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="step-2">
+            <h3 className="text-lg font-semibold mb-4">
+              {role === 'doctor' ? 'Doctor Registration' : 'Patient Registration'}
+            </h3>
+
+            {/* Common fields for all users */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={userData.username}
+                onChange={handleUserInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
             </div>
-          </div>
 
-          {/* Form Content */}
-          <div className="form-content">
-            <h2 className="form-title">
-              {step === 1 ? 'Create Your Account' : `Complete Your ${role === 'doctor' ? 'Doctor' : 'Patient'} Profile`}
-            </h2>
-            <p className="form-description">
-              {step === 1 ? 'Join our medical community today' : 'Help us know you better'}
-            </p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={userData.email}
+                onChange={handleUserInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
 
-            <form onSubmit={handleSubmit} className="register-form">
-              {step === 1 ? (
-                <>
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label className="form-label">Username*</label>
-                      <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        className={`form-input ${errors.username ? 'error' : ''}`}
-                        placeholder="Enter your username"
-                      />
-                      {errors.username && <span className="error-message">{errors.username}</span>}
-                    </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={userData.password}
+                onChange={handleUserInputChange}
+                className="w-full p-2 border rounded"
+                required
+                minLength="8"
+              />
+            </div>
 
-                    <div className="form-group">
-                      <label className="form-label">Email*</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className={`form-input ${errors.email ? 'error' : ''}`}
-                        placeholder="Enter your email"
-                      />
-                      {errors.email && <span className="error-message">{errors.email}</span>}
-                    </div>
-                  </div>
+            {/* Role-specific fields */}
+            {role === 'doctor' ? (
+              <>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Specialty ID</label>
+                  <input
+                    type="number"
+                    name="specialty_id"
+                    value={doctorData.specialty_id}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
 
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label className="form-label">Password*</label>
-                      <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className={`form-input ${errors.password ? 'error' : ''}`}
-                        placeholder="At least 6 characters"
-                      />
-                      {errors.password && <span className="error-message">{errors.password}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label className="form-label">Confirm Password*</label>
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
-                        placeholder="Confirm your password"
-                      />
-                      {errors.confirmPassword && (
-                        <span className="error-message">{errors.confirmPassword}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">I am registering as*</label>
-                    <div className="role-selector">
-                      <button
-                        type="button"
-                        onClick={() => setRole('doctor')}
-                        className={`role-option ${role === 'doctor' ? 'selected' : ''}`}
-                      >
-                        <div className="role-content">
-                          <svg className="role-icon" viewBox="0 0 24 24">
-                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                          <span className="role-name">Doctor</span>
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setRole('patient')}
-                        className={`role-option ${role === 'patient' ? 'selected' : ''}`}
-                      >
-                        <div className="role-content">
-                          <svg className="role-icon" viewBox="0 0 24 24">
-                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <span className="role-name">Patient</span>
-                        </div>
-                      </button>
-                    </div>
-                    {errors.role && <span className="error-message">{errors.role}</span>}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label className="form-label">Phone Number*</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className={`form-input ${errors.phone ? 'error' : ''}`}
-                        placeholder="Enter phone number"
-                      />
-                      {errors.phone && <span className="error-message">{errors.phone}</span>}
-                    </div>
-               
-                    {role === 'doctor' ? (
-                      <div className="form-group">
-                        <label className="form-label">Specialty*</label>
-                        <select
-                          name="specialty_id"
-                          value={formData.specialty_id}
-                          onChange={handleChange}
-                          className={`form-input ${errors.specialty_id ? 'error' : ''}`}
-                        >
-                          <option value="">Select Specialty</option>
-                          <option value="1">Internal Medicine</option>
-                          <option value="2">Pediatrics</option>
-                        </select>
-                        {errors.specialty_id && (
-                          <span className="error-message">{errors.specialty_id}</span>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="form-group">
-                        <label className="form-label">Date of Birth*</label>
-                        <input
-                          type="date"
-                          name="date_of_birth"
-                          value={formData.date_of_birth}
-                          onChange={handleChange}
-                          className={`form-input ${errors.date_of_birth ? 'error' : ''}`}
-                        />
-                        {errors.date_of_birth && (
-                          <span className="error-message">{errors.date_of_birth}</span>
-                        )}
-                             <div className="form-group">
-                      <label className="form-label">Disease*</label>
-                      <input
-                        type="text"
-                        name="disease"
-                        value={formData.disease}
-                        onChange={handleChange}
-                        className={`form-input ${errors.disease ? 'error' : ''}`}
-                        placeholder="Enter your disease"
-                      />
-                      {errors.disease && <span className="error-message">{errors.disease}</span>}
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Medical History*</label>
-                      <input
-                        type="text"
-                        name="medical_history"
-                        value={formData.medical_history}
-                        onChange={handleChange}
-                        className={`form-input ${errors.medical_history ? 'error' : ''}`}
-                        placeholder="Enter your Medical History"
-                      />
-                      {errors.medical_history && <span className="error-message">{errors.medical_history}</span>}
-                    </div>
-                      </div>
-                      
-                    )}
-                  </div>
-
-
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label className="form-label">Gender*</label>
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        className={`form-input ${errors.gender ? 'error' : ''}`}
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </select>
-                      {errors.gender && <span className="error-message">{errors.gender}</span>}
-                    </div>
-
-                    {role === 'doctor' ? (
-                      <div className="form-group">
-                        <label className="form-label">Years of Experience</label>
-                        <input
-                          type="number"
-                          name="years_of_experience"
-                          value={formData.years_of_experience}
-                          onChange={handleChange}
-                          className="form-input"
-                          placeholder="Enter years"
-                          min="0"
-                        />
-                      </div>
-                    ) : (
-                      <div className="form-group">
-                        <label className="form-label">Address</label>
-                        <input
-                          type="text"
-                          name="address"
-                          value={formData.address}
-                          onChange={handleChange}
-                          className="form-input"
-                          placeholder="Enter your address"
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {role === 'doctor' && (
-                    <div className="form-group">
-                      <label className="form-label">Professional Bio</label>
-                      <textarea
-                        name="bio"
-                        value={formData.bio}
-                        onChange={handleChange}
-                        rows="3"
-                        className="form-input"
-                        placeholder="Tell us about your professional background"
-                      ></textarea>
-                    </div>
-                  )}
-                </>
-              )}
-
-              <div className="form-actions">
-                {step === 2 && (
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="back-button"
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Gender</label>
+                  <select
+                    name="gender"
+                    value={doctorData.gender}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
                   >
-                    Back
-                  </button>
-                )}
-                <button
-                  type="submit"
-                  className={`submit-button ${step === 1 ? 'w-full' : 'ml-auto'}`}
-                >
-                  {step === 1 ? 'Continue' : 'Complete Registration'}
-                  <svg className="button-icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            </form>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
 
-            <div className="form-footer">
-              <p className="footer-text">
-                {step === 1 ? 'Already have an account?' : 'Want to change account type?'}{' '}
-                <a
-                  href={step === 1 ? '/login' : '#'}
-                  onClick={step === 2 ? (e) => { e.preventDefault(); setStep(1); } : null}
-                  className="footer-link"
-                >
-                  {step === 1 ? 'Sign in' : 'Go back'}
-                </a>
-              </p>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={doctorData.phone}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Bio</label>
+                  <textarea
+                    name="bio"
+                    value={doctorData.bio}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Contact Email</label>
+                  <input
+                    type="email"
+                    name="contact_email"
+                    value={doctorData.contact_email}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Years of Experience</label>
+                  <input
+                    type="number"
+                    name="years_of_experience"
+                    value={doctorData.years_of_experience}
+                    onChange={handleDoctorInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Gender</label>
+                  <select
+                    name="gender"
+                    value={patientData.gender}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Date of Birth</label>
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    value={patientData.date_of_birth}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={patientData.address}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={patientData.phone}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Disease (Optional)</label>
+                  <input
+                    type="text"
+                    name="disease"
+                    value={patientData.disease}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Medical History (Optional)</label>
+                  <textarea
+                    name="medical_history"
+                    value={patientData.medical_history}
+                    onChange={handlePatientInputChange}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="flex justify-between mt-6">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition disabled:bg-blue-300"
+              >
+                {loading ? 'Registering...' : 'Register'}
+              </button>
             </div>
           </div>
-        </div>
-      </div>
+        </form>
+      )}
     </div>
   );
 };
 
-export default Register;
+export default RegisterPage;
