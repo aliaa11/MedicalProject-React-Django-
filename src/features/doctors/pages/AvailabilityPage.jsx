@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
 
@@ -14,32 +15,37 @@ export default function AvailabilityPage() {
   const [errors, setErrors] = useState({});
   const [editingSlotId, setEditingSlotId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     
     if (!userData || userData?.role !== "doctor") {
       toast.error("Only doctors can manage availability slots");
-      // Add redirect:
-      navigate('/login'); // or wherever you want to send non-doctors
+      navigate('/login');
       return;
     }
   
     fetchSlots(userData.token);
-  }, [navigate]); // Add navigate to dependencies
-  
+  }, [navigate]);
 
   const fetchSlots = async (token) => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:8000/api/slots/", {
+      const res = await axios.get("http://localhost:8000/api/availability/slots/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setSlots(res.data);
     } catch (error) {
-      toast.error("Failed to fetch slots");
+      console.error("Error fetching slots:", error);
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please login again.");
+        navigate('/login');
+      } else {
+        toast.error("Failed to fetch slots");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -64,24 +70,42 @@ export default function AvailabilityPage() {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (!userData || userData.role !== "doctor") {
         toast.error("Only doctors can manage availability slots");
+        navigate('/login');
         return;
       }
 
       const config = {
         headers: {
           Authorization: `Bearer ${userData.token}`,
+          'Content-Type': 'application/json'
         },
       };
 
+      const payload = {
+        day: parseInt(formData.day_of_week),
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+      };
+
       if (editingSlotId) {
+        // For update, include the ID in the payload if your backend requires it
+        const updatePayload = {
+          ...payload,
+          id: editingSlotId
+        };
+        
         await axios.put(
-          `http://localhost:8000/api/slots/${editingSlotId}/`,
-          formData,
+          `http://localhost:8000/api/availability/slots/${editingSlotId}/`,
+          updatePayload,
           config
         );
         toast.success("Slot updated successfully");
       } else {
-        await axios.post("http://localhost:8000/api/slots/", formData, config);
+        await axios.post(
+          "http://localhost:8000/api/availability/slots/",
+          payload,
+          config
+        );
         toast.success("Slot added successfully");
       }
 
@@ -90,16 +114,31 @@ export default function AvailabilityPage() {
       fetchSlots(userData.token);
       setErrors({});
     } catch (error) {
-      toast.error("Error saving slot");
+      console.error("Error saving slot:", error);
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please login again.");
+        navigate('/login');
+      } else {
+        const errorMessage = error.response?.data?.day?.[0] || 
+                            error.response?.data?.detail || 
+                            "Error saving slot";
+        toast.error(errorMessage);
+      }
     }
   };
 
   const handleEdit = (slot) => {
+    console.log("Editing slot:", slot); // Debug log
+    
     setEditingSlotId(slot.id);
+    
+    // Handle both possible field names (day or day_of_week)
+    const dayValue = slot.day !== undefined ? slot.day : slot.day_of_week;
+    
     setFormData({
-      day_of_week: slot.day_of_week.toString(),
-      start_time: slot.start_time,
-      end_time: slot.end_time,
+      day_of_week: dayValue?.toString() || "",
+      start_time: slot.start_time || "",
+      end_time: slot.end_time || "",
     });
   };
 
@@ -107,47 +146,57 @@ export default function AvailabilityPage() {
     toast.info(
       <div>
         <p>Are you sure you want to delete this slot?</p>
-        <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
-          <button
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '10px' }}>
+          <button 
             onClick={async () => {
-              const userData = JSON.parse(localStorage.getItem("user"));
-              await axios.delete(`http://localhost:8000/api/slots/${id}/`, {
-                headers: {
-                  Authorization: `Bearer ${userData.token}`,
-                },
-              });
               toast.dismiss();
-              toast.success("Slot deleted successfully");
-              fetchSlots(userData.token);
+              try {
+                const userData = JSON.parse(localStorage.getItem("user"));
+                await axios.delete(`http://localhost:8000/api/availability/slots/${id}/`, {
+                  headers: {
+                    Authorization: `Bearer ${userData.token}`,
+                  },
+                });
+                toast.success("Slot deleted successfully");
+                fetchSlots(userData.token);
+              } catch (error) {
+                console.error("Error deleting slot:", error);
+                toast.error(error.response?.data?.detail || "Error deleting slot");
+              }
             }}
             style={{
-              backgroundColor: "#dc2626",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: "5px",
+              background: '#dc3545',
+              color: 'white',
+              border: 'none',
+              padding: '5px 15px',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
-            Yes
+            Yes, Delete
           </button>
-          <button
+          <button 
             onClick={() => toast.dismiss()}
             style={{
-              backgroundColor: "#6b7280",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: "5px",
+              background: '#6c757d',
+              color: 'white',
+              border: 'none',
+              padding: '5px 15px',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
-            No
+            Cancel
           </button>
         </div>
       </div>,
-      { autoClose: false, closeOnClick: false }
+      {
+        autoClose: false,
+        closeButton: false,
+        closeOnClick: false,
+      }
     );
   };
-
   const daysOfWeek = [
     { value: "0", label: "Sunday" },
     { value: "1", label: "Monday" },
@@ -245,7 +294,9 @@ export default function AvailabilityPage() {
             {slots.map((slot) => (
               <li key={slot.id} className="slot-card">
                 <div className="slot-info">
-                  <span className="slot-day">{englishDays[slot.day_of_week]}</span>
+                  <span className="slot-day">
+                    {englishDays[slot.day || slot.day_of_week]}
+                  </span>
                   <span className="slot-time">
                     From {slot.start_time} to {slot.end_time}
                   </span>
@@ -254,7 +305,7 @@ export default function AvailabilityPage() {
                   <button onClick={() => handleEdit(slot)} className="edit-btn">
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(slot.id)} className="delete-btn1">
+                  <button onClick={() => handleDelete(slot.id)} className="delete-btn">
                     Delete
                   </button>
                 </div>
