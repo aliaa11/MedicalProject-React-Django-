@@ -24,9 +24,11 @@ const handleLogin = async (e) => {
     console.log('استجابة الخادم:', response.data); // للتأكد من البيانات المستلمة
     
     // هنا نستخدم المفاتيح الصحيحة التي يعيدها الخادم (access و refresh)
-    localStorage.setItem('token', response.data.access); // كان access_token والآن access
-    localStorage.setItem('refreshToken', response.data.refresh);
-    localStorage.setItem('role', response.data.role);
+    localStorage.setItem('user', JSON.stringify({
+      token: response.data.access,
+      refreshToken: response.data.refresh,
+      role: response.data.role
+    }));
     
     console.log('تم حفظ التوكن:', {
       token: response.data.access,
@@ -35,10 +37,11 @@ const handleLogin = async (e) => {
 
     // توجيه المستخدم حسب الدور
     if (response.data.role === 'doctor') {
-      navigate('/doctor-dashboard');
+      navigate('/doctor/appointments');
     } else {
       navigate('/patient-dashboard');
     }
+    
 
   } catch (err) {
     console.error('خطأ في تسجيل الدخول:', err.response);

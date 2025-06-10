@@ -17,13 +17,17 @@ export default function AvailabilityPage() {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData && userData.role === "doctor") {
-      fetchSlots(userData.token);
-    } else {
+    
+    if (!userData || userData?.role !== "doctor") {
       toast.error("Only doctors can manage availability slots");
-      setIsLoading(false);
+      // Add redirect:
+      navigate('/login'); // or wherever you want to send non-doctors
+      return;
     }
-  }, []);
+  
+    fetchSlots(userData.token);
+  }, [navigate]); // Add navigate to dependencies
+  
 
   const fetchSlots = async (token) => {
     try {
