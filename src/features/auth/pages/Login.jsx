@@ -21,28 +21,33 @@ const handleLogin = async (e) => {
       password
     });
 
-    console.log('استجابة الخادم:', response.data); // للتأكد من البيانات المستلمة
-    
-    // هنا نستخدم المفاتيح الصحيحة التي يعيدها الخادم (access و refresh)
-    localStorage.setItem('token', response.data.access); // كان access_token والآن access
-    localStorage.setItem('refreshToken', response.data.refresh);
-    localStorage.setItem('role', response.data.role);
-    
-    console.log('تم حفظ التوكن:', {
+    // Store all user data in a single object
+    const user = {
       token: response.data.access,
-      role: response.data.role
-    });
+      refreshToken: response.data.refresh,
+      role: response.data.role,
+      userId: response.data.user_id,
+      email: response.data.email,
+      username: username
+    };
 
-    // توجيه المستخدم حسب الدور
-    if (response.data.role === 'doctor') {
-      navigate('/doctor-dashboard');
+    // Store in localStorage as a single item
+    localStorage.setItem('user', JSON.stringify(user));
+
+    // Set the authorization header for subsequent requests
+    axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+
+    console.log('Stored user data:', JSON.parse(localStorage.getItem('userData')));
+
+    if (user.role === 'doctor') {
+      navigate('/doctor/appointments');
     } else {
-      navigate('/patient-dashboard');
+      navigate('/patient/profile');
     }
 
   } catch (err) {
-    console.error('خطأ في تسجيل الدخول:', err.response);
-    setError(err.response?.data?.message || 'بيانات الدخول غير صحيحة');
+    console.error('Login error:', err.response);
+    setError(err.response?.data?.message || 'Invalid login credentials');
   } finally {
     setLoading(false);
   }

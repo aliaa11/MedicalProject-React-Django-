@@ -52,23 +52,27 @@ const PatientForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      if (currentPatient) {
-        // Update existing patient
-        await dispatch(updatePatient(formData));
-      }
-      
-      // Navigate to profile page on success
-      navigate('/patient/profile');
-      
-    } catch (err) {
-      console.error('Failed to save patient:', err);
-      alert(`Error: ${err.message || 'Could not save profile. Please try again.'}`);
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Authentication token not found');
     }
-  };
+
+    if (currentPatient) {
+      // Update existing patient
+      const result = await dispatch(updatePatient(formData));
+      if (result?.success) {
+        navigate('/patient/profile');
+      }
+    }
+  } catch (err) {
+    console.error('Failed to save patient:', err);
+    alert(`Error: ${err.message || 'Could not save profile. Please try again.'}`);
+  }
+};
 
   if (loading && id && !currentPatient?.id) {
     return (

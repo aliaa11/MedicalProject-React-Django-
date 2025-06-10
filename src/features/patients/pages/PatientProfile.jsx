@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Calendar, Phone, MapPin, User, Clock, Stethoscope, Edit3, Heart } from 'lucide-react';
 import patientImage from '../../../assets/lifestyle-people-emotions-casual-concept-confident-nice-smiling-asian-woman-cross-arms-chest-confident-ready-help-listening-coworkers-taking-part-conversation.jpg';
 import headerBg from '../../../assets/2148071818.jpg';
@@ -12,11 +12,20 @@ const PatientProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentPatient, loading, user } = useSelector((state) => state.patient);
-  const { 
-    patientAppointments, 
-    patientAppointmentsLoading, 
-    patientAppointmentsError 
-  } = useSelector((state) => state.appointments);
+  
+  // State for localStorage appointments
+  const [localAppointments, setLocalAppointments] = useState([]);
+  
+  // Redux appointments state
+  const appointmentState = useSelector((state) => state.appointment || {});
+  const {
+    appointments: reduxAppointments = [],
+    loading: patientAppointmentsLoading = false,
+    error: patientAppointmentsError = null
+  } = appointmentState;
+
+  // Combine both sources of appointments
+  const patientAppointments = reduxAppointments.length > 0 ? reduxAppointments : localAppointments;
 
   // Get user data from localStorage safely
   const getLocalStorageUser = () => {
@@ -29,15 +38,24 @@ const PatientProfile = () => {
     }
   };
 
-  useEffect(() => {
-  }, [patientAppointments]);
-  
+  // Get appointments from localStorage
+  const getLocalStorageAppointments = () => {
+    try {
+      const appointmentsString = localStorage.getItem('patientAppointments');
+      return appointmentsString ? JSON.parse(appointmentsString) : [];
+    } catch (error) {
+      console.error('Error reading appointments from localStorage:', error);
+      return [];
+    }
+  };
 
   const localStorageUser = getLocalStorageUser();
   const patientIdFromStorage = localStorageUser?.id;
 
   useEffect(() => {
     dispatch(loadPatient());
+    // Load appointments from localStorage as fallback
+    setLocalAppointments(getLocalStorageAppointments());
   }, [dispatch]);
 
   useEffect(() => {
@@ -47,7 +65,18 @@ const PatientProfile = () => {
     const idToUse = idFromRedux || idFromStorage;
     
     if (idToUse) {
-      dispatch(fetchPatientAppointmentsWithDoctors(idToUse));
+      // First try to fetch from API
+      dispatch(fetchPatientAppointmentsWithDoctors(idToUse))
+        .then((result) => {
+          if (result.payload) {
+            // Save to localStorage if API fetch succeeds
+            localStorage.setItem('patientAppointments', JSON.stringify(result.payload));
+          }
+        })
+        .catch(() => {
+          // If API fails, use localStorage data
+          console.log('Using localStorage appointments as fallback');
+        });
     }
   }, [dispatch, currentPatient?.id, localStorageUser?.id]);
 
@@ -57,7 +86,6 @@ const PatientProfile = () => {
       navigate(`/edit-profile/${idToUse}`);
     }
   };
-
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Not available';
@@ -234,24 +262,24 @@ const PatientProfile = () => {
                 </div>
                 
                 <div className="doctor-info">
-                  <div className="doctor-profile">
-                    <div className="doctor-details">
-                      <p className="appointment-doctor-name">
-                        {appointment.doctor.name}
-                      </p>
-                      <p className="doctor-specialty">
-                        {appointment.doctor.specialty}
-                      </p>
+                    <div className="doctor-profile">
+                      <div className="doctor-details">
+                        <p className="appointment-doctor-name">
+                          {appointment.doctor_name || appointment.doctor?.name || 'Doctor not specified'}
+                        </p>
+                        <p className="doctor-specialty">
+                          {appointment.doctor?.specialty || 'Specialty not specified'}
+                        </p>
+                      </div>
                     </div>
+                    
+                    {appointment.notes && (
+                      <div className="appointment-notes">
+                        <p className="notes-label">Notes:</p>
+                        <p className="notes-text">{appointment.notes}</p>
+                      </div>
+                    )}
                   </div>
-                  
-                  {appointment.notes && (
-                    <div className="appointment-notes">
-                      <p className="notes-label">Notes:</p>
-                      <p className="notes-text">{appointment.notes}</p>
-                    </div>
-                  )}
-                </div>
               </div>
             ))}
           </div>

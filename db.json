@@ -42,9 +42,9 @@
     },
     {
       "id": "38e7",
-      "username": "Dr. Aya Tarek",
-      "email": "aliaaalihesh@gmail.com",
-      "password": "123456",
+      "username": "aya123",
+      "email": "aya@example.com",
+      "password": "aya",
       "role": "doctor",
       "is_approved": true
     },

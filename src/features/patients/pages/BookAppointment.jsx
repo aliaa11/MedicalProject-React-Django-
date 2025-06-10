@@ -32,26 +32,23 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    const storedPatient = JSON.parse(localStorage.getItem('user'));
-    if (storedPatient) {
-      setPatientData(prev => ({
-        ...prev,
-        id: storedPatient.id || "",
-        name: storedPatient.username || storedPatient.name || "",
-        email: storedPatient.email || "",
-        phone: storedPatient.phone || "",
-      }));
-    }
+useEffect(() => {
+  const userData = JSON.parse(localStorage.getItem('user'));
+  if (!userData?.token) {
+    navigate('/login', { 
+      state: { from: location.pathname + location.search }
+    });
+    return;
+  }
 
-    if (!selectedSlot) {
-      navigate(`/available-slots?doctorId=${doctorId}`);
-    }
-  }, [selectedSlot, navigate, doctorId]);
+  if (!selectedSlot) {
+    navigate(`/available-slots?doctorId=${doctorId}`);
+  }
+}, [selectedSlot, navigate, doctorId, location]);
 
   useEffect(() => {
-    const storedPatient = JSON.parse(localStorage.getItem('user'));
-    if (storedPatient?.id) {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData?.id) {
       dispatch(fetchPatientAppointmentsWithDoctors());
     }
   }, [dispatch]);
@@ -104,32 +101,37 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    if (!doctorId) {
-      console.error('Doctor ID is missing');
-      setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
-      return;
-    }
-    if (checkTimeSlotConflict()) {
-      setErrors({ 
-        general: 'You already have an appointment at this time. Please choose a different time slot.' 
-      });
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+  
+  if (!doctorId) {
+    setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
+    return;
+  }
 
-    const appointment = {
-      doctor_id: doctorId,
-      patient_id: patientData.id,
-      date: appointmentDate,
-      time: selectedSlot.start_time,
-      status: "pending",
-      notes: patientData.medicalHistory,
-      patient_data: patientData,
-    };
+  if (checkTimeSlotConflict()) {
+    setErrors({ 
+      general: 'You already have an appointment at this time. Please choose a different time slot.' 
+    });
+    return;
+  }
 
-    dispatch(bookAppointment(appointment));
+  const appointment = {
+    doctorId: doctorId,
+    appointmentId: selectedSlot.id, // نضيف معرف الموعد
+    date: appointmentDate,
+    time: selectedSlot.start_time,
+    patient_data: {
+      name: patientData.name,
+      email: patientData.email,
+      phone: patientData.phone,
+      medical_history: patientData.medicalHistory,
+      disease: patientData.disease
+    }
+  };
+
+  dispatch(bookAppointment(appointment));
   };
 
   const handleCancel = () => {
@@ -145,7 +147,14 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
       navigate(`/available-slots?doctorId=${doctorId}`); // Navigate back to the same doctor's slots
     }
   };
-
+useEffect(() => {
+  if (bookingStatus === "succeeded") {
+    dispatch(fetchPatientAppointmentsWithDoctors());
+    setShowConfirmation(true);
+  } else if (bookingStatus === "failed") {
+    setShowConfirmation(true);
+  }
+}, [bookingStatus, dispatch]);
   if (!selectedSlot) return null;
 
   return (
