@@ -7,7 +7,6 @@ import "./style.css";
 export default function AvailabilityPage() {
   const [slots, setSlots] = useState([]);
   const [formData, setFormData] = useState({
-    doctor_id: "",
     day_of_week: "",
     start_time: "",
     end_time: "",
@@ -19,18 +18,21 @@ export default function AvailabilityPage() {
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData && userData.role === "doctor") {
-      setFormData(prev => ({ ...prev, doctor_id: userData.id }));
-      fetchSlots(userData.id);
+      fetchSlots(userData.token);
     } else {
       toast.error("Only doctors can manage availability slots");
       setIsLoading(false);
     }
   }, []);
 
-  const fetchSlots = async (doctorId) => {
+  const fetchSlots = async (token) => {
     try {
       setIsLoading(true);
-      const res = await axios.get(`http://localhost:3001/availabilitySlots?doctor_id=${doctorId}`);
+      const res = await axios.get("http://localhost:8000/api/slots/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSlots(res.data);
     } catch (error) {
       toast.error("Failed to fetch slots");
@@ -61,27 +63,27 @@ export default function AvailabilityPage() {
         return;
       }
 
-      const dataToSend = {
-        ...formData,
-        doctor_id: userData.id
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+        },
       };
 
       if (editingSlotId) {
-        await axios.patch(`http://localhost:3001/availabilitySlots/${editingSlotId}`, dataToSend);
+        await axios.put(
+          `http://localhost:8000/api/slots/${editingSlotId}/`,
+          formData,
+          config
+        );
         toast.success("Slot updated successfully");
       } else {
-        await axios.post("http://localhost:3001/availabilitySlots", dataToSend);
+        await axios.post("http://localhost:8000/api/slots/", formData, config);
         toast.success("Slot added successfully");
       }
-      
-      setFormData({ 
-        doctor_id: userData.id, 
-        day_of_week: "", 
-        start_time: "", 
-        end_time: "" 
-      });
+
+      setFormData({ day_of_week: "", start_time: "", end_time: "" });
       setEditingSlotId(null);
-      fetchSlots(userData.id);
+      fetchSlots(userData.token);
       setErrors({});
     } catch (error) {
       toast.error("Error saving slot");
@@ -91,7 +93,6 @@ export default function AvailabilityPage() {
   const handleEdit = (slot) => {
     setEditingSlotId(slot.id);
     setFormData({
-      doctor_id: slot.doctor_id,
       day_of_week: slot.day_of_week.toString(),
       start_time: slot.start_time,
       end_time: slot.end_time,
@@ -105,11 +106,15 @@ export default function AvailabilityPage() {
         <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
           <button
             onClick={async () => {
-              await axios.delete(`http://localhost:3001/availabilitySlots/${id}`);
+              const userData = JSON.parse(localStorage.getItem("user"));
+              await axios.delete(`http://localhost:8000/api/slots/${id}/`, {
+                headers: {
+                  Authorization: `Bearer ${userData.token}`,
+                },
+              });
               toast.dismiss();
               toast.success("Slot deleted successfully");
-              const userData = JSON.parse(localStorage.getItem("user"));
-              fetchSlots(userData.id);
+              fetchSlots(userData.token);
             }}
             style={{
               backgroundColor: "#dc2626",
@@ -216,13 +221,7 @@ export default function AvailabilityPage() {
               type="button"
               onClick={() => {
                 setEditingSlotId(null);
-                const userData = JSON.parse(localStorage.getItem("user"));
-                setFormData({ 
-                  doctor_id: userData.id, 
-                  day_of_week: "", 
-                  start_time: "", 
-                  end_time: "" 
-                });
+                setFormData({ day_of_week: "", start_time: "", end_time: "" });
                 setErrors({});
               }}
               className="cancel-btn"
