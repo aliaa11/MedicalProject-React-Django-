@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createPatient, loadPatient, updatePatient } from '../patientsSlice';
+import { loadPatient, updatePatient } from '../patientsSlice';
 import "../style/patientForm.css";
 
 const PatientForm = () => {
@@ -59,12 +59,6 @@ const PatientForm = () => {
       if (currentPatient) {
         // Update existing patient
         await dispatch(updatePatient(formData));
-      } else {
-        // Create new patient
-        await dispatch(createPatient({
-          ...formData,
-          user_id: 2
-        }));
       }
       
       // Navigate to profile page on success

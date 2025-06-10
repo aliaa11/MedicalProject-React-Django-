@@ -85,7 +85,12 @@ const handleApiError = async (response) => {
 export const loadAppointments = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await fetch(`${API_URL}/appointments`);
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8000/api/patient/profile/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });    
     const data = await handleApiError(response);
     dispatch(setAppointments(data));
   } catch (err) {
@@ -95,26 +100,28 @@ export const loadAppointments = () => async (dispatch) => {
   }
 };
 
+
+
 export const loadPatient = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const user = getStoredUser();
-    if (!user) {
-      throw new Error('No user found in local storage');
+    const token = localStorage.getItem('token');
+
+    if (!user || !token) {
+      throw new Error('User or token not found in localStorage');
     }
 
-    // Find patient by user_id
-    const response = await fetch(`${API_URL}/patients?user_id=${user.id}`);
-    const patients = await handleApiError(response);
-    
-    if (patients.length === 0) {
-      throw new Error('No patient record found for this user');
-    }
-    
-    const patient = patients[0];
-    dispatch(setPatient(patient));
-    dispatch(setUser(user)); // Ensure user is set in state
+    const response = await fetch(`http://localhost:8000/api/patient/profile/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
 
+    const data = await handleApiError(response);
+
+    dispatch(setPatient(data));
+    dispatch(setUser(user)); // عشان يبقى محفوظ في الستيت
   } catch (err) {
     dispatch(setError(err.message));
   } finally {
@@ -122,15 +129,15 @@ export const loadPatient = () => async (dispatch) => {
   }
 };
 
-export const updatePatient = (updatedData) => async (dispatch, getState) => {
+
+export const updatePatient = (updatedData) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const { currentPatient } = getState().patient;
-    
-    const response = await fetch(`${API_URL}/patients/${currentPatient.id}`, {
+    const response = await fetch(`http://localhost:8000/api/patient/profile/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({
         gender: updatedData.gender,
@@ -154,42 +161,7 @@ export const updatePatient = (updatedData) => async (dispatch, getState) => {
   }
 };
 
-export const createPatient = (patientData) => async (dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    const user = getStoredUser();
-    if (!user) {
-      throw new Error('No user found in local storage');
-    }
 
-    const response = await fetch(`${API_URL}/patients`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: user.id,
-        gender: patientData.gender,
-        date_of_birth: patientData.date_of_birth,
-        address: patientData.address,
-        phone: patientData.phone,
-        medical_history: patientData.medical_history || '',
-        disease: patientData.disease || '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }),
-    });
-    
-    const newPatient = await handleApiError(response);
-    dispatch(createPatientSuccess(newPatient));
-    return { success: true, data: newPatient };
-  } catch (err) {
-    dispatch(setError(err.message));
-    throw err;
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
 
 // Action to initialize user from localStorage
 export const initializeAuth = () => (dispatch) => {
