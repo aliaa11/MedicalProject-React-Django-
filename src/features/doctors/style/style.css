@@ -1,0 +1,6 @@
+.submit-btn.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: #666;
+  }
+  
