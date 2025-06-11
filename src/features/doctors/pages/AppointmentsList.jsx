@@ -1,26 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const appointmentsPerPage = 4;
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if (!userData || userData.role !== "doctor") {
-      console.error("Only doctors can view appointments");
-      return;
-    }
+    const fetchAppointments = async () => {
+      try {
+        setIsLoading(true);
+        const userData = JSON.parse(localStorage.getItem("user"));
+        
+        if (!userData || userData.role !== "doctor") {
+          toast.error("Only doctors can view appointments");
+          navigate('/login');
+          return;
+        }
 
-    axios.get(`http://localhost:3001/appointments?doctor_id=${userData.id}`)
-      .then(res => setAppointments(res.data))
-      .catch(err => console.error("Error fetching appointments:", err));
-  }, []);
+        // استخدم endpoint الخاص بمواعيد الطبيب فقط
+        const response = await axios.get(
+          `http://localhost:8000/api/appointments/doctor-appointments/`, 
+          {
+            headers: {
+              Authorization: `Bearer ${userData.token}`,
+            }
+          }
+        );
+        
+        setAppointments(response.data);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        toast.error(error.response?.data?.detail || "Failed to fetch appointments");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [navigate]);
 
   const filteredAppointments = appointments.filter(app =>
     app.date.toLowerCase().includes(searchTerm.toLowerCase()) ||

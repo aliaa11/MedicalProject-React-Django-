@@ -3,7 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import "./style.css";
+import "../style/style.css";
 
 export default function AvailabilityPage() {
   const [slots, setSlots] = useState([]);

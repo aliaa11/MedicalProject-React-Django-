@@ -18,6 +18,11 @@
   gap: 0;
 } */
 
+.submit-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
 
 .profile-wrapper {
   gap: 0;
