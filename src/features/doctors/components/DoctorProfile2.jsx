@@ -168,7 +168,7 @@ const DoctorProfile = () => {
           };
         }
 
-        // Fetch appointments with expanded data
+        // Fetch appointments with expanded  data
         let appointmentsData = [];
         try {
           const appointmentEndpoints = [
@@ -750,4 +750,4 @@ const DoctorProfile = () => {
   );
 };
 
-export default DoctorProfile;
+ export default DoctorProfile;
