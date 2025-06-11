@@ -79,10 +79,10 @@ const AppointmentsList = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">My Appointments</h1>
+    <div className="!p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-800 !mb-6">My Appointments</h1>
       
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-md !p-6 !mb-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-700 mb-4 md:mb-0">Upcoming Appointments</h2>
           <div className="w-full md:w-1/3">

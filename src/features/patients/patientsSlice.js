@@ -85,8 +85,8 @@ const handleApiError = async (response) => {
 export const loadAppointments = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-const userData = JSON.parse(localStorage.getItem("user"));
-const response = await fetch(`${API_URL}/patient/profile`, { // Note: removed trailing slash
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const response = await fetch(`${API_URL}/patient/profile`, { // Note: removed trailing slash
     headers: {
       'Authorization': `Bearer ${userData.token}`
     }
