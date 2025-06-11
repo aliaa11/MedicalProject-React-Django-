@@ -3,11 +3,11 @@ import AvailabilityPage from "./features/doctors/pages/AvailabilityPage";
 import AppointmentDetails from "./features/doctors/pages/AppointmentDetails";
 import UsersList from "./features/doctors/pages/UsersList";
 import Register from './features/auth/pages/Register';
-import Login from './features/auth/pages/Login';
+import LoginPage from './features/auth/pages/Login';
 import Home from './features/auth/pages/Home';
 import DoctorDashboard from './features/auth/pages/DoctorDashboard';
 import PatientDashboard from './features/auth/pages/PatientDashboard';
-import { getCurrentUser } from './features/auth/services/AuthService';
+import { AuthContext } from './features/auth/services/AuthContext';
 import MainLayout from './components/MainLayout';
 import PatientProfile from './features/patients/pages/PatientProfile';
 import PatientForm from './features/patients/pages/PatientForm';
@@ -21,6 +21,7 @@ import AppointmentsList from './features/doctors/pages/AppointmentsList.jsx';
 import DoctorProfile2 from './features/doctors/components/DoctorProfile2.jsx';
 import './App.css';
 import './style/global.css';
+import { useContext } from 'react';
 
 import AdminLayout from './features/admin/components/AdminLayout';
 import Dashboard from './features/admin/pages/Dashboard';
@@ -32,29 +33,29 @@ import Specialties from './features/admin/pages/Specialties';
 import ListDoctors from './features/patients/pages/ListDoctors';
 
 const PrivateRoute = ({ children, role }) => {
-  const user = getCurrentUser();
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-    if (role && user.role !== role) {
+
+  if (role && user.role !== role) {
     return <Navigate to={
       user.role === 'admin' ? '/admin' :
       user.role === 'doctor' ? '/doctor/profile' :
-      '/patient-dashboard'
+      '/patient/dashboard'
     } replace />;
   }
 
   return children;
 };
-
 function App() {
   return (
     <>
     
       <Routes>
         {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
+<Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<HomePage />} />
 
