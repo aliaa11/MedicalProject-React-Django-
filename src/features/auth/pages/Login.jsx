@@ -58,7 +58,7 @@ function LoginPage() {
     // }
 
     setErrors(newErrors);
-    return valid;
+     return valid;
   };
 
   const handleLogin = async (e) => {
