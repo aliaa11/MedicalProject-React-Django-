@@ -272,14 +272,14 @@ const DoctorProfile = () => {
             console.warn(
               `Failed to fetch availability from ${availabilityEndpoint}:`,
               resAvailability.status,
-              resAvailability.statusText
+              resAvailability.statusText,
             );
             availabilityData = doctorData.slots || [];
           }
         } catch (e) {
           console.error(
             `Error fetching availability from ${availabilityEndpoint}:`,
-            e
+            e,
           );
           availabilityData = doctorData.slots || [];
         }
@@ -457,6 +457,21 @@ const DoctorProfile = () => {
     ? availabilitySlots
     : [];
 
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const formatTimeRange = (start, end) => {
+    if (!start || !end) return "Closed";
+    return `${start.slice(0, 5)} - ${end.slice(0, 5)}`;
+  };
+
   if (loading) {
     return (
       <div className="doctor-profile-container">
@@ -518,36 +533,6 @@ const DoctorProfile = () => {
       : user?.username || user?.first_name || "Doctor";
 
   const userEmail = user?.email || doctor?.contact_email || "Not Available";
-
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const schedule = safeAvailabilitySlots.map((slot) => {
-    const formatTime = (time) => {
-      if (!time) return "00:00";
-      if (typeof time === "string" && time.includes(":")) {
-        return time.slice(0, 5); // HH:MM
-      }
-      return time;
-    };
-
-    return {
-      day: daysOfWeek[slot.day_of_week] || `Day ${slot.day_of_week}`,
-      time: `${formatTime(slot.start_time)} - ${formatTime(slot.end_time)}`,
-      available: slot.is_available !== false,
-    };
-  });
-
-  const allDays = daysOfWeek.map((day) => {
-    const slot = schedule.find((s) => s.day === day);
-    return slot || { day, time: "Closed", available: false };
-  });
 
   return (
     <div className="doctor-profile-container">
@@ -642,30 +627,39 @@ const DoctorProfile = () => {
             {safeAvailabilitySlots.length === 0 ? (
               <p className="text-gray-500">No availability slots found.</p>
             ) : (
-              <ul className="slots-list" style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-                {safeAvailabilitySlots.map((slot, idx) => (
-                  <li key={slot.id || idx} className="slot-card" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    background: '#f8fafc',
-                    border: '1px solid #e0e7ef',
-                    borderRadius: '10px',
-                    padding: '0.75rem 1.25rem',
-                    marginBottom: '0.5rem',
-                    boxShadow: '0 2px 8px 0 rgba(60, 72, 88, 0.06)'
-                  }}>
-                    <div className="slot-info" style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="slot-day" style={{ fontWeight: 600, color: '#334155' }}>
-                        {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][slot.day_of_week]}
-                      </span>
-                      <span className="slot-time" style={{ color: '#64748b', fontSize: '0.98em' }}>
-                        From {slot.start_time} to {slot.end_time}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-sm border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="p-3 font-semibold border-b">Day</th>
+                      <th className="p-3 font-semibold border-b">Start Time</th>
+                      <th className="p-3 font-semibold border-b">End Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {safeAvailabilitySlots.map((slot, idx) => {
+                      const dayIndex = parseInt(slot.day, 10);
+                      const dayName = !isNaN(dayIndex) && dayIndex >= 0 && dayIndex < daysOfWeek.length
+                        ? daysOfWeek[dayIndex]
+                        : "Unknown";
+                      return (
+                        <tr
+                          key={slot.id || idx}
+                          className="hover:bg-gray-50 border-b border-gray-200"
+                        >
+                          <td className="p-3">{dayName}</td>
+                          <td className="p-3">
+                            {slot.start_time ? slot.start_time.slice(0, 5) : "--:--"}
+                          </td>
+                          <td className="p-3">
+                            {slot.end_time ? slot.end_time.slice(0, 5) : "--:--"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 
