@@ -31,26 +31,28 @@ export default function ListDoctors() {
         const specialtiesResponse = await fetch('http://127.0.0.1:8000/api/admin/specialties/');
         if (!specialtiesResponse.ok) throw new Error('Failed to fetch specialties');
         const specialtiesData = await specialtiesResponse.json();
+        console.log(specialtiesData);
         const specialtyMap = specialtiesData.reduce((acc, spec) => {
           acc[spec.id] = spec.name;
           return acc;
         }, {});
         setSpecialties(specialtyMap);
 
-        // Fetch users
-        const usersResponse = await fetch('http://localhost:3001/users');
-        if (!usersResponse.ok) throw new Error('Failed to fetch users');
-        const usersData = await usersResponse.json();
-        const userMap = usersData.reduce((acc, user) => {
-          acc[user.id] = user;
-          return acc;
-        }, {});
-        setUsersMap(userMap);
+        // // Fetch users
+        // const usersResponse = await fetch('http://localhost:3001/users');
+        // if (!usersResponse.ok) throw new Error('Failed to fetch users');
+        // const usersData = await usersResponse.json();
+        // const userMap = usersData.reduce((acc, user) => {
+        //   acc[user.id] = user;
+        //   return acc;
+        // }, {});
+        // setUsersMap(userMap);
 
         // Fetch doctors
         const doctorsResponse = await fetch('http://127.0.0.1:8000/api/doctors/');
         if (!doctorsResponse.ok) throw new Error('Failed to fetch doctors');
         const doctorsData = await doctorsResponse.json();
+        console.log(doctorsData);
         setDoctorsList(doctorsData);
         setFilteredDoctors(doctorsData);
 
@@ -73,9 +75,9 @@ export default function ListDoctors() {
     }
 
     const filtered = doctorsList.filter(doctor => {
-      const user = usersMap[doctor.user_id];
-      const doctorName = user ? user.username : '';
-      const specialtyName = specialties[doctor.specialty_id] || '';
+      
+      const doctorName = doctor ? doctor.user.username : '';
+      const specialtyName = doctor.specialty || '';
       
       const searchTermLower = searchTerm.toLowerCase();
       
@@ -247,9 +249,8 @@ export default function ListDoctors() {
       {currentDoctors.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentDoctors.map(doctor => {
-            const user = usersMap[doctor.user_id];
-            const doctorName = user ? `${user.username}` : 'Dr. Unknown';
-            const specialtyName = specialties[doctor.specialty_id] || "General Practitioner";
+            const doctorName = doctor.user.username ? `${doctor.user.username}` : 'Dr. Unknown';
+            const specialtyName = doctor.specialty || "General Practitioner";
 
             return (
               <div key={doctor.id} className="relative !p-6 bg-white rounded-lg shadow-md flex flex-col items-center text-center border border-gray-200 hover:shadow-lg">
@@ -268,7 +269,7 @@ export default function ListDoctors() {
                   {specialtyName}
                 </p>
                 <p className="text-sm text-gray-500 !mb-3">
-                  Trust Hospitals
+                  {doctor.bio}
                 </p>
 
                 {/* Contact Button */}

@@ -9,6 +9,7 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [specialties, setSpecialties] = useState([]);
+  const [registrationStatus, setRegistrationStatus] = useState(null);
   const navigate = useNavigate();
 
   // Form data
@@ -136,19 +137,59 @@ const RegisterPage = () => {
           role === 'doctor' ? formData.doctor : formData.patient
       };
 
-      // Send to the new complete registration endpoint
+      // Send to the registration endpoint
       const response = await axios.post('http://localhost:8000/api/register/complete/', completeData);
       
-      if (response.data.message) {
-        navigate('/login', { state: { registrationSuccess: true } });
+      if (response.data.requires_approval) {
+        // Doctor needs approval
+        setRegistrationStatus('pending_approval');
+      } else {
+        // Patient registration complete
+        navigate('/login', { 
+          state: { 
+            registrationSuccess: true,
+            message: 'Registration successful! Please login.' 
+          } 
+        });
       }
     } catch (error) {
       console.error('Registration error:', error.response);
-      setErrors({ form: error.response?.data?.error || 'An error occurred during registration. Please try again.' });
+      setErrors({ 
+        form: error.response?.data?.error || 'An error occurred during registration. Please try again.' 
+      });
     } finally {
       setLoading(false);
     }
   };
+
+  if (registrationStatus === 'pending_approval') {
+    return (
+      <div className="register-container">
+        <div className="register-card">
+          <div className="form-section" style={{ flex: 2 }}>
+            <div className="form-content">
+              <div className="approval-message">
+                <svg className="approval-icon" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <h3>Your Doctor Registration is Pending Approval</h3>
+                <p>
+                  Thank you for registering as a doctor. Your application is under review by our admin team.
+                  You will receive an email notification once your account is approved.
+                </p>
+                <button 
+                  onClick={() => navigate('/')} 
+                  className="home-button"
+                >
+                  Return to Homepage
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="register-container">
@@ -207,7 +248,10 @@ const RegisterPage = () => {
             </p>
 
             {errors.form && (
-              <div className="error-message" style={{ marginBottom: '1rem' }}>
+              <div className="error-message">
+                <svg className="error-icon" viewBox="0 0 24 24">
+                  <path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                </svg>
                 {errors.form}
               </div>
             )}

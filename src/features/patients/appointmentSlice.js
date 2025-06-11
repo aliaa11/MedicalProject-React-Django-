@@ -6,8 +6,16 @@ export const fetchAvailabilitySlots = createAsyncThunk(
   'appointments/fetchAvailabilitySlots',
   async (doctorId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/public/doctor/${doctorId}/slots/`);
-      
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      const token = user?.token;
+      const response = await axios.get(`${API_URL}/availability/public/doctor/${doctorId}/slots/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          } 
+        }
+      );
       const formattedSlots = response.data.map(slot => ({
         day_of_week: slot.day_of_week,
         start_time: slot.start_time,

@@ -23,7 +23,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const doctorId = propDoctorId || params?.doctorId;
-
+  console.log("Doctor ID:", doctorId);
   const { 
     doctor, 
     loading, 
@@ -35,7 +35,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
     specialtiesLoading,
     specialtiesError
   } = useSelector((state) => state.appointments);
-
+  console.log("Doctor Profile Data:", doctor);
   useEffect(() => {
     if (doctorId) {
       dispatch(fetchDoctorProfile(doctorId));
@@ -115,7 +115,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
             <div className="doctor-avatar-container">
               <div className="doctor-avatar">
                 {doctor.profile_picture ? (
-                  <img src={profile_picture} alt={doctor.name} />
+                  <img src={profile_picture} alt={doctor.user.username} />
                 ) : (
                   <User />
                 )}
@@ -125,7 +125,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
 
             {/* Doctor Info */}
             <div className="doctor-profile-info">
-              <h1 className="doctor-name">{doctor.name}</h1>
+              <h1 className="doctor-name">{doctor.user.username}</h1>
               <div className="doctor-specialty">
                 <Stethoscope className="w-5 h-5 inline mr-2" />
                 {doctor.specialty}
@@ -149,11 +149,11 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
             <div className="info-card">
               <h2 className="card-title">
                 <User className="w-5 h-5" />
-                <span>About {doctor.name}</span>
+                <span>About {doctor.user.username}</span>
               </h2>
               <div className="biography-text">
                 {doctor.bio ||
-                  `Dr. ${doctor.name} is a highly experienced ${doctor.specialty} specialist with ${doctor.years_of_experience} years of practice. Known for providing compassionate and comprehensive care to patients of all ages.`}
+                  `Dr. ${doctor.user.username} is a highly experienced ${doctor.specialty} specialist with ${doctor.years_of_experience} years of practice. Known for providing compassionate and comprehensive care to patients of all ages.`}
               </div>
             </div>
 
