@@ -28,7 +28,7 @@ export default function ListDoctors() {
         setError(null);
 
         // Fetch specialties
-        const specialtiesResponse = await fetch('http://localhost:3001/specialties');
+        const specialtiesResponse = await fetch('http://127.0.0.1:8000/api/admin/specialties/');
         if (!specialtiesResponse.ok) throw new Error('Failed to fetch specialties');
         const specialtiesData = await specialtiesResponse.json();
         const specialtyMap = specialtiesData.reduce((acc, spec) => {
@@ -48,7 +48,7 @@ export default function ListDoctors() {
         setUsersMap(userMap);
 
         // Fetch doctors
-        const doctorsResponse = await fetch('http://localhost:3001/doctors');
+        const doctorsResponse = await fetch('http://127.0.0.1:8000/api/doctors/');
         if (!doctorsResponse.ok) throw new Error('Failed to fetch doctors');
         const doctorsData = await doctorsResponse.json();
         setDoctorsList(doctorsData);
