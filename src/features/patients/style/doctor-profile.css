@@ -248,16 +248,42 @@
   gap: 0.75rem;
 }
 
-.schedule-item {
+.schedule-details {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: var(--gray-50);
-  border-radius: 0.5rem;
-  border-left: 4px solid var(--primary-500);
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
+.available-badge {
+  background-color: #10B981;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.schedule-time.closed {
+  color: #EF4444;
+  font-weight: 500;
+}
+
+.schedule-item {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.schedule-item.available {
+  border-color: #10B981;
+  background-color: #F0FDF4;
+}
+
+.schedule-item.unavailable {
+  background-color: #F3F4F6;
+}
 .schedule-day {
   font-weight: 600;
   color: var(--gray-800);

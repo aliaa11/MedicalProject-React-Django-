@@ -69,7 +69,16 @@
     justify-content: center;
     box-shadow: 0 4px 12px rgba(48, 114, 178, 0.2);
 }
+.date-button.unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f3f4f6;
+}
 
+.date-button.unavailable:hover {
+  background-color: #f3f4f6;
+  transform: none;
+}
 .doctor-info {
     margin-left: 20px;
 }
@@ -411,4 +420,37 @@
     .time-slot-button {
         padding: 1rem 0.75rem;
     }
+}.unavailable {
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: #f3f4f6;
+}
+
+.past {
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: #fee2e2;
+}
+
+.selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.error-container {
+  padding: 1rem;
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  border-radius: 0.375rem;
+  color: #dc2626;
+  margin: 1rem 0;
+}
+
+.warning-container {
+  padding: 1rem;
+  background-color: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 0.375rem;
+  color: #b45309;
+  margin: 1rem 0;
 }

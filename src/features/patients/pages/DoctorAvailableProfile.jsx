@@ -191,50 +191,56 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
               </div>
 
             {/* Availability Schedule */}
-            <div className="info-card">
-              <h2 className="card-title">
-                <Calendar className="w-5 h-5" />
-                <span>Availability Schedule</span>
-              </h2>
-              {slotsError ? (
-                <div className="error-message p-4 bg-red-50 text-red-600 rounded">
-                  <AlertCircle className="inline mr-2" />
-                  {slotsError}
-                  <button 
-                    onClick={() => dispatch(fetchAvailabilitySlots(doctorId))}
-                    className="ml-4 text-blue-600 hover:underline"
-                  >
-                    Retry
-                  </button>
-                </div>
-              ) : slotsLoading ? (
-                <div className="loading-text p-4">Loading availability...</div>
-              ) : (
-                <div className="schedule-grid">
-                  {[1, 2, 3, 4, 5, 6, 7].map((dayNumber) => {
-                    const slot = availabilitySlots?.find(s => parseInt(s.day_of_week) === dayNumber);
-                    const isAvailable = !!slot;
-                    
-                    return (
-                      <div 
-                        key={dayNumber} 
-                        className={`schedule-item ${isAvailable ? 'available' : 'unavailable'}`}
-                      >
-                        <span className="schedule-day">{getDayName(dayNumber)}</span>
-                        <span className="schedule-time">
-                        {isAvailable ? (
-                            <span>{`${formatTime(slot.start_time)} - ${formatTime(slot.end_time)}`}</span>
-                        ) : (
-                          <span>Closed</span>
-                        )}
-                        </span>
-                       
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+              <div className="info-card">
+                <h2 className="card-title">
+                  <Calendar className="w-5 h-5" />
+                  <span>Availability Schedule</span>
+                </h2>
+                {slotsError ? (
+                  <div className="error-message p-4 bg-red-50 text-red-600 rounded">
+                    <AlertCircle className="inline mr-2" />
+                    {slotsError}
+                    <button 
+                      onClick={() => dispatch(fetchAvailabilitySlots(doctorId))}
+                      className="ml-4 text-blue-600 hover:underline"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : slotsLoading ? (
+                  <div className="loading-text p-4">Loading availability...</div>
+                ) : (
+                  <div className="schedule-grid">
+                    {[0, 1, 2, 3, 4, 5, 6].map((dayNumber) => {
+                      const slot = availabilitySlots?.find(s => 
+                        parseInt(s.day_of_week) === dayNumber
+                      );
+                      const isAvailable = !!slot;
+                      
+                  return (
+                    <div 
+                      key={dayNumber} 
+                      className={`schedule-item ${isAvailable ? 'available' : 'unavailable'}`}
+                    >
+                      <span className="schedule-day">{getDayName(dayNumber)}</span>
+                      {isAvailable ? (
+                        <div className="schedule-details">
+                          <span className="schedule-time">
+                            {`${formatTime(slot.start_time)} - ${formatTime(slot.end_time)}`}
+                          </span>
+                          {slot.is_available && (
+                            <span className="available-badge">Available</span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="schedule-time closed">Closed</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           </div>
 
           <div className="space-y-6">

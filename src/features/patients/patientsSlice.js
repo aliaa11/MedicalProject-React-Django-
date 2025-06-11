@@ -9,7 +9,7 @@ const getStoredUser = () => {
 
 const initialState = {
   currentPatient: null,
-  user: getStoredUser(), 
+  user: getStoredUser(),
   loading: false,
   error: null
 };
@@ -27,8 +27,9 @@ const patientSlice = createSlice({
         username: action.payload.username,
         email: action.payload.email,
         role: action.payload.role,
+        token: action.payload.token,               // ✅ إضافة التوكن
+        refreshToken: action.payload.refreshToken  // ✅ إضافة الريفريش توكن
       };
-      // Save to localStorage when user is set
       localStorage.setItem('user', JSON.stringify(state.user));
     },
     setPatient: (state, action) => {
@@ -57,23 +58,22 @@ const patientSlice = createSlice({
     clearPatient: (state) => {
       state.currentPatient = null;
       state.user = null;
-      localStorage.removeItem('user'); // Clear user from localStorage
+      localStorage.removeItem('user');
     }
   }
 });
 
-export const { 
-  setLoading, 
-  setPatient, 
+export const {
+  setLoading,
+  setPatient,
   setUser,
-  setError, 
+  setError,
   updatePatientSuccess,
   createPatientSuccess,
   clearPatient
 } = patientSlice.actions;
 
-const API_URL = 'http://localhost:3001';
-
+const API_URL = 'http://localhost:8000/api';
 const handleApiError = async (response) => {
   if (!response.ok) {
     const errorData = await response.json();
@@ -85,7 +85,13 @@ const handleApiError = async (response) => {
 export const loadAppointments = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await fetch(`${API_URL}/appointments`);
+const userData = JSON.parse(localStorage.getItem("user"));
+const response = await fetch(`${API_URL}/patient/profile`, { // Note: removed trailing slash
+    headers: {
+      'Authorization': `Bearer ${userData.token}`
+    }
+  });
+   
     const data = await handleApiError(response);
     dispatch(setAppointments(data));
   } catch (err) {
@@ -95,26 +101,29 @@ export const loadAppointments = () => async (dispatch) => {
   }
 };
 
+
+
 export const loadPatient = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const user = getStoredUser();
-    if (!user) {
-      throw new Error('No user found in local storage');
+    const userData = JSON.parse(localStorage.getItem("user"));
+    
+    if (!userData?.token) {
+      throw new Error('Authentication token not found');
     }
 
-    // Find patient by user_id
-    const response = await fetch(`${API_URL}/patients?user_id=${user.id}`);
-    const patients = await handleApiError(response);
-    
-    if (patients.length === 0) {
-      throw new Error('No patient record found for this user');
-    }
-    
-    const patient = patients[0];
-    dispatch(setPatient(patient));
-    dispatch(setUser(user)); // Ensure user is set in state
+    const response = await fetch(`${API_URL}/patient/profile`, {
+      headers: {
+        'Authorization': `Bearer ${userData.token}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
+    const data = await handleApiError(response);
+    
+    // فقط بنحدث بيانات المريض، ومش هنلمس user
+    dispatch(setPatient(data));
+    
   } catch (err) {
     dispatch(setError(err.message));
   } finally {
@@ -122,15 +131,21 @@ export const loadPatient = () => async (dispatch) => {
   }
 };
 
-export const updatePatient = (updatedData) => async (dispatch, getState) => {
+
+export const updatePatient = (updatedData) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const { currentPatient } = getState().patient;
+    const userData = JSON.parse(localStorage.getItem("user"));
     
-    const response = await fetch(`${API_URL}/patients/${currentPatient.id}`, {
+    if (!userData.token) {
+      throw new Error('Authentication token not found');
+    }
+
+    const response = await fetch(`http://localhost:8000/api/patient/profile`, { // تم إزالة الشرطة المائلة الأخيرة
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userData.token}`
       },
       body: JSON.stringify({
         gender: updatedData.gender,
@@ -139,11 +154,16 @@ export const updatePatient = (updatedData) => async (dispatch, getState) => {
         phone: updatedData.phone,
         medical_history: updatedData.medical_history,
         disease: updatedData.disease,
-        updated_at: new Date().toISOString()
       }),
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update patient profile');
+    }
+
+    const updatedPatient = await response.json();
     
-    const updatedPatient = await handleApiError(response);
     dispatch(updatePatientSuccess(updatedPatient));
     return { success: true, data: updatedPatient };
   } catch (err) {
@@ -154,42 +174,8 @@ export const updatePatient = (updatedData) => async (dispatch, getState) => {
   }
 };
 
-export const createPatient = (patientData) => async (dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    const user = getStoredUser();
-    if (!user) {
-      throw new Error('No user found in local storage');
-    }
 
-    const response = await fetch(`${API_URL}/patients`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: user.id,
-        gender: patientData.gender,
-        date_of_birth: patientData.date_of_birth,
-        address: patientData.address,
-        phone: patientData.phone,
-        medical_history: patientData.medical_history || '',
-        disease: patientData.disease || '',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }),
-    });
-    
-    const newPatient = await handleApiError(response);
-    dispatch(createPatientSuccess(newPatient));
-    return { success: true, data: newPatient };
-  } catch (err) {
-    dispatch(setError(err.message));
-    throw err;
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
+
 
 // Action to initialize user from localStorage
 export const initializeAuth = () => (dispatch) => {
