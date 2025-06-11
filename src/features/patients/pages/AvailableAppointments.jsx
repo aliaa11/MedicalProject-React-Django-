@@ -1,103 +1,91 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchAvailabilitySlots, selectSlot, fetchDoctorProfile, fetchBookedAppointments } from "../appointmentSlice"
-import { format, addDays, isToday, isAfter, startOfWeek, parse, addMinutes, isSameDay } from "date-fns"
+import { 
+  selectSlot, 
+  fetchDoctorProfile, 
+  fetchAvailableDays,
+  fetchAvailableAppointmentsByDay
+} from "../appointmentSlice";
+import { format, addDays, isToday, isAfter, startOfWeek, parse, isSameDay } from "date-fns"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { Calendar, Clock, User, Stethoscope, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react'
 import profile_picture from  '../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg';
-
 import "../style/available-slots.css"
 
 const AvailableSlots = ({ doctorId: propDoctorId }) => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  
-  const doctorId = propDoctorId || searchParams.get('doctorId')
-  
-  const { availabilitySlots, slotsLoading, slotsError, doctor, bookedAppointments } = useSelector((state) => state.appointments)
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }))
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const doctorId = propDoctorId || searchParams.get('doctorId');
+
+  const { 
+    slotsLoading, 
+    slotsError, 
+    doctor,
+    availableDays = [],
+    availableAppointmentsByDay = {}
+  } = useSelector((state) => state.appointments);
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  );
 
   useEffect(() => {
     if (doctorId) {
-      dispatch(fetchAvailabilitySlots(doctorId))
-      dispatch(fetchDoctorProfile(doctorId))
-      dispatch(fetchBookedAppointments(doctorId))
+      dispatch(fetchDoctorProfile(doctorId));
+      dispatch(fetchAvailableDays(doctorId));
     }
-  }, [dispatch, doctorId])
+  }, [dispatch, doctorId]);
 
-  const generateTimeSlots = (startTime, endTime) => {
-    const slots = []
-    let currentTime = parse(startTime, "HH:mm", new Date())
-    const end = parse(endTime, "HH:mm", new Date())
-
-    while (currentTime < end) {
-      const slotStart = format(currentTime, "HH:mm")
-      const slotEnd = format(addMinutes(currentTime, 30), "HH:mm")
-      slots.push({ start_time: slotStart, end_time: slotEnd })
-      currentTime = addMinutes(currentTime, 30)
+  useEffect(() => {
+    if (doctorId && selectedDate) {
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      dispatch(fetchAvailableAppointmentsByDay({ doctorId, date: formattedDate }));
     }
-    return slots
-  }
+  }, [dispatch, doctorId, selectedDate]);
 
   const getAvailableSlots = () => {
-    // Return empty array if availabilitySlots is not loaded yet
-    if (!availabilitySlots || !Array.isArray(availabilitySlots)) {
-      return []
-    }
+    const formattedDate = format(selectedDate, "yyyy-MM-dd");
+    const slots = availableAppointmentsByDay[formattedDate] || [];
+    return slots.map(slot => ({
+      id: slot.id,
+      start_time: slot.start_time,
+      end_time: slot.end_time,
+      is_available: true
+    }));
+  };
 
-    const dayOfWeek = selectedDate.getDay()
-    const selectedDateStr = format(selectedDate, "yyyy-MM-dd")
-    
-    // Filter slots for the selected day of week
-    const daySlots = availabilitySlots.filter((slot) => 
-      parseInt(slot.day_of_week) === dayOfWeek
-    )
-
-    let availableSlots = []
-    daySlots.forEach((slot) => {
-      const timeSlots = generateTimeSlots(slot.start_time, slot.end_time)
-      availableSlots = [...availableSlots, ...timeSlots]
-    })
-
-    // Get booked slots from database instead of static data
-    const bookedSlots = bookedAppointments ? bookedAppointments.map(appointment => ({
-      date: appointment.date,
-      time: appointment.time
-    })) : []
-
-    return availableSlots.filter(
-      (slot) => !bookedSlots.some((booked) => 
-        booked.date === selectedDateStr && booked.time === slot.start_time
-      ),
-    )
-  }
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date)
-  }
+  const handleDateChange = (date) => setSelectedDate(date);
 
   const handleSlotSelect = (slot) => {
     const slotData = {
-      ...slot,
+      id: slot.id,
+      start_time: slot.start_time,
+      end_time: slot.end_time,
       date: format(selectedDate, "yyyy-MM-dd"),
       doctorId: doctorId
-    }
-    dispatch(selectSlot(slotData))
-    navigate(`/book-appointment?date=${format(selectedDate, "yyyy-MM-dd")}&doctorId=${doctorId}&time=${slot.start_time}`)
-  }
+    };
+    dispatch(selectSlot(slotData));
+    navigate(`/book-appointment?date=${format(selectedDate, "yyyy-MM-dd")}&doctorId=${doctorId}&appointmentId=${slot.id}`);
+  };
 
   const navigateWeek = (direction) => {
-    const newWeekStart = addDays(currentWeekStart, direction * 7)
-    setCurrentWeekStart(newWeekStart)
-    setSelectedDate(newWeekStart)
-  }
+    const newWeekStart = addDays(currentWeekStart, direction * 7);
+    setCurrentWeekStart(newWeekStart);
+    setSelectedDate(newWeekStart);
+  };
+  const weekDates = Array.from({ length: 7 }, (_, i) => addDays(currentWeekStart, i));
+  const isPastDate = isAfter(new Date(), selectedDate) && !isToday(selectedDate);
+  const availableSlots = getAvailableSlots();
 
-  // Generate dates for the current week
-  const weekDates = Array.from({ length: 7 }, (_, i) => addDays(currentWeekStart, i))
-  const isPastDate = isAfter(new Date(), selectedDate) && !isToday(selectedDate)
-  const availableSlots = getAvailableSlots()
+  if (!doctorId) {
+    return (
+      <div className="error-container">
+        <p>Error: Doctor ID is missing</p>
+      </div>
+    );
+  }
 
   return (
     <div className="available-slots-container">
@@ -158,16 +146,21 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
 
                 {/* Date Grid */}
                 <div className="space-y-2">
-                  {weekDates.map((date) => {
-                    const isSelected = isSameDay(date, selectedDate)
-                    const isPast = isAfter(new Date(), date) && !isToday(date)
+                    {weekDates.map((date) => {
+                    const formattedDate = format(date, "yyyy-MM-dd");
+                    const isSelected = isSameDay(date, selectedDate);
+                    const isPast = isAfter(new Date(), date) && !isToday(date);
+                    const isAvailable = Array.isArray(availableDays) && availableDays.includes(formattedDate);
 
                     return (
                       <button
                         key={date.toISOString()}
                         onClick={() => handleDateChange(date)}
-                        disabled={isPast}
-                        className={`date-button ${isSelected ? "selected" : ""} ${isPast ? "past" : ""}`}
+                        disabled={isPast || !isAvailable}
+                        className={`date-button 
+                          ${isSelected ? "selected" : ""} 
+                          ${isPast ? "past" : ""} 
+                          ${!isAvailable ? "unavailable" : ""}`}
                       >
                         <div className="date-info">
                           <div className="date-text">
@@ -176,7 +169,7 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
                           </div>
                         </div>
                       </button>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -216,14 +209,15 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
                   <>
                     {availableSlots.length > 0 ? (
                       <div className="time-slots-grid">
-                        {availableSlots.map((slot, index) => (
+                        {availableSlots.map((slot) => (
                           <button
-                            key={`${slot.start_time}-${index}`}
+                            key={slot.id || `${slot.start_time}-${slot.end_time}`}
                             onClick={() => handleSlotSelect(slot)}
                             className="time-slot-button"
+                            disabled={!slot.is_available}
                           >
-                            <div className="slot-time">{slot.start_time.slice(0, 5)}</div>
-                            <div className="slot-duration">{slot.end_time.slice(0, 5)}</div>
+                            <div className="slot-time">{format(parse(slot.start_time, "HH:mm", new Date()), "h:mm a")}</div>
+                            <div className="slot-duration">{format(parse(slot.end_time, "HH:mm", new Date()), "h:mm a")}</div>
                           </button>
                         ))}
                       </div>

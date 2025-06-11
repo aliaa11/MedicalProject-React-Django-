@@ -1,152 +1,101 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/AuthService';
-import '../styles/Login.css';
-import boxdocLogo from '../../../assets/boxdoc-logo.png';
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+function LoginPage() {
+  // 1. نجهز المتغيرات
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    
-    try {
-      const user = await login(formData.email, formData.password);
-      
-      if (user.role === 'doctor') {
-        navigate('/doctor/appointments');
-      } else {
-        navigate('/patient/profile');
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  try {
+    const response = await axios.post('http://localhost:8000/api/login/', {
+      username,
+      password
+    });
+
+    // Store all user data in a single object
+    const user = {
+      token: response.data.access,
+      refreshToken: response.data.refresh,
+      role: response.data.role,
+      userId: response.data.user_id,
+      email: response.data.email,
+      username: username
+    };
+
+    // Store in localStorage as a single item
+    localStorage.setItem('user', JSON.stringify(user));
+
+    // Set the authorization header for subsequent requests
+    axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+
+    console.log('Stored user data:', JSON.parse(localStorage.getItem('userData')));
+
+    if (user.role === 'doctor') {
+      navigate('/doctor/appointments');
+    } else {
+      navigate('/patient/profile');
     }
-  };
 
+  } catch (err) {
+    console.error('Login error:', err.response);
+    setError(err.response?.data?.message || 'Invalid login credentials');
+  } finally {
+    setLoading(false);
+  }
+};
+  // 8. نرسم واجهة المستخدم
   return (
-    <div className="login-container">
-      <div className="login-card">
-        {/* Left Side - Branding */}
-        <div className="brand-section">
-          <div className="brand-content">
-            <img src={boxdocLogo} alt="BoxDoc Logo" className="logo" />
-            <h1 className="brand-title">BoxDoc</h1>
-            <p className="brand-subtitle">Your Trusted Healthcare Partner</p>
-            <div className="brand-features">
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Secure Medical Records</span>
-              </div>
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span>24/7 Doctor Access</span>
-              </div>
-              <div className="feature-item">
-                <svg className="feature-icon" viewBox="0 0 24 24">
-                  <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                </svg>
-                <span>Cloud-Based Solutions</span>
-              </div>
-            </div>
-          </div>
+    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
+      <h2>تسجيل الدخول</h2>
+      
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      
+      <form onSubmit={handleLogin}>
+        <div style={{ marginBottom: '15px' }}>
+          <label>اسم المستخدم:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            style={{ width: '100%', padding: '8px' }}
+          />
         </div>
-
-        {/* Right Side - Form */}
-        <div className="form-section">
-          <div className="form-content" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-            <h2 className="form-title">Welcome Back</h2>
-            <p className="form-description">Sign in to access your medical dashboard</p>
-            
-            {error && (
-              <div className="error-message">
-                <svg className="error-icon" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="login-form">
-              <div className="form-group">
-                <label className="form-label">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter your password"
-                  required
-                />
-                <a href="/forgot-password" className="forgot-password">
-                  Forgot password?
-                </a>
-              </div>
-
-              <button type="submit" className="submit-button" disabled={loading}>
-                {loading ? (
-                  <>
-                    <svg className="loading-spinner" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    </svg>
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    Sign In
-                    <svg className="button-icon" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="form-footer">
-              <p className="footer-text">
-                Don't have an account?{' '}
-                <a href="/register" className="footer-link">
-                  Create account
-                </a>
-              </p>
-            </div>
-          </div>
+        
+        <div style={{ marginBottom: '15px' }}>
+          <label>كلمة المرور:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ width: '100%', padding: '8px' }}
+          />
         </div>
-      </div>
+        
+        <button 
+          type="submit" 
+          disabled={loading}
+          style={{ 
+            padding: '10px 15px', 
+            background: loading ? 'gray' : 'blue', 
+            color: 'white' 
+          }}
+        >
+          {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+        </button>
+      </form>
     </div>
   );
-};
+}
 
-export default Login;
+export default LoginPage;
