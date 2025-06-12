@@ -115,7 +115,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
             <div className="doctor-avatar-container">
               <div className="doctor-avatar">
                 {doctor.profile_picture ? (
-                  <img src={profile_picture} alt={doctor.user.username} />
+                  <img src={profile_picture} alt={doctor.user} />
                 ) : (
                   <User />
                 )}
@@ -125,7 +125,7 @@ const DoctorAvailableProfile = ({ doctorId: propDoctorId }) => {
 
             {/* Doctor Info */}
             <div className="doctor-profile-info">
-              <h1 className="doctor-name">{doctor.user.username}</h1>
+              <h1 className="doctor-name">{doctor.user}</h1>
               <div className="doctor-specialty">
                 <Stethoscope className="w-5 h-5 inline mr-2" />
                 {doctor.specialty}

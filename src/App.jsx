@@ -115,8 +115,11 @@ function App() {
           <Route path="/edit-profile/:id" element={<PatientForm />} />
           <Route path="/doctors/:doctorId" element={<DoctorAvailableProfile />} />
           <Route path="/available-slots" element={<AvailableSlots />} />
-          <Route path="/book-appointment/:doctorId" element={<BookAppointment />} />
-          <Route path="/book-appointment" element={<BookAppointment />} />
+          <Route path="/book-appointment" element={
+            <PrivateRoute role="patient">
+              <BookAppointment />
+            </PrivateRoute>
+          } />
         </Route>
            {/* Admin Routes */}
            <Route path="/admin" element={

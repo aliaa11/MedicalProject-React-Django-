@@ -6,7 +6,7 @@ import {
   fetchAvailableDays,
   fetchAvailableAppointmentsByDay
 } from "../appointmentSlice";
-import { format, addDays, isToday, isAfter, startOfWeek, parse, isSameDay } from "date-fns"
+import { format, addDays, isToday, isAfter, startOfWeek, isSameDay } from "date-fns"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react'
 import profile_picture from  '../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg';
@@ -38,34 +38,75 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
     }
   }, [dispatch, doctorId]);
 
-  useEffect(() => {
-    if (doctorId && selectedDate) {
-      const formattedDate = format(selectedDate, "yyyy-MM-dd");
-      dispatch(fetchAvailableAppointmentsByDay({ doctorId, date: formattedDate }));
-    }
-  }, [dispatch, doctorId, selectedDate]);
-
-  const getAvailableSlots = () => {
+ useEffect(() => {
+  if (doctorId && selectedDate) {
     const formattedDate = format(selectedDate, "yyyy-MM-dd");
-    const slots = availableAppointmentsByDay[formattedDate] || [];
-    return slots.map(slot => ({
-      id: slot.id,
-      start_time: slot.start_time,
-      end_time: slot.end_time,
-      is_available: true
-    }));
-  };
+    dispatch(fetchAvailableAppointmentsByDay({ doctorId, date: formattedDate }));
+  }
+}, [dispatch, doctorId, selectedDate]);
 
+const getAvailableSlots = () => {
+  const formattedDate = format(selectedDate, "yyyy-MM-dd");
+  const slots = availableAppointmentsByDay[formattedDate] || [];
+
+  return slots.map(slot => {
+    // Add validation for time string
+    if (!slot.time) {
+      console.error("Invalid time format in slot:", slot);
+      return null;
+    }
+
+    const startTime = parseTime(slot.time);
+    const endTime = addMinutes(startTime, 30);
+    
+    return {
+      id: slot.id,
+      start_time: slot.time,
+      end_time: endTime.toTimeString().slice(0, 8),
+      is_available: !slot.patient?.user?.username,
+      status: slot.status,
+      doctor: slot.doctor
+    };
+  }).filter(Boolean); // Filter out any null slots
+};
+
+
+// Helper function to parse time string
+const parseTime = (timeStr) => {
+  if (!timeStr) {
+    console.error("Empty time string provided");
+    return new Date(); // Return current time as fallback
+  }
+
+  try {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes || 0, 0);
+    return date;
+  } catch (e) {
+    console.error("Error parsing time:", timeStr, e);
+    return new Date(); // Return current time as fallback
+  }
+};
+
+const addMinutes = (date, minutes) => {
+  return new Date(date.getTime() + minutes * 60000);
+};
+
+useEffect(() => {
+  console.log("Available days:", availableDays);
+}, [availableDays]);
   const handleDateChange = (date) => setSelectedDate(date);
 
   const handleSlotSelect = (slot) => {
     const slotData = {
-      id: slot.id,
-      start_time: slot.start_time,
-      end_time: slot.end_time,
-      date: format(selectedDate, "yyyy-MM-dd"),
-      doctorId: doctorId
-    };
+    id: slot.id,
+    start_time: slot.start_time, // تأكد من هذا
+    end_time: slot.end_time,     // وتأكد من هذا
+    date: format(selectedDate, "yyyy-MM-dd"),
+    status: slot.status,
+    doctor: doctor
+  };
     dispatch(selectSlot(slotData));
     navigate(`/book-appointment?date=${format(selectedDate, "yyyy-MM-dd")}&doctorId=${doctorId}&appointmentId=${slot.id}`);
   };
@@ -146,11 +187,12 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
 
                 {/* Date Grid */}
                 <div className="space-y-2">
-                    {weekDates.map((date) => {
+                  {weekDates.map((date) => {
                     const formattedDate = format(date, "yyyy-MM-dd");
                     const isSelected = isSameDay(date, selectedDate);
                     const isPast = isAfter(new Date(), date) && !isToday(date);
-                    const isAvailable = Array.isArray(availableDays) && availableDays.includes(formattedDate);
+
+                    const isAvailable = availableDays.some(d => d === formattedDate); // 👈 هنا التعديل
 
                     return (
                       <button
@@ -162,15 +204,16 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
                           ${isPast ? "past" : ""} 
                           ${!isAvailable ? "unavailable" : ""}`}
                       >
-                        <div className="date-info">
-                          <div className="date-text">
-                            <div className="day-name">{format(date, "EEEE")}</div>
-                            <div className="date-number">{format(date, "MMM d")}</div>
-                          </div>
+                    
+                      <div className="date-info">
+                        <div className="date-text">
+                          <div className="day-name">{format(date, "EEEE")}</div>
+                          <div className="date-number">{format(date, "MMM d")}</div>
                         </div>
-                      </button>
-                    );
-                  })}
+                      </div>
+                    </button>
+                  );
+})}
                 </div>
               </div>
             </div>
@@ -209,17 +252,30 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
                   <>
                     {availableSlots.length > 0 ? (
                       <div className="time-slots-grid">
-                        {availableSlots.map((slot) => (
-                          <button
-                            key={slot.id || `${slot.start_time}-${slot.end_time}`}
-                            onClick={() => handleSlotSelect(slot)}
-                            className="time-slot-button"
-                            disabled={!slot.is_available}
-                          >
-                            <div className="slot-time">{format(parse(slot.start_time, "HH:mm", new Date()), "h:mm a")}</div>
-                            <div className="slot-duration">{format(parse(slot.end_time, "HH:mm", new Date()), "h:mm a")}</div>
-                          </button>
-                        ))}
+                 {availableSlots.map((slot) => (
+                  <button
+                    key={slot.id}
+                    onClick={() => handleSlotSelect(slot)}
+                    className={`time-slot-button ${!slot.is_available ? 'booked' : ''}`}
+                    disabled={!slot.is_available}
+                  >
+                    <div className="slot-time">
+                      {format(parseTime(slot.start_time), 'h:mm a')}
+                    </div>
+                    <div className="slot-duration">
+                      {format(parseTime(slot.end_time), 'h:mm a')}
+                    </div>
+                    {/* Show doctor info if available */}
+                    {slot.doctor && (
+                      <div className="slot-doctor">
+                        Dr. {slot.doctor.name || slot.doctor.username}
+                      </div>
+                    )}
+                    {!slot.is_available && (
+                      <div className="slot-status">Booked</div>
+                    )}
+                  </button>
+                ))}
                       </div>
                     ) : (
                       <div className="empty-state">

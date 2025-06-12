@@ -259,7 +259,11 @@
     position: relative;
     overflow: hidden;
 }
-
+.time-slot-button.booked {
+  /* styles for booked slots */
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 .time-slot-button::before {
     content: '';
     position: absolute;

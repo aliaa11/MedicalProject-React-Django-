@@ -135,7 +135,10 @@ export const loadPatient = () => async (dispatch) => {
 export const updatePatient = (updatedData) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const userData = JSON.parse(localStorage.getItem("user"));
+   const userData = JSON.parse(localStorage.getItem("user"));
+const token = userData?.token;
+if (!token) throw new Error("Authentication token not found");
+
     
     if (!userData.token) {
       throw new Error('Authentication token not found');

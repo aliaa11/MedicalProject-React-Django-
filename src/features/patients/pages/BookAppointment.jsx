@@ -32,26 +32,26 @@ const BookAppointment = ({ doctorId: propDoctorId }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [errors, setErrors] = useState({});
 
-useEffect(() => {
-  const userData = JSON.parse(localStorage.getItem('user'));
-  if (!userData?.token) {
-    navigate('/login', { 
-      state: { from: location.pathname + location.search }
-    });
-    return;
-  }
-
-  if (!selectedSlot) {
-    navigate(`/available-slots?doctorId=${doctorId}`);
-  }
-}, [selectedSlot, navigate, doctorId, location]);
-
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
-    if (userData?.id) {
-      dispatch(fetchPatientAppointmentsWithDoctors());
+    if (!userData?.token) {
+      navigate('/login', { 
+        state: { from: location.pathname + location.search }
+      });
+      return;
     }
-  }, [dispatch]);
+
+    if (!selectedSlot) {
+      navigate(`/available-slots?doctorId=${doctorId}`);
+    }
+  }, [selectedSlot, navigate, doctorId, location]);
+
+useEffect(() => {
+  const userData = JSON.parse(localStorage.getItem('user'));
+  if (userData?.id) {
+    dispatch(fetchPatientAppointmentsWithDoctors());
+  }
+}, [dispatch]);
 
   const checkTimeSlotConflict = () => {
     if (!selectedSlot || !appointmentDate) return false;
@@ -101,25 +101,25 @@ useEffect(() => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-  
-  if (!doctorId) {
-    setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    
+    if (!doctorId) {
+      setErrors({ general: 'Doctor information is missing. Please go back and select a doctor.' });
+      return;
+    }
 
-  if (checkTimeSlotConflict()) {
-    setErrors({ 
-      general: 'You already have an appointment at this time. Please choose a different time slot.' 
-    });
-    return;
-  }
+    if (checkTimeSlotConflict()) {
+      setErrors({ 
+        general: 'You already have an appointment at this time. Please choose a different time slot.' 
+      });
+      return;
+    }
 
-  const appointment = {
-    doctorId: doctorId,
-    appointmentId: selectedSlot.id, // نضيف معرف الموعد
+ const appointmentData = {
+    doctorId: parseInt(doctorId),
+    appointmentId: selectedSlot.id,
     date: appointmentDate,
     time: selectedSlot.start_time,
     patient_data: {
@@ -131,7 +131,8 @@ const handleSubmit = async (e) => {
     }
   };
 
-  dispatch(bookAppointment(appointment));
+  dispatch(bookAppointment(appointmentData));
+
   };
 
   const handleCancel = () => {
@@ -144,17 +145,19 @@ const handleSubmit = async (e) => {
     if (bookingStatus === "succeeded") {
       dispatch(clearSelection());
       dispatch(resetBookingStatus());
-      navigate(`/available-slots?doctorId=${doctorId}`); // Navigate back to the same doctor's slots
+      navigate(`/available-slots?doctorId=${doctorId}`);
     }
   };
-useEffect(() => {
-  if (bookingStatus === "succeeded") {
-    dispatch(fetchPatientAppointmentsWithDoctors());
-    setShowConfirmation(true);
-  } else if (bookingStatus === "failed") {
-    setShowConfirmation(true);
-  }
-}, [bookingStatus, dispatch]);
+
+  useEffect(() => {
+    if (bookingStatus === "succeeded") {
+      dispatch(fetchPatientAppointmentsWithDoctors());
+      setShowConfirmation(true);
+    } else if (bookingStatus === "failed") {
+      setShowConfirmation(true);
+    }
+  }, [bookingStatus, dispatch]);
+
   if (!selectedSlot) return null;
 
   return (
@@ -223,9 +226,10 @@ useEffect(() => {
                     <Clock className="w-5 h-5 detail-icon" />
                     <div className="detail-content">
                       <p className="label">Time</p>
-                      <p className="value">
-                        {selectedSlot.start_time.slice(0, 5)} - {selectedSlot.end_time.slice(0, 5)}
-                      </p>
+                     <p className="value">
+  {(selectedSlot?.start_time?.slice(0, 5) || 'N/A')} - {(selectedSlot?.end_time?.slice(0, 5) || 'N/A')}
+</p>
+
                     </div>
                   </div>
                 </div>

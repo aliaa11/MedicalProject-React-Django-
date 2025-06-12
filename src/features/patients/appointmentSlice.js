@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 const API_URL = 'http://localhost:8000/api';
+
+// Keep your existing fetchAvailabilitySlots - this seems to work for doctor availability
 export const fetchAvailabilitySlots = createAsyncThunk(
   'appointments/fetchAvailabilitySlots',
   async (doctorId, { rejectWithValue }) => {
@@ -16,14 +19,34 @@ export const fetchAvailabilitySlots = createAsyncThunk(
           } 
         }
       );
-      const formattedSlots = response.data.map(slot => ({
-        day_of_week: slot.day_of_week,
-        start_time: slot.start_time,
-        end_time: slot.end_time,
-        is_available: true
-      }));
       
-      return formattedSlots;
+      // Generate time slots from availability ranges
+      const generatedSlots = response.data.flatMap(slot => {
+        const slots = [];
+        let currentTime = new Date(`1970-01-01T${slot.start_time}`);
+        const endTime = new Date(`1970-01-01T${slot.end_time}`);
+        
+        // 30 minute intervals
+        const interval = 30 * 60 * 1000; // 30 minutes in milliseconds
+        
+        while (currentTime < endTime) {
+          const nextTime = new Date(currentTime.getTime() + interval);
+          if (nextTime > endTime) break;
+          
+          slots.push({
+            day_of_week: slot.day || slot.day_of_week,
+            start_time: format(currentTime, 'HH:mm'),
+            end_time: format(nextTime, 'HH:mm'),
+            is_available: true
+          });
+          
+          currentTime = nextTime;
+        }
+        
+        return slots;
+      });
+      
+      return generatedSlots;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch slots');
     }
@@ -34,7 +57,6 @@ export const fetchDoctorProfile = createAsyncThunk(
   'appointments/fetchDoctorProfile',
   async (doctorId, { rejectWithValue }) => {
     try {
-      // Only fetch the doctor profile
       const response = await axios.get(`${API_URL}/doctor/profile/${doctorId}`);
       return response.data;
     } catch (error) {
@@ -54,15 +76,15 @@ export const fetchBookedAppointments = createAsyncThunk(
     }
   }
 );
+
 export const fetchAllSpecialties = createAsyncThunk(
   'appointments/fetchAllSpecialties',
   async (doctorId, { rejectWithValue }) => {
     try {
-      // First fetch the doctor to get their specialty_id
-      const doctorRes = await axios.get(`${API_URL}/doctors/${doctorId}`);
+const doctorRes = await axios.get(`${API_URL}/doctor/profile/${doctorId}/`);
+
       const specialtyId = doctorRes.data.specialty_id;
       
-      // Then fetch all specialties and find the matching one
       const specialtiesRes = await axios.get(`${API_URL}/specialties`);
       const specialty = specialtiesRes.data.find(s => s.id === specialtyId);
       
@@ -72,21 +94,24 @@ export const fetchAllSpecialties = createAsyncThunk(
     }
   }
 );
+
+// Updated to use your correct API endpoint
 export const bookAppointment = createAsyncThunk(
   'appointments/bookAppointment',
   async ({ doctorId, appointmentId, ...appointmentData }, { rejectWithValue }) => {
     try {
-      const userData = JSON.parse(localStorage.getItem('userData'));
+      const userData = JSON.parse(localStorage.getItem('user'));
       if (!userData?.token) {
         throw new Error('Authentication token not found');
       }
 
-      const response = await axios.post(
+      const response = await axios.put(
         `${API_URL}/appointments/book/${doctorId}/${appointmentId}/`,
         appointmentData,
         {
           headers: {
-            'Authorization': `Bearer ${userData.token}`
+            'Authorization': `Bearer ${userData.token}`,
+            'Content-Type': 'application/json'
           }
         }
       );
@@ -96,13 +121,24 @@ export const bookAppointment = createAsyncThunk(
     }
   }
 );
+
+
 export const fetchAvailableDays = createAsyncThunk(
   'appointments/fetchAvailableDays',
   async (doctorId, { rejectWithValue }) => {
     try {
-      // Uses: /doctors/<int:doctor_id>/available-appointment-days/
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData?.token) {
+        throw new Error('Authentication token not found');
+      }
+
       const response = await axios.get(
-        `${API_URL}/doctors/${doctorId}/available-appointment-days/`
+        `${API_URL}/appointments/doctors/${doctorId}/available-appointment-days/`,
+        {
+          headers: {
+            'Authorization': `Bearer ${userData.token}`
+          }
+        }
       );
       return response.data;
     } catch (error) {
@@ -110,13 +146,24 @@ export const fetchAvailableDays = createAsyncThunk(
     }
   }
 );
+
+
 export const fetchAvailableAppointmentsByDay = createAsyncThunk(
   'appointments/fetchAvailableAppointmentsByDay',
   async ({ doctorId, date }, { rejectWithValue }) => {
     try {
-      // Uses: /doctors/<int:doctor_id>/available-appointments/
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData?.token) {
+        throw new Error('Authentication token not found');
+      }
+
       const response = await axios.get(
-        `${API_URL}/doctors/${doctorId}/available-appointments/?date=${date}`
+        `${API_URL}/appointments/doctors/${doctorId}/available-appointments/?date=${date}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${userData.token}`
+          }
+        }
       );
       return response.data;
     } catch (error) {
@@ -124,6 +171,9 @@ export const fetchAvailableAppointmentsByDay = createAsyncThunk(
     }
   }
 );
+
+
+// Updated to use your correct API endpoint
 export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
   'appointments/fetchPatientAppointmentsWithDoctors',
   async (_, { rejectWithValue }) => {
@@ -133,7 +183,7 @@ export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
         throw new Error('Authentication token not found');
       }
 
-      // First get appointments
+      // Use your API: /appointments/patient-appointments/
       const appointmentsResponse = await axios.get(
         `${API_URL}/appointments/patient-appointments/`, 
         {
@@ -151,7 +201,7 @@ export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
       // Fetch details for each doctor
       const doctorsResponse = await Promise.all(
         doctorIds.map(id => 
-          axios.get(`${API_URL}/doctors/${id}/`, {
+axios.get(`${API_URL}/doctor/profile/${id}/`, {
             headers: {
               'Authorization': `Bearer ${userData.token}`
             }
@@ -170,25 +220,21 @@ export const fetchPatientAppointmentsWithDoctors = createAsyncThunk(
         doctor: doctorsData[appt.doctor] || { name: appt.doctor_name }
       }));
 
-      localStorage.setItem('patientAppointments', JSON.stringify(enhancedAppointments));
+      // Store in memory instead of localStorage in production
       return enhancedAppointments;
       
     } catch (error) {
-      // Fallback to localStorage if available
-      const localAppointments = JSON.parse(localStorage.getItem('patientAppointments') || '[]');
-      if (localAppointments.length > 0) {
-        return localAppointments;
-      }
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
+
 export const checkTimeSlotAvailability = createAsyncThunk(
   'appointments/checkTimeSlotAvailability',
   async ({ patientId, date, time }, { rejectWithValue }) => {
     try {
       const userStr = localStorage.getItem("user");
-      const user = JSON.parse(userStr)
+      const user = JSON.parse(userStr);
       patientId = user.id;
       const response = await axios.get(
         `${API_URL}/appointments?patient_id=${patientId}&date=${date}&time=${time}`
@@ -199,20 +245,21 @@ export const checkTimeSlotAvailability = createAsyncThunk(
     }
   }
 );
+
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState: {
-doctor: null,
-  loading: false,
-  error: null,
-  availabilitySlots: [],
-  slotsLoading: false,
-  slotsError: null,
-  availableDays: [],
-  availableAppointmentsByDay: {},
-  selectedSlot: null,
-  bookingStatus: 'idle',
-  bookingError: null,
+    doctor: null,
+    loading: false,
+    error: null,
+    availabilitySlots: [],
+    slotsLoading: false,
+    slotsError: null,
+    availableDays: [],
+    availableAppointmentsByDay: {},
+    selectedSlot: null,
+    bookingStatus: 'idle',
+    bookingError: null,
     timeSlotCheck: {
       loading: false,
       available: null,
@@ -276,15 +323,33 @@ doctor: null,
         state.slotsLoading = false;
         state.slotsError = action.payload;
       })
-       .addCase(fetchAvailableDays.fulfilled, (state, action) => {
-      state.availableDays = action.payload;
-    })
-    .addCase(fetchAvailableAppointmentsByDay.fulfilled, (state, action) => {
-      state.availableAppointmentsByDay = {
-        ...state.availableAppointmentsByDay,
-        [action.meta.arg.date]: action.payload
-      };
-    })
+      .addCase(fetchAvailableDays.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAvailableDays.fulfilled, (state, action) => {
+        state.loading = false;
+        state.availableDays = action.payload;
+      })
+      .addCase(fetchAvailableDays.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAvailableAppointmentsByDay.pending, (state) => {
+        state.slotsLoading = true;
+        state.slotsError = null;
+      })
+      .addCase(fetchAvailableAppointmentsByDay.fulfilled, (state, action) => {
+        state.slotsLoading = false;
+        state.availableAppointmentsByDay = {
+          ...state.availableAppointmentsByDay,
+          [action.meta.arg.date]: action.payload
+        };
+      })
+      .addCase(fetchAvailableAppointmentsByDay.rejected, (state, action) => {
+        state.slotsLoading = false;
+        state.slotsError = action.payload;
+      })
       .addCase(fetchBookedAppointments.pending, (state) => {
         state.appointmentsLoading = true;
         state.appointmentsError = null;
@@ -304,7 +369,9 @@ doctor: null,
       .addCase(bookAppointment.fulfilled, (state, action) => {
         state.bookingStatus = 'succeeded';
         // Add the new appointment to the booked appointments
-        state.bookedAppointments.push(action.payload);
+        if (state.bookedAppointments) {
+          state.bookedAppointments.push(action.payload);
+        }
       })
       .addCase(bookAppointment.rejected, (state, action) => {
         state.bookingStatus = 'failed';
@@ -317,7 +384,6 @@ doctor: null,
       .addCase(fetchPatientAppointmentsWithDoctors.fulfilled, (state, action) => {
         state.patientAppointmentsLoading = false;
         state.patientAppointments = action.payload;
-        localStorage.setItem('appointments', JSON.stringify(action.payload));
       })
       .addCase(fetchPatientAppointmentsWithDoctors.rejected, (state, action) => {
         state.patientAppointmentsLoading = false;

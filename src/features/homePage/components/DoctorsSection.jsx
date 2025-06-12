@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAllDoctors, fetchAllUsers, fetchAllSpecialties } from "../dataSlice";
+import { fetchAllDoctors, fetchAllSpecialties } from "../dataSlice";
 import styles from "../style/DoctorsSection.module.css";
 import doctorImage from "../../../assets/woman-doctor-wearing-lab-coat-with-stethoscope-isolated.jpg"; 
 import { useNavigate } from "react-router-dom";
@@ -19,21 +19,19 @@ export default function DoctorsSection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [doctors, users, specialties] = await Promise.all([
+        const [doctors, specialties] = await Promise.all([
           fetchAllDoctors(),
-          fetchAllUsers(),
           fetchAllSpecialties()
         ]);
 
         const enrichedDoctors = doctors.map(doctor => {
-          const user = users.find(u => u.id === doctor.user_id);
-          const specialty = specialties.find(s => s.id === doctor.specialty_id);
-          return {
-            ...doctor,
-            username: user?.username || "Unknown",
-            specialtyName: specialty?.name || "General"
-          };
-        });
+  const specialty = specialties.find(s => s.id === doctor.specialty_id);
+  return {
+    ...doctor,
+    username: typeof doctor.user === 'object' ? doctor.user.username : doctor.user,
+    specialtyName: specialty?.name || "General"
+  };
+});
 
         setCombinedDoctors(enrichedDoctors);
         setAllSpecialties(specialties);

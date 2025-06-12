@@ -23,9 +23,12 @@ const PatientProfile = () => {
     loading: patientAppointmentsLoading = false,
     error: patientAppointmentsError = null
   } = appointmentState;
+  
 
   // Combine both sources of appointments
-  const patientAppointments = reduxAppointments.length > 0 ? reduxAppointments : localAppointments;
+const patientAppointments = Array.isArray(reduxAppointments) && reduxAppointments.length > 0
+  ? reduxAppointments
+  : (Array.isArray(localAppointments) ? localAppointments : []);
 
   // Get user data from localStorage safely
   const getLocalStorageUser = () => {
@@ -96,7 +99,13 @@ const PatientProfile = () => {
       day: 'numeric'
     });
   };
-
+useEffect(() => {
+  console.log("Appointments data:", {
+    reduxAppointments,
+    localAppointments,
+    combined: patientAppointments
+  });
+}, [reduxAppointments, localAppointments]);
   const formatTime = (timeString) => {
     if (!timeString) return '';
     const [hours, minutes] = timeString.split(':');
@@ -240,48 +249,53 @@ const PatientProfile = () => {
           </div>
         ) : patientAppointments.length > 0 ? (
           <div className="appointments-grid">
-            {patientAppointments.map((appointment) => (
-              <div key={appointment.id} className="appointment-card">
-                <div className="appointment-header">
-                  <div className="appointment-date-wrapper">
-                    <Calendar size={18} className="appointment-icon" />
-                    <span className="appointment-date">
-                      {formatDate(appointment.date)}
-                    </span>
-                  </div>
-                  <span className={`appointment-status status-${appointment.status}`}>
-                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-                  </span>
-                </div>
-                
-                <div className="appointment-time-wrapper">
-                  <Clock size={16} className="appointment-icon" />
-                  <span className="appointment-time">
-                    {formatTime(appointment.time)}
-                  </span>
-                </div>
-                
-                <div className="doctor-info">
-                    <div className="doctor-profile">
-                      <div className="doctor-details">
-                        <p className="appointment-doctor-name">
-                          {appointment.doctor_name || appointment.doctor?.name || 'Doctor not specified'}
-                        </p>
-                        <p className="doctor-specialty">
-                          {appointment.doctor?.specialty || 'Specialty not specified'}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {appointment.notes && (
-                      <div className="appointment-notes">
-                        <p className="notes-label">Notes:</p>
-                        <p className="notes-text">{appointment.notes}</p>
-                      </div>
-                    )}
-                  </div>
-              </div>
-            ))}
+           {patientAppointments.map((appointment) => (
+  <div key={appointment.id} className="appointment-card">
+    <div className="appointment-header">
+      <div className="appointment-date-wrapper">
+        <Calendar size={18} className="appointment-icon" />
+        <span className="appointment-date">
+          {formatDate(appointment.date)}
+        </span>
+      </div>
+      <span className={`appointment-status status-${appointment.status}`}>
+        {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+      </span>
+    </div>
+    
+    <div className="appointment-time-wrapper">
+      <Clock size={16} className="appointment-icon" />
+      <span className="appointment-time">
+        {formatTime(appointment.time)}
+      </span>
+    </div>
+    
+    <div className="doctor-info">
+      <div className="doctor-profile">
+        <div className="doctor-details">
+          <p className="appointment-doctor-name">
+            Dr. {appointment.doctor?.user || 'Not specified'}
+          </p>
+          <p className="doctor-specialty">
+            {appointment.doctor?.specialty || 'Specialty not specified'}
+          </p>
+          <p className="doctor-experience">
+            {appointment.doctor?.years_of_experience 
+              ? `${appointment.doctor.years_of_experience} years experience`
+              : ''}
+          </p>
+        </div>
+      </div>
+      
+      {appointment.notes && (
+        <div className="appointment-notes">
+          <p className="notes-label">Notes:</p>
+          <p className="notes-text">{appointment.notes}</p>
+        </div>
+      )}
+    </div>
+  </div>
+))}
           </div>
         ) : (
           <div className="no-appointments-message">

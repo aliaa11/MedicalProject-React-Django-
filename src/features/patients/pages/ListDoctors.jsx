@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {  faSearch, faTimes, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { setError } from "../appointmentSlice";
 
 export default function ListDoctors() {
   const [doctorsList, setDoctorsList] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [usersMap, setUsersMap] = useState({});
+  const [usersMap] = useState({});
   const [specialties, setSpecialties] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchBy, setSearchBy] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,9 +76,10 @@ export default function ListDoctors() {
     }
 
     const filtered = doctorsList.filter(doctor => {
+      if (!doctor || !doctor.user) return false;
       
-      const doctorName = doctor ? doctor.user.username : '';
-      const specialtyName = doctor.specialty || '';
+const doctorName = typeof doctor.user === 'object' ? doctor.user.username : doctor.user;
+      const specialtyName = doctor.specialty?.name || doctor.specialty || '';
       
       const searchTermLower = searchTerm.toLowerCase();
       
@@ -249,8 +251,12 @@ export default function ListDoctors() {
       {currentDoctors.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentDoctors.map(doctor => {
-            const doctorName = doctor.user.username ? `${doctor.user.username}` : 'Dr. Unknown';
-            const specialtyName = doctor.specialty || "General Practitioner";
+            if (!doctor || !doctor.user) return null;
+            
+            const doctorName = typeof doctor.user === 'object' 
+  ? doctor.user?.username 
+  : doctor.user;
+            const specialtyName = doctor.specialty?.name || doctor.specialty || "General Practitioner";
 
             return (
               <div key={doctor.id} className="relative !p-6 bg-white rounded-lg shadow-md flex flex-col items-center text-center border border-gray-200 hover:shadow-lg">
@@ -273,7 +279,7 @@ export default function ListDoctors() {
                 </p>
 
                 {/* Contact Button */}
-                <Link to={`/doctors/${doctor.id}`}>
+                <Link to={`/doctors/${doctor.id}/`}>
                   <button className="w-full !py-2 !px-4 bg-[var(--color-icon)] text-white text-sm font-medium rounded-lg hover:bg-blue-700">
                     Book Appointment
                   </button>

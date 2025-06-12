@@ -485,7 +485,17 @@
   margin: 20px auto;
   max-width: 400px;
 }
+.doctor-experience {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+}
 
+.doctor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .no-patient-data-container p {
   font-size: 1.2em;
   margin-bottom: 20px;
