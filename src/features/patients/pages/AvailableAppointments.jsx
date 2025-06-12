@@ -224,8 +224,8 @@ const AvailableSlots = ({ doctorId: propDoctorId }) => {
                     ) : (
                       <div className="empty-state">
                         <Clock className="w-12 h-12" />
-                        <h3>No available slots for this day</h3>
-                        <p>Please select another date</p>
+                        <h3> No available slots for this day</h3>
+                        <p> Please select another date</p>
                       </div>
                     )}
                   </>
