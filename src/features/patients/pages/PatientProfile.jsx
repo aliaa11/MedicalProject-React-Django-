@@ -99,13 +99,7 @@ const patientAppointments = Array.isArray(reduxAppointments) && reduxAppointment
       day: 'numeric'
     });
   };
-useEffect(() => {
-  console.log("Appointments data:", {
-    reduxAppointments,
-    localAppointments,
-    combined: patientAppointments
-  });
-}, [reduxAppointments, localAppointments]);
+
   const formatTime = (timeString) => {
     if (!timeString) return '';
     const [hours, minutes] = timeString.split(':');
