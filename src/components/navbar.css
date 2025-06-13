@@ -193,7 +193,23 @@
   0% { transform: scale(0.9); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
+.notification-item.unread {
+  background-color: #f0f8ff;
+  border-left: 3px solid #1890ff;
+}
 
+.notification-item.read {
+  opacity: 0.8;
+}
+
+.mark-read-btn {
+  background: none;
+  border: none;
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 5px;
+}
 /* Add to existing media queries */
 @media (max-width: 768px) {
   .notification-dropdown {
