@@ -165,7 +165,6 @@ const Navbar = () => {
       }
     });
 
-    // Return matched title or default
     return matchedRoute ? matchedRoute.title : 'Hospital Management';
   };
 
